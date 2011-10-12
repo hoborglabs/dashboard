@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div id="header">
+			<h1>Example HoborgLabs Dashoboard</h1>
+		</div>
+		<div id="body">
+			<?php foreach ($widgets as & $widget) : ?>
+				<div class="widget">
+					<div class="header"><?php echo $widget['name']; ?></div>
+					<div class="body"><?php echo render_widget($widget); ?></div>
+					<div class="footer"><?php echo $widget['footer']; ?></div>
+				</div>
+			<?php endforeach; unset($widget); ?>
+		</div>
+		<div id="footer">
+		power by hoborglabs &amp; <em>PH</em>objects.
+		</div>
+	</body>
+</html>
