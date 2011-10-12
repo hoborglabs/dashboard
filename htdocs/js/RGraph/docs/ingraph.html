@@ -1,0 +1,148 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+    <title>RGraph: HTML5 canvas graph library - In-graph labels</title>
+    
+    <meta name="keywords" content="rgraph html5 canvas graph docs ingraph in-graph" />
+    <meta name="description" content="RGraph: HTML5 canvas graph software - Documentation about in-graph labels" />
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.jpg"/>
+
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.line.js" ></script>
+    <script src="../libraries/RGraph.bar.js" ></script>
+</head>
+<body>
+
+    
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 120px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+    <div id="breadcrumb">
+        <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+        >
+        <a href="index.html">Documentation</a>
+        >
+        In-graph labels
+    </div>
+
+    <h1>RGraph: HTML5 canvas graph library - In-graph labels</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br /> Internet Explorer 8 does not natively support the HTML5 canvas tag, so if you want to see the graphs, you can either:<ul><li>Install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a></li><li>Use ExCanvas. This is provided in the RGraph Archive.</li><li>Use another browser entirely. Your choices are Firefox 3.5+, Chrome 2+, Safari 4+ or Opera 10.5+. </li></ul> <b>Note:</b> Internet Explorer 9 fully supports the canvas tag. Click <a href="http://groups.google.com/group/rgraph/browse_thread/thread/c5651ff8c56b8f3c#" target="_blank">here</a> to see some screenshots.</div>');
+        }
+    </script>
+
+    <br />
+
+    <p>
+        This page shows the various options for in-graph labels. The in-graph labels can be set like this:
+    </p>
+    
+    <pre class="code">obj.Set('chart.labels.ingraph', [,,'Hoolio',,'Olga']);</pre>
+    
+    <p>
+        Or like this if you want to be more specific:
+    </p>
+    
+    <pre class="code">obj.Set('chart.labels.ingraph', [,,<span style="color: green">['Hoolio', 'red', 'yellow', -1, 60]</span>,,'Olga']);</pre>
+
+    <p>
+        The array can consist of:
+    </p>
+    
+    <ul>
+        <li>The label text</li>
+        <li>The text color</li>
+        <li>The background color</li>
+        <li>This can be 1 or -1 and denotes whether the label should be above or below the line. This has no effect in Bar charts</li>
+        <li>The length of the label pointer/arrow</li>
+    </ul>
+    
+    <h4>Example line chart</h4>
+    
+    <canvas id="line" width="600" height="250">[No canvas support]</canvas>
+    <script>
+        myGraph = new RGraph.Line('line', [4,5,6,3,2,5,6,4,2,4,1]);
+        myGraph.Set('chart.title', 'Line chart with in-graph labels');
+        myGraph.Set('chart.labels', ['Jim','Gail','Hoolio','Kev','Olga','Jimmy','Paul','Jake','John','Fred', 'Jobe']);
+        myGraph.Set('chart.labels.ingraph', [,,['Hoolio', 'red', 'yellow', -1, 60],,'Olga']);
+        myGraph.Draw();
+    </script>
+    
+    <h4>Example bar chart</h4>
+
+    <canvas id="bar" width="600" height="250">[No canvas support]</canvas>
+    <script>
+        myGraph = new RGraph.Bar('bar', [4,5,6,3,2,5,6,4,2,4,1]);
+        myGraph.Set('chart.colors', ['#fcc']);
+        myGraph.Set('chart.title', 'Bar chart with in-graph labels');
+        myGraph.Set('chart.labels', ['Jim','Gail','Hoolio','Kev','Olga','Jimmy','Paul','Jake','John','Fred', 'Jobe']);
+        myGraph.Set('chart.labels.ingraph', [,,['Hoolio', 'red', 'yellow', -1, 60],,'Olga']);
+        myGraph.Draw();
+    </script>
+    
+    <h4>Example bar chart (arrow variant)</h4>
+
+    <canvas id="bar1" width="600" height="250">[No canvas support]</canvas>
+    <script>
+        myGraph = new RGraph.Bar('bar1', [4,5,6,3,2,5,6,4,2,4,1]);
+        myGraph.Set('chart.colors', ['#fcc']);
+        myGraph.Set('chart.title', 'Bar chart with in-graph labels (arrow variant)');
+        myGraph.Set('chart.labels', ['Jim','Gail','Hoolio','Kev','Olga','Jimmy','Paul','Jake','John','Fred', 'Jobe']);
+        myGraph.Set('chart.variant', 'arrow');
+        myGraph.Set('chart.labels.ingraph', [,,['Hoolio', 'red', 'yellow', -1, 60],,'Olga']);
+        myGraph.Draw();
+    </script>
+
+    
+    <h4>Example bar chart (dot variant)</h4>
+    <canvas id="bar2" width="600" height="250">[No canvas support]</canvas>
+    <script>
+        myGraph = new RGraph.Bar('bar2', [4,5,6,3,2,5,6,4,2,4,1]);
+        myGraph.Set('chart.colors', ['#fcc']);
+        myGraph.Set('chart.title', 'Bar chart with in-graph labels (dot variant)');
+        myGraph.Set('chart.labels', ['Jim','Gail','Hoolio','Kev','Olga','Jimmy','Paul','Jake','John','Fred', 'Jobe']);
+        myGraph.Set('chart.labels.ingraph', [6,['Foo', 'red', 'yellow', null, 75],3,'Bar']);
+        myGraph.Set('chart.variant', 'dot');
+        myGraph.Set('chart.labels.ingraph', [,,['Hoolio', 'red', 'yellow', -1, 60],,'Olga']);
+        myGraph.Draw();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,232 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+    <title>RGraph: HTML5 canvas graph library - Animated Pie chart</title>
+    
+    <meta name="keywords" content="rgraph html5 canvas graph docs animated pie chart" />
+    <meta name="description" content="RGraph: HTML5 canvas graph software - An example of an animated Pie chart" />
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.png"/>
+
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+
+
+    <!-- These are the Javascript includes that pull in the RGraph libraries (and ExCanvas) -->
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.pie.js" ></script>
+    <!--[if IE 8]><script src="../excanvas/excanvas.compressed.js"></script><![endif]-->
+    
+</head>
+<body>
+
+    
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 142px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a title="Share RGraph on Facebook" href="" onclick="window.open('http://www.facebook.com/sharer.php?u=http://www.rgraph.net&t=RGraph:%20HTML5%20canvas%20graph%20library', 'facebook_window', 'width=500,height=400,top=100,left=100'); return false"><img src="../images/facebook.png" width="22" height="22" alt="Post to Facebook" align="absmiddle" border="0"/></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+    <div id="breadcrumb">
+        <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+        >
+        <a href="index.html">Documentation</a>
+        >
+        An example of an animated &amp; interactive Pie chart
+    </div>
+
+    <h1>RGraph: HTML5 canvas graph library - An example of an animated &amp; interactive Pie chart</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br />Because of the need for a global variable, this example does not work in Internet Explorer 8</div>');
+        }
+    </script>
+
+
+
+    <!-- This is the canvas that the Pie chart is drawn on -->
+    <canvas id="cvs" width="500" height="300" style="float: right">[No canvas support]</canvas>
+
+
+
+    <!-- This is the script block that contains all of the code for the animated Pie chart -->
+    <script>
+        // Intentionally a global variable
+        pie = new RGraph.Pie('cvs', [24,43,51,16,26,23,35]);
+        pie.Set('chart.strokestyle', 'rgba(0,0,0,0)');
+        pie.Set('chart.labels', ['Richard','John','Kev','Lou','Pete','Fred','Bob']);
+        pie.Set('chart.labels.sticks', true);
+        pie.Set('chart.radius', 100);
+        pie.Draw();
+        
+        RGraph.Register(pie);
+         
+        pie.canvas.onclick = function (e)
+        {
+            
+            var segment = pie.getSegment(e);
+            if (segment && segment.length && typeof(segment[5]) == 'number') {
+        
+                RGraph.Redraw();
+
+                var exploded = [];
+
+                exploded[segment[5]] = 0;
+                
+                // Show a tooltip (using the labels coming from the pie chart)
+                //RGraph.Tooltip(pie.canvas, pie.Get('chart.labels')[segment[5]], e.pageX, e.pageY, segment[5])
+
+                setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 25);
+                setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 50);
+                setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 75);
+                setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 100);
+                setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 125);
+            } else {
+                pie.Set('chart.exploded', []);
+                RGraph.Redraw();
+            }
+        }
+
+
+        /**
+        * The onmousemove event for changing the pointer only
+        */
+        pie.canvas.onmousemove = function (e)
+        {            
+            var segment = pie.getSegment(e);
+            
+            if (segment && segment.length && typeof(segment[5]) == 'number') {
+                pie.canvas.style.cursor = 'pointer';
+            } else {
+                pie.canvas.style.cursor = 'default';
+            }
+        }
+        
+        /**
+        * This is here to redraw he Pie, getting rid of any "selected" segment
+        */
+        window.onclick = function ()
+        {
+            RGraph.Clear(pie.canvas);
+
+            pie.Set('chart.exploded', []);
+            pie.Draw();
+        }
+    </script>
+    <!-- End of the script block that contains all of the code for the animated Pie chart. -->
+
+
+
+    <p>
+        This example shows how you can animate the Pie chart segment seperation, making it possible to introduce some sort of
+        highlighting, which could be used in a presentation of sorts.
+    </p>
+    
+    <p>
+        It's here on it's own page to make it easier for you to dissect the page if you want to implement this.
+    </p>
+
+    <br clear="all" />
+
+    <pre class="code">
+&lt;script&gt;
+    // Intentionally a global variable
+    pie = new RGraph.Pie('cvs', [24,43,51,16,26,23,35]);
+    pie.Set('chart.strokestyle', 'rgba(0,0,0,0)');
+    pie.Set('chart.labels', ['Richard','John','Kev','Lou','Pete','Fred','Bob']);
+    pie.Set('chart.labels.sticks', true);
+    pie.Set('chart.radius', 100);
+    pie.Draw();
+    
+    RGraph.Register(pie);
+     
+    pie.canvas.onclick = function (e)
+    {
+        
+        var segment = pie.getSegment(e);
+        if (segment && segment.length && typeof(segment[5]) == 'number') {
+    
+            RGraph.Redraw();
+
+            var exploded = [];
+
+            exploded[segment[5]] = 0;
+            
+            // Show a tooltip (using the labels coming from the pie chart)
+            //RGraph.Tooltip(pie.canvas, pie.Get('chart.labels')[segment[5]], e.pageX, e.pageY, segment[5])
+
+            setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 25);
+            setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 50);
+            setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 75);
+            setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 100);
+            setTimeout(function () {pie.Set('chart.exploded', exploded);RGraph.Clear(pie.canvas);pie.Draw(); exploded[segment[5]] += 7;}, 125);
+        } else {
+            pie.Set('chart.exploded', []);
+            RGraph.Redraw();
+        }
+    }
+
+
+    /**
+    * The onmousemove event for changing the pointer only
+    */
+    pie.canvas.onmousemove = function (e)
+    {            
+        var segment = pie.getSegment(e);
+        
+        if (segment && segment.length && typeof(segment[5]) == 'number') {
+            pie.canvas.style.cursor = 'pointer';
+        } else {
+            pie.canvas.style.cursor = 'default';
+        }
+    }
+    
+    /**
+    * This is here to redraw he Pie, getting rid of any "selected" segment
+    */
+    window.onclick = function ()
+    {
+        RGraph.Clear(pie.canvas);
+
+        pie.Set('chart.exploded', []);
+        pie.Draw();
+    }
+&lt;/script&gt;
+</pre>
+    
+    <p>
+        <a href="animation.html">&laquo; Back to animation page</a>
+    </p>
+    
+</body>
+</html>

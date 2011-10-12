@@ -1,0 +1,130 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+    <title>RGraph: HTML5 canvas graph library - API documentation</title>
+    
+    <meta name="keywords" content="rgraph html5 canvas graph docs api" />
+    <meta name="description" content="RGraph: HTML5 canvas graph software - Documentation about the RGraph API" />
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.jpg"/>
+
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.bar.js" ></script>
+    <!--[if IE 8]><script src="../excanvas/excanvas.compressed.js"></script><![endif]-->
+</head>
+<body>
+
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 142px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a title="Share RGraph on Facebook" href="" onclick="window.open('http://www.facebook.com/sharer.php?u=http://www.rgraph.net&t=RGraph:%20HTML5%20canvas%20graph%20library', 'facebook_window', 'width=500,height=400,top=100,left=100'); return false"><img src="../images/facebook.png" width="22" height="22" alt="Post to Facebook" align="absmiddle" border="0"/></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+    <div id="breadcrumb">
+        <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+        >
+        <a href="index.html">Documentation</a>
+        >
+        The RGraph.SetConfig() function
+    </div>
+
+    <h1>RGraph: HTML5 canvas graph library - The RGraph.SetConfig() function</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br /> Internet Explorer 8 does not natively support the HTML5 canvas tag, so if you want to see the graphs, you can either:<ul><li>Install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a></li><li>Use ExCanvas. This is provided in the RGraph Archive.</li><li>Use another browser entirely. Your choices are Firefox 3.5+, Chrome 2+, Safari 4+ or Opera 10.5+. </li></ul> <b>Note:</b> Internet Explorer 9 fully supports the canvas tag. Click <a href="http://groups.google.com/group/rgraph/browse_thread/thread/c5651ff8c56b8f3c#" target="_blank">here</a> to see some screenshots.</div>');
+        }
+    </script>
+
+
+    <div style="text-align: center; float: right; font-family: Verdana">
+        <b>A graph showing RGraph.SetConfig()</b><br />
+        <canvas id="cvs" width="600" height="250">[No canvas support]</canvas>
+    </div>
+
+    <script>
+        window.onload = function ()
+        {
+            var config = {
+                          'chart.colors':                   ['red', 'green'],
+                          'chart.labels':                   ['John','Fred','June','Charles','Lou', 'Olga'],
+                          'chart.title.yaxis':               'Amount',
+                          'chart.title.yaxis.pos':           -0.2,
+                          'chart.title.xaxis':               'Person',
+                          'chart.background.grid.autofit':  true,
+                          'chart.strokestyle': 'rgba(0,0,0,0)'
+                         }
+            var bar = new RGraph.Bar('cvs', [48,56,52,49,43,51]);
+            RGraph.SetConfig(bar, config);
+            bar.context.translate(20,-20);
+            bar.Draw();
+        }
+    </script>
+    
+    <p>
+        Instead of using a number of .Set() calls, you may find that using the <i>RGraph.SetConfig()</i> method more to your tastes. The
+        method is an alternative to setting the configuration of your graph. It can also facilitate reuse better, so that the
+        appearance  of your websites charts is the same. There's an example of its use below:
+    </p>
+
+    <br clear="all" />
+
+    <pre class="code">
+&lt;script&gt;
+    window.onload = function ()
+    {
+        /**
+        * This configuration could be stored in a central configuration file, making its reuse easier. You could also have
+        * several different configurations that you pick and choose from depending on the requirements. Values in
+        * subsequent calls to .SetConfig() will overwrite previous ones.
+        */
+        var config = {
+                      'chart.colors':                  ['red', 'green'],
+                      'chart.labels':                  ['John','Fred','June','Charles','Lou', 'Olga'],
+                      'chart.title.yaxis':             'Amount',
+                      'chart.title.yaxis.pos':         -0.2,
+                      'chart.title.xaxis':             'Person',
+                      'chart.background.grid.autofit': true
+                     }
+        var bar = new RGraph.Bar('cvs', [48,56,52,49,43,51]);
+        RGraph.SetConfig(bar, config);
+        bar.context.translate(20,-20);
+        bar.Draw();
+    }
+&lt;/script&gt;
+</pre>
+
+</body>
+</html>

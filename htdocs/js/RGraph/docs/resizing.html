@@ -1,0 +1,172 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+    <title>RGraph: HTML5 canvas graph library - Resizing your graphs</title>
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../favicon.png">
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.jpg"/>
+    
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.common.context.js" ></script>
+    <script src="../libraries/RGraph.common.resizing.js" ></script>
+    <script src="../libraries/RGraph.common.tooltips.js" ></script>
+    <script src="../libraries/RGraph.line.js" ></script>
+    <!--[if IE 8]><script src="../excanvas/excanvas.compressed.js"></script><![endif]-->
+    
+    <script>
+        window.onload = function ()
+        {
+            /**
+            * Draw the line chart
+            */
+            var line = new RGraph.Line('myLine', [4,6,3,7,8,4,9,5,6,4,8,5] );
+            line.Set('chart.labels', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
+            line.Set('chart.hmargin', 5);
+            line.Set('chart.title', 'A resizable line chart (tooltips)');
+            line.Set('chart.colors', ['red']);
+            line.Set('chart.resizable', true);
+            line.Set('chart.hmargin', 5);
+            line.Set('chart.shadow', true);
+            line.Set('chart.shadow.blur', 5);
+            line.Set('chart.shadow.offsetx', 1);
+            line.Set('chart.shadow.offsety', 1);
+            line.Set('chart.contextmenu', [['Sample!', function () {alert('A sample item');}]]);
+            line.Set('chart.background.grid.autofit', true);
+            line.Set('chart.background.grid.autofit.numhlines', 10);
+            line.Set('chart.linewidth', 3);
+            //line.Set('chart.tooltips', ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']);
+            line.Draw();
+            
+            RGraph.AddCustomEventListener(line, 'onresizebegin', function (obj) {cl('onresizebegin has fired');});
+            RGraph.AddCustomEventListener(line, 'onresize', function (obj) {cl('onresize has fired');});
+            RGraph.AddCustomEventListener(line, 'onresizeend', function (obj) {cl('onresizeend has fired');});
+            
+            var line2 = new RGraph.Line('myLine2', [81,84,82,86,84]);
+            line2.Set('chart.width', 350);
+            line2.Set('chart.labels', ['Paul','Lou','Kev','Roger', 'Youseff']);
+            line2.Set('chart.tickmarks', ['Paul','Lou','Kev','Roger', 'Youseff']);
+            line2.Set('chart.hmargin', 5);
+            line2.Set('chart.tickmarks', 'endcircle');
+            line2.Set('chart.resizable', true);
+            line2.Set('chart.resize.handle.adjust', [-50,0]);
+            line2.Set('chart.title', 'A right aligned resizable graph');
+
+            line2.context.translate(line2.canvas.width - line2.Get('chart.width'),0);
+            
+            line2.Draw();
+            
+            RGraph.AddCustomEventListener(line2, 'onresizebeforedraw', function (obj)
+            {
+                
+                obj.Set('chart.resize.handle.adjust', [0 - (obj.canvas.width - obj.Get('chart.width')),0]);
+                obj.context.translate(obj.canvas.width - obj.Get('chart.width'),0);
+            });
+        }
+    </script>
+</head>
+<body>
+
+    
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 142px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a title="Share RGraph on Facebook" href="" onclick="window.open('http://www.facebook.com/sharer.php?u=http://www.rgraph.net&t=RGraph:%20HTML5%20canvas%20graph%20library', 'facebook_window', 'width=500,height=400,top=100,left=100'); return false"><img src="../images/facebook.png" width="22" height="22" alt="Post to Facebook" align="absmiddle" border="0"/></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+    <div id="breadcrumb">
+        <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+        >
+        <a href="index.html">Documentation</a>
+        >
+        Resizing your graphs
+    </div>
+
+    <h1>RGraph: HTML5 canvas graph library - Resizing your graphs</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br /> Internet Explorer 8 does not natively support the HTML5 canvas tag, so if you want to see the graphs, you can either:<ul><li>Install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a></li><li>Use ExCanvas. This is provided in the RGraph Archive.</li><li>Use another browser entirely. Your choices are Firefox 3.5+, Chrome 2+, Safari 4+ or Opera 10.5+. </li></ul> <b>Note:</b> Internet Explorer 9 fully supports the canvas tag. Click <a href="http://groups.google.com/group/rgraph/browse_thread/thread/c5651ff8c56b8f3c#" target="_blank">here</a> to see some screenshots.</div>');
+        }
+    </script>
+
+    <canvas id="myLine" width="400" height="200" style="float: left">[No canvas support]</canvas>
+    
+    <p>&nbsp;</p>
+    
+    <p>
+        RGraph has the facility to allow you to resize your graphs. This is new as of 10th April 2010. Because of the
+        numerous events it has to install code on, it is unlikely to work with other dynamic features. The context
+        menu does though, and now that tooltips use DOM2 events, so do they. It can be useful if you are,
+        for example, doing a presentation and need to enlarge the graph.
+    </p>
+    
+    <p>
+        All you need to do to enable it is set <i>chart.resizable</i> to true. There are certain caveats that you should be aware of though:
+    </p>
+    
+    <br clear="all" />
+    
+    <ul>
+        <li>
+            Graphs can only be enlarged down and to the right, so you will get better results if your graph is not placed at the
+            right of the page.
+        </li>
+        
+        <li>
+            The minimum you can resize your graphs to is 50% of the original graph width/height.
+        </li>
+        
+        <li>
+            <b>Note:</b> Resizing can change the layout of your page (reflows). As such you will need to be careful when laying out your
+            page, and you may need to experiment with things like CSS float:, width, height etc so that the effect is either not apparent
+            or is minimal.
+        </li>
+        
+        <li>
+            If your canvas is nested within a table, resizing can result in very minor (1-2px for example) positioning changes. These
+            can be mitigated by turning off table borders, setting the cellspacing to 0 and also setting the cellpadding to 0.
+        </li>        
+        
+        <li>
+            If you have used the <i>.translate()</i> method to right align your graph, you will need to use the <i>onresizebeforedraw</i>
+            event to repeat the translate once the canvas has been resized. This is because resizing the canvas resets the translate state.
+            so any translate that you do will be lost once resized. This is shown on the following graph:
+        </li>
+    </ul>
+    
+    <canvas width="400" height="150" id="myLine2" style="margin-left: 5px; border: 1px dotted gray">[No canvas support]</canvas>
+
+    <br /><br /><br />
+    
+</body>
+</html>

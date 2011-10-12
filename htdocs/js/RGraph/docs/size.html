@@ -1,0 +1,161 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html >
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+    <title>RGraph: HTML5 canvas graph library - Annotating your graphs</title>
+    
+    <meta name="keywords" content="rgraph html5 canvas graph docs animating" />
+    <meta name="description" content="RGraph: HTML5 canvas graph software - Documentation about annotating your charts" />
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.jpg"/>
+
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.common.tooltips.js" ></script>
+    <script src="../libraries/RGraph.common.context.js" ></script>
+    <script src="../libraries/RGraph.common.zoom.js" ></script>
+    <script src="../libraries/RGraph.bar.js" ></script>
+    <!--[if IE 8]><script src="../excanvas/excanvas.compressed.js"></script><![endif]-->
+    
+    <script>
+        window.onload = function (e)
+        {
+            var bar = new RGraph.Bar('cvs', [0.2,0.2,0.5,0.6,0.5,0.3,0.5,0.1,0.2,0.7,4.2,3.5]);
+            bar.Set('chart.ymax', 5);
+            bar.Set('chart.width', 600);
+            bar.Set('chart.height', 250);
+            bar.Set('chart.labels', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
+            bar.Set('chart.tooltips', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
+            bar.Set('chart.tooltips.coords.adjust', [35,0]);
+            bar.Set('chart.text.angle', 45);
+            bar.Set('chart.contextmenu', [['Zoom in', RGraph.Zoom]]);
+            bar.Set('chart.zoom.hdir', 'left');
+            bar.Set('chart.title', '2010 statistics (tooltips)');
+            bar.Set('chart.ylabels.specific', ['100,000','10,000','1,000','100','10']);
+            bar.Set('chart.background.grid.autofit', true);
+            bar.Set('chart.background.grid.autofit.align', true);
+            bar.context.translate(35, 0);
+            bar.Draw();
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 142px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a title="Share RGraph on Facebook" href="" onclick="window.open('http://www.facebook.com/sharer.php?u=http://www.rgraph.net&t=RGraph:%20HTML5%20canvas%20graph%20library', 'facebook_window', 'width=500,height=400,top=100,left=100'); return false"><img src="../images/facebook.png" width="22" height="22" alt="Post to Facebook" align="absmiddle" border="0"/></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+    <div id="breadcrumb">
+        <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+        >
+        <a href="index.html">Documentation</a>
+        >
+        Setting the width and height of your graph
+    </div>
+
+    <h1>RGraph: HTML5 canvas graph library - Setting the width and height of your graph</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br /> Internet Explorer 8 does not natively support the HTML5 canvas tag, so if you want to see the graphs, you can either:<ul><li>Install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a></li><li>Use ExCanvas. This is provided in the RGraph Archive.</li><li>Use another browser entirely. Your choices are Firefox 3.5+, Chrome 2+, Safari 4+ or Opera 10.5+. </li></ul> <b>Note:</b> Internet Explorer 9 fully supports the canvas tag. Click <a href="http://groups.google.com/group/rgraph/browse_thread/thread/c5651ff8c56b8f3c#" target="_blank">here</a> to see some screenshots.</div>');
+        }
+    </script>
+    
+    <canvas id="cvs" width="620" height="300" style="border: 1px dashed gray; float: right">[No canvas support]</canvas>
+    
+    <p>
+        Until 31st December 2010 the entire canvas was used for the graph, with only the <i>chart.gutter</i> space used for labels.
+        You could increase the usable space by using the standard 2D context method <i>translate()</i>, however this was still
+        not entirely suitable for all cases, for example where labels were large.
+    </p>
+    
+    <p>
+        Now, however, you can set the usable width and
+        height with <i>chart.width</i> and <i>chart.height</i>. This means that you could have a canvas that is 300 pixels high,
+        but the area used by the graph is only 250 pixels high. Thus you will have the bottom gutter of the graph plus an extra
+        50 pixels for the labels. This is shown on the right.
+    </p>
+
+    <h4>Right aligning your graph</h4>
+        <p>
+            By default, because the coordinates start in the top left of the canvas, your graph will appear in the top left of the
+            canvas too. If you want to change this and have your graph aligned to the right of the canvas you can use the standard 2D
+            context method <i>translate()</i>. Typically, this would be useful if you have a large Y scale.
+        </p>
+        
+        <pre class="code">
+&lt;script&gt;
+    myBar = new RGraph.Bar('cvs', [0.2,0.2,0.5,0.6,0.5,0.3,0.5,0.1,0.2,0.7,4.2,3.5]);
+    myBar.Set('chart.ymax', 5);
+    myBar.Set('chart.width', 600);
+    myBar.Set('chart.height', 250);
+    myBar.Set('chart.labels', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
+    myBar.Set('chart.tooltips', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);
+    myBar.Set('chart.tooltips.coords.adjust', [35,0]);
+    myBar.Set('chart.text.angle', 45);
+    myBar.Set('chart.contextmenu', [['Zoom in', RGraph.Zoom]]);
+    myBar.Set('chart.zoom.hdir', 'left');
+    myBar.Set('chart.title', '2010 statistics (tooltips)');
+    myBar.Set('chart.ylabels.specific', ['100,000','10,000','1,000','100','10']);
+    myBar.Set('chart.background.grid.autofit', true);
+    myBar.Set('chart.background.grid.autofit.align', true);<br />
+    <span style="color: green">myBar.context.translate(35, 0);</span><br />
+    myBar.Draw();
+&lt;/script&gt;
+</pre>
+
+    <h4>Resizing your graph</h4>
+    
+        <p>
+            Resizing your graph causes the transformation state to be reset (ie any <i>.translate()</i> you have performed will be
+            reset). You will therefore need to use the <i>onresizebeforedraw</i> event to translate again. This event fires after
+            the canvas has been resized, but before the graph is redrawn. Eg:
+        </p>
+
+
+        <pre class="code">
+RGraph.AddCustomEventListener(myObj, 'onresizebeforedraw', function (obj) {obj.context.translate(35, 0);});
+</pre>
+
+    <p>
+        If you're doing this you will probably also want to set the property <i>chart.resizing.handle.adjust</i> appropriately
+        so that the resize handle is positioned correctly. Eg:
+    </p>
+    
+    <pre class="code">
+myBar.Set('chart.resize.handle.adjust', [-35, 0]);
+</pre>
+
+</html>

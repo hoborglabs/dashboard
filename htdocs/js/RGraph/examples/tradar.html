@@ -1,0 +1,192 @@
+<?php ob_start('ob_gzhandler') ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--
+        /**
+        * o------------------------------------------------------------------------------o
+        * | This file is part of the RGraph package - you can learn more at:             |
+        * |                                                                              |
+        * |                          http://www.rgraph.net                               |
+        * |                                                                              |
+        * | This package is licensed under the RGraph license. For all kinds of business |
+        * | purposes there is a small one-time licensing fee to pay and for non          |
+        * | commercial  purposes it is free to use. You can read the full license here:  |
+        * |                                                                              |
+        * |                      http://www.rgraph.net/LICENSE.txt                       |
+        * o------------------------------------------------------------------------------o
+        */
+    -->
+
+    <title>RGraph: HTML5 canvas graph library - Traditional radar chart</title>
+    
+    <meta name="keywords" content="rgraph html5 canvas example tradar radar chart" />
+    <meta name="description" content="RGraph: Traditional radar chart" />
+    
+    <meta property="og:title" content="RGraph: HTML5 canvas graph library" />
+    <meta property="og:description" content="A graph library based on the HTML5 canvas tag" />
+    <meta property="og:image" content="http://www.rgraph.net/images/logo.png"/>
+
+    <link rel="stylesheet" href="../css/website.css" type="text/css" media="screen" />
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+
+    <script src="../libraries/RGraph.common.core.js" ></script>
+    <script src="../libraries/RGraph.common.context.js" ></script>
+    <script src="../libraries/RGraph.common.annotate.js" ></script>
+    <script src="../libraries/RGraph.common.tooltips.js" ></script>
+    <script src="../libraries/RGraph.common.zoom.js" ></script>
+    <script src="../libraries/RGraph.tradar.js" ></script>
+    <!--[if IE 8]><script src="../excanvas/excanvas.compressed.js"></script><![endif]-->
+
+    <script>
+        window.onload = function ()
+        {
+            if (RGraph.isIE8()) {
+                ShowGraph1();
+                ShowGraph2();
+            }
+        }
+        
+        function ShowGraph1 ()
+        {
+            var tradar5 = new RGraph.Tradar('tradar5', [43,84,54,64,34,21,21], [52,30,51,41,22,23,56]);
+            tradar5.Set('chart.colors', ['rgba(255,0,0,0.3)']);
+            tradar5.Set('chart.labels.axes', 'n');
+            tradar5.Set('chart.circle', 50);
+            tradar5.Set('chart.circle.fill', 'rgba(0, 0, 255, 0.3)');
+            tradar5.Set('chart.tooltips', [
+                                           'Dave (43)', 'John (84)', 'Kiffen (54)', 'Peter (64)', 'Lou (34)', 'Igor (21)', 'John (21)',
+                                           'Dave (52)', 'John (30)', 'Kiffen (51)', 'Peter (41)', 'Lou (22)', 'Igor (23)', 'John (56)',
+                                          ]);
+            tradar5.Set('chart.tooltips.effect', 'fade');
+            tradar5.Set('chart.colors', ['green', 'red']);
+            tradar5.Set('chart.colors.alpha', 0.5);
+            tradar5.Set('chart.title', 'The results of the competition (tooltips)');
+            tradar5.Set('chart.labels', ['Dave (43)', 'John (84)', 'Kiffen (54)', 'Peter (64)', 'Lou (34)', 'Igor (21)', 'John (21)']);
+            tradar5.Draw();
+        }
+        
+        function ShowGraph2 ()
+        {
+            var tradar = new RGraph.Tradar('tradar1', [3,3,41,37,16]);
+            tradar.Set('chart.background.circles', true);
+            tradar.Set('chart.color', 'rgba(255,0,0,0.3)');
+            tradar.Set('chart.circle.fill', 'rgba(200,255,200,0.9)');
+            tradar.Set('chart.labels', ['Safari (3%)', 'Other (3%)', 'MSIE 7 (41%)', 'MSIE 6 (37%)', 'Firefox (16%)']);
+            tradar.Set('chart.title', "Browser share (annotatable, context, zoom)" );
+            tradar.Set('chart.linewidth', 1);
+            tradar.Set('chart.labels.axes', 'n');
+
+            if (!RGraph.isIE8()) {
+                tradar.Set('chart.zoom.vdir', 'up');
+                tradar.Set('chart.contextmenu', [
+                                                 ['Zoom in', RGraph.Zoom],
+                                                 ['Clear', function () {RGraph.Clear(tradar.canvas); tradar.Draw()}],
+                                                 ['Show PNG', RGraph.showPNG]
+                                                ]);
+                tradar.Set('chart.annotatable', true);
+            }
+
+            tradar.Draw();
+        }
+    </script>
+</head>
+<body>
+
+    
+    <!-- Social networking buttons -->
+        <div id="social_icons" class="warning" style="width: 142px; top: 1px; position: fixed">
+            <b style="display: inline-block; position: relative; top: 1px">Share:</b>
+            <a title="Bookmark with delicious" href="http://delicious.com/save?jump=close&v=4&noui&jump=close&url=http://www.rgraph.net&notes=RGraph%20is%20a%20HTML5%20based%20graph%20library%20supporting%20a%20wide%20range%20of%20different%20graph%20types&title=RGraph:%20HTML5%20canvas%20graph%20library%20based%20on%20the%20HTML5%20canvas%20tag" target="_blank"><img src="../images/delicious.png" alt="Bookmark with delicious" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a href="http://twitter.com/home/?status=RGraph%3A+HTML5+canvas+graph+library+based+on+the+HTML5+canvas+tag+http%3A%2F%2Fwww.rgraph.net+%23rgraph+%23html5+%23canvas+@_rgraph+%23javascript+%23ajax" target="_blank"><img src="../images/twitter.png" id="twitter_icon" alt="tweet this site" width="22" height="22" border="0" align="absmiddle" /></a>
+            <a title="Share RGraph on Facebook" href="" onclick="window.open('http://www.facebook.com/sharer.php?u=http://www.rgraph.net&t=RGraph:%20HTML5%20canvas%20graph%20library', 'facebook_window', 'width=500,height=400,top=100,left=100'); return false"><img src="../images/facebook.png" width="22" height="22" alt="Post to Facebook" align="absmiddle" border="0"/></a>
+        </div>
+
+        <script>
+            // Opera fix
+            if (navigator.userAgent.indexOf('Opera') == -1) {
+              document.getElementById("social_icons").style.position = 'fixed';
+            }
+        </script>
+    <!-- Social networking buttons -->
+
+
+<div id="breadcrumb">
+    <a href="../index.html">RGraph: HTML5 canvas graph library</a>
+    >
+    <a href="./index.html">Examples</a>
+    >
+    Traditional radar chart
+</div>
+
+<h1>RGraph: HTML5 canvas graph library - Traditional radar chart</h1>
+
+    <script>
+        if (RGraph.isIE8()) {
+            document.write('<div style="background-color: #fee; border: 2px dashed red; padding: 5px"><b>Important</b><br /><br /> Internet Explorer 8 does not natively support the HTML5 canvas tag, so if you want to see the graphs, you can either:<ul><li>Install <a href="http://code.google.com/chrome/chromeframe/">Google Chrome Frame</a></li><li>Use ExCanvas. This is provided in the RGraph Archive.</li><li>Use another browser entirely. Your choices are Firefox 3.5+, Chrome 2+, Safari 4+ or Opera 10.5+. </li></ul> <b>Note:</b> Internet Explorer 9 fully supports the canvas tag. Click <a href="http://groups.google.com/group/rgraph/browse_thread/thread/c5651ff8c56b8f3c#" target="_blank">here</a> to see some screenshots.</div>');
+        }
+    </script>
+
+    <div style="float: right; width: 450px">
+    </div>
+    
+    <p>
+        A traditional radar chart, that is similar to the Rose chart. Each of the data points is
+        arranged equally in terms of angle, whilst the magnitude of each point is shown by the distance from the centre. Thus,
+        data points of a higher magnitude can be seen as they are more distant from the centre.
+    </p>
+    
+    <p>
+        Suitable for many datasets, but not all. If not, then the Rose chart may be more apt.
+    </p>
+    
+    <p>
+        The circle, as can be seen in the second example, could be used to indicate a threshold of sorts. In the example,
+        it could be minimum sales required for a particular month. Months that fall below this threshold can be clearly seen.
+    </p>
+
+    <div>
+        <ul>
+            <li><a href="../docs/tradar.html">Traditional radar chart API documentation</a></li>
+            <li><a href="rose.html">Rose chart example</a></li>
+        </ul>
+    </div>
+
+    <div style="position: relative">
+        <canvas id="tradar1" width="450" height="350" style="float: left">[No canvas support]</canvas>
+        <span onclick="RGraph.showPNG(document.getElementById('tradar1'), event)" style="position: absolute; left: 350px; top: 30px; border: 1px black solid; padding: 1px; background-color: #eee; cursor: pointer">Get PNG</span>
+        <canvas id="tradar5" width="475" height="350" style="float: right">[No canvas support]</canvas>
+    </div>
+    
+    <script>
+        if (!RGraph.isIE8()) {
+            ShowGraph1();
+            ShowGraph2();
+        }
+    </script>
+
+    <canvas id="tradar2" width="450" height="300">[No canvas support]</canvas>
+    <script>
+            tradar2 = new RGraph.Tradar('tradar2', [7,6,6,7,8], [6,7,7,6,6], [4,5,6,10,4]);
+            tradar2.Set('chart.strokestyle', 'black');
+            tradar2.Set('chart.colors.alpha', 0.3);
+            tradar2.Set('chart.colors', ['red', 'green', 'yellow']);
+            tradar2.Set('chart.title', 'Multiple datasets, key');
+            tradar2.Set('chart.title.vpos', 0.1);
+            tradar2.Set('chart.tooltips', [
+                                           'Pete in 2000','Lou in 2000','Jim in 2000','Jack in 2000','Fred in 2000',
+                                           'Pete in 2001','Lou in 2001','Jim in 2001','Jack in 2001','Fred in 2001',
+                                           'Pete in 2002','Lou in 2002','Jim in 2002','Jack in 2002','Fred in 2002'
+                                          ]);
+            tradar2.Set('chart.tooltips.coords.adjust', [0,15]);
+            tradar2.Set('chart.key', ['2000','2001','2002']);
+            tradar2.Set('chart.key.position', 'graph');
+            tradar2.Set('chart.labels', ['Pete','Lou','Jim','Jack','Fred']);
+            tradar2.context.translate(0, 15);
+            tradar2.Draw();
+    </script>
+
+    
+</body>
+</html>
