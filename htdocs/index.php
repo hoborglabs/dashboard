@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 require_once __DIR__ . '/../src/core.php';
 
 $confDir = realpath(__DIR__ . '/../conf');
@@ -29,16 +28,17 @@ foreach ($widgets as & $widget) {
 }
 unset($widget);
 
-// ... collect `head` data
-
-
 $head = '';
 $onceOnly = array();
 $onLoad = array();
 foreach ($widgets as & $widget) {
-    if (is_callable($widget['head'])) {
-        $widget['head'] = $widget['head']();
-    }
+	if (empty($widget['head'])) {
+		continue;
+	}
+
+	if (is_callable($widget['head'])) {
+		$widget['head'] = $widget['head']();
+	}
 
 	foreach ($widget['head'] as $key => $values) {
 		if ('onceOnly' === $key) {
@@ -51,7 +51,11 @@ foreach ($widgets as & $widget) {
 }
 $head .= join("\n", $onceOnly);
 
-foreach ($data as $widget) {
+foreach ($widgets as $widget) {
+	if (empty($widget['head'])) {
+		continue;
+	}
+
 	foreach ($widget['head'] as $key => $values) {
 		if ('always' === $key) {
 			foreach ($values as $k => $v) {
