@@ -1,4 +1,5 @@
 <?php
+define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
 
 /**
  * Bootstraps all widgets
@@ -12,9 +13,15 @@ function bootstrap_widget(array & $widget) {
 		$widget['body'] = file_get_contents($widget['url']);
 	}
 
+    if (!empty($widget['static'])) {
+        if (is_readable(WIDGETS_ROOT . '/' . $widget['static'])) {
+    		$widget['body'] = file_get_contents(WIDGETS_ROOT . '/' . $widget['static']);
+		}
+	}
+
 	if (!empty($widget['php'])) {
-		if (is_readable($widget['php'])) {
-			$widget + include $widget['php'];
+		if (is_readable(WIDGETS_ROOT . '/' . $widget['php'])) {
+			$widget + include WIDGETS_ROOT . '/' . $widget['php'];
 		}
 	}
 }
