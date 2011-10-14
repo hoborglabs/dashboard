@@ -1,5 +1,6 @@
 <?php
 define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
+date_default_timezone_set('UTC');
 
 /**
  * Bootstraps all widgets
@@ -9,14 +10,18 @@ define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
  * @return void
  */
 function bootstrap_widget(array & $widget) {
-	if (!empty($widget['url'])) {
-		get_widget_from_url($widget);
-	}
-
 	if (!empty($widget['static'])) {
 		if (is_readable(WIDGETS_ROOT . '/' . $widget['static'])) {
 			$widget['body'] = file_get_contents(WIDGETS_ROOT . '/' . $widget['static']);
 		}
+	}
+
+	if (!empty($widget['url'])) {
+		get_widget_from_url($widget);
+	}
+
+	if (!empty($widget['cgi'])) {
+		get_widget_from_cgi($widget);
 	}
 
 	if (!empty($widget['php'])) {
