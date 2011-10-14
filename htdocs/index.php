@@ -49,6 +49,7 @@ foreach ($widgets as & $widget) {
 		}
 	}
 }
+unset($widget);
 $head .= join("\n", $onceOnly);
 
 foreach ($widgets as $widget) {

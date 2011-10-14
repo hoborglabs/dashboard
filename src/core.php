@@ -10,12 +10,12 @@ define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
  */
 function bootstrap_widget(array & $widget) {
 	if (!empty($widget['url'])) {
-		$widget['body'] = file_get_contents($widget['url']);
+		get_widget_from_url($widget);
 	}
 
-    if (!empty($widget['static'])) {
-        if (is_readable(WIDGETS_ROOT . '/' . $widget['static'])) {
-    		$widget['body'] = file_get_contents(WIDGETS_ROOT . '/' . $widget['static']);
+	if (!empty($widget['static'])) {
+		if (is_readable(WIDGETS_ROOT . '/' . $widget['static'])) {
+			$widget['body'] = file_get_contents(WIDGETS_ROOT . '/' . $widget['static']);
 		}
 	}
 
@@ -57,4 +57,21 @@ function get_head(array & $widget) {
 	}
 
 	return (array) $widget['head'];
+}
+
+function get_widget_from_url(array & $widget) {
+	$method = empty($widget['_method']) ? 'GET' : $widget['_method'];
+	$body = null;
+
+	switch ($method) {
+		case 'GET':
+			// @todo: add proper handler (add GET widget=json_encode($widget))
+			$body = file_get_contents($widget['url']);
+			break;
+
+		default:
+			break;
+	}
+
+	$widget['body'] = $body;
 }
