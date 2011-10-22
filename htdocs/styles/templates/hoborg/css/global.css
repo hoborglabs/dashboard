@@ -1,8 +1,6 @@
 body {
     background-color: #232323;
     color: #585858;
-    font-family: "trebuchet ms",helvetica,sans-serif;
-    font-size: 10pt;
 }
 
 * {
@@ -25,12 +23,11 @@ body {
 
 #body, #footer {
 	clear: both;
-	width: 930px;
 	margin: 0px auto;
 }
 
 #body {
-	padding: 10px 10px;
+	padding: 10px 0px;
 }
 
 #footer {
@@ -57,7 +54,8 @@ body {
     background-color: #373737;
     color: #FFFFFF;
     float: left;
-    margin: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .widget .header {
@@ -132,15 +130,17 @@ body {
 
 
 .widget {
-	width: 300px;
 	height: 200px;
 	float: left;
 }
 
-.widget.medium {
-	width: 450px;
+.widget.short {
+	height: 80px;
+}
+.widget.short .body {
+	height: 22px;
 }
 
-.widget.large {
-	width: 610px;
+.widget.short .footer {
+	display: none;
 }
