@@ -1,0 +1,162 @@
+<html>
+	<head>
+		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div id="header" class="container">
+			<div class="row">
+				<div class="span4">
+					<h1>HoborgLabs Dashoboard</h1>
+				</div>
+				<div class="span12">
+					<ul class="tabs" style="margin-top: 50px;">
+						<li><a href="/">Home</a></li>
+						<li class="active"><a href="#">Documentation</a></li>
+						<li><a href="/dashboard.php?conf=demo">Demo</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="body" class="container">
+
+			<div class="row">
+				<div class="span4">
+					<h2>Hoborg Dashboard - what is it?</h2>
+				</div>
+				<div class="span12">
+<h3>How, What, Where?i</h3>
+<p>
+SimpleDashboard is really SIMPLE. Each dashboard is based on JSON config file. It contain only a template name and list of widgets. The simplest configuration can look like this:
+</p>
+<pre>
+{
+  "template": "hoborg",
+  "widgets": [
+    {
+      "body": "this is my first widget"
+    }
+  ]
+}
+</pre>
+<p>
+You can of course extend widget with php scripts, but not only! You can display external or internal static files, and you can even call CGI scripts as long as it returns json widget object.
+</p>
+<p>
+The beauty of SimpleDashboard is in its simplicity. There are only THREE reserved keys (1) "body", (2) "head" - you will find more about "head" in next section - and (3) "reload". Widget body is stored in ... "body". But wait ... what about Phobjects? The answer is simple - you can assign a lambda function to "body" and it will be executed to get your widget body!
+</p>
+<h3>What about auto-refresh</h3>
+
+<p>
+Because each widget is well defined, it's easy to refresh selected widgets based on "reload" value. So if you don't want to write JavaScript to reload your widget you can use build in functionality.
+</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="span4">
+					<h2>Widget Content</h2>
+					<p>Right, time for some technical details. Body of your widget can be generated in several ways. SimpleDashboard will search for each key listed below (in following order):</p>
+				</div>
+
+				<div class="span12">
+					<h3>body</h3>
+					<p>
+It can be a string (or anything that can be cast to string) or a function, in which case its return value will become new widget body.
+</p>
+<p>
+Because it's loaded first, you can use it as a error/default body of your widget, and it can look like this:
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>"
+}
+</pre>
+
+<h3>static</h3>
+
+<p>
+You can include static files. Path to static files MUST be relative to /widgets folder. Content of that static file will become new widget body.
+</p>
+<p>
+In some cases you might want to have a static html file with error/default content, and it will look like this:
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>",
+  "static" : "error.html"
+}
+</pre>
+
+<h3>url</h3>
+<p>
+When specifying url, SimpleDashboard will call that URL and by default widget's json object will be send as a GET parameter widget. You can override httpd method using _method parameter (GET, POST).
+</p>
+<p>
+Content retrieved from given url will become new body.
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>",
+  "static" : "error.html",
+  "url" : "http://localhost/my-widget.php"
+}
+</pre>
+
+<h3>cgi</h3>
+<p>
+CGI field is very similar to url. Main difference is that cgi script MUST return json widget object. Again you can specify _method or use default GET.
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>",
+  "static" : "error.html",
+  "cgi" : "http://localhost/my-widget.cgi"
+}
+</pre>
+<p>
+If CGI address does not begin with https?, SimpleDashboard will assume that you want to execute a local file. In that case your script will get one parameter - the widget's json object.
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>",
+  "static" : "error.html",
+  "cgi" : "/var/www/dashboard/widgets-cgi/my-scrip"
+}
+</pre>
+
+<h3>php</h3>
+<p>
+PHP field is used to include given PHP file. Path to PHP files MUST be relative to /widgets folder. Your PHP file needs to return $widget array.
+</p>
+<pre>
+{
+  "body" : "<span class=\"warn\">We had some technical issues - sorry.</span>",
+  "static" : "error.html",
+  "php" : "my-widget.php"
+}
+</pre>
+<p>
+And your PHP script can look like this:
+</p>
+<pre>
+&lt;?php
+$widget['body'] = 'my body';
+return $widget;
+</pre>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="span4">
+					<h2>How to Include Custom JS and CSS?</h2>
+				</div>
+			</div>
+		</div>
+
+		<div id="footer" class="container">
+			<p>power by hoborglabs &amp; <em>PH</em>objects.</p>
+		</div>
+	</body>
+</html>
