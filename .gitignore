@@ -2,3 +2,13 @@
 .project
 .settings/
 
+##
+# Configuration
+#
+/conf/*.js
+!/conf/*.default.js
+
+##
+# Logs
+#
+/logs
