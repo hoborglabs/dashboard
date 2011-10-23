@@ -1,0 +1,114 @@
+#dashboard {
+    background-color: #232323;
+    color: #585858;
+}
+
+.widget .header h4 {
+    border: medium none;
+    color: #999999;
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+}
+
+.widget .header h4 span {
+    font-size: 130%;
+    font-weight: bold;
+}
+.widget {
+    background-color: #373737;
+    color: #FFFFFF;
+    float: left;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.widget .header {
+    border-bottom: 1px solid #131313;
+    border-top: 1px solid #414141;
+    height: 15px;
+    padding: 8px 15px 10px;
+}
+.widget .body {
+    border-bottom: 1px solid #131313;
+    border-top: 1px solid #515151;
+    overflow: hidden;
+    padding: 10px 15px;
+    height: 110px;
+}
+
+.h-dashboard .h-widget-1-1 .body, .h-dashboard .h-widget-2-1 .body, .h-dashboard .h-widget-3-1 .body, .h-dashboard .h-widget-4-1 .body, .h-dashboard .h-widget-5-1 .body {
+    height: 90px;
+}
+.h-dashboard .h-widget-1-2 .body, .h-dashboard .h-widget-2-2 .body, .h-dashboard .h-widget-3-2 .body, .h-dashboard .h-widget-4-2 .body, .h-dashboard .h-widget-5-2 .body {
+    height: 280px;
+}
+.widget .footer {
+    background-color: #272727;
+    border-bottom: 1px solid #131313;
+    border-top: 1px solid #414141;
+    color: #666666;
+    height: 20px;
+    padding: 5px 15px;
+}
+.widget .h-widget-text-XXL {
+    font-size: 56px;
+    font-weight: bold;
+    letter-spacing: -6px;
+    line-height: 48px;
+    text-shadow: 0 0 8px black;
+}
+.widget .h-widget-text-XL {
+    font-size: 44px;
+    font-weight: bold;
+    letter-spacing: -2px;
+    line-height: 48px;
+    text-shadow: 0 0 6px black;
+}
+.widget .h-widget-text-L {
+    font-size: 32px;
+    font-weight: bold;
+}
+.widget .h-widget-text-M {
+    font-size: 18px;
+    font-weight: bold;
+}
+.widget .h-widget-progressBar {
+    border: 2px solid #292929;
+    height: 26px;
+    margin: 8px -2px;
+    width: 100%;
+}
+.widget .h-widget-progressBar div {
+    float: left;
+    height: 100%;
+}
+.widget .h-widget-progressBar .green {
+    background-color: green;
+}
+.widget .h-widget-progressBar.red {
+    background-color: red;
+}
+
+
+
+
+
+.widget {
+	height: 200px;
+	float: left;
+}
+
+.widget.short {
+	height: 80px;
+}
+.widget.short .body {
+	height: 22px;
+}
+
+.widget.short .footer {
+	display: none;
+}
