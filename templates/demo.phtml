@@ -3,6 +3,7 @@
 		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+		<?php echo $head; ?>
 	</head>
 	<body>
                 <div id="header" class="container">
@@ -42,7 +43,9 @@
 				<div class="widget <?echo $class?>">
 					<div class="header"><?php echo $widget['name']; ?></div>
 					<div class="body"><?php echo render_widget($widget); ?></div>
-					<div class="footer"><?php echo $widget['footer']; ?></div>
+					<?php if (!empty($widget['footer'])) : ?>
+						<div class="footer"><?php echo $widget['footer']; ?></div>
+					<?php endif; ?>
 				</div>
 			<?php endforeach; unset($widget); ?>
 			</div>

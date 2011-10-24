@@ -1,14 +1,19 @@
 .buildpath
 .project
 .settings/
+*.swp
 
 ##
 # Configuration
 #
 /conf/*.js
 !/conf/*.default.js
+!/conf/demo.js
+
+
 
 ##
 # Logs
 #
+/data
 /logs

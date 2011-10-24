@@ -3,6 +3,21 @@
     color: #585858;
 }
 
+.widget .positive {
+    color: #77AB13;
+}
+.widget .negative {
+    color: #BB3118;
+}
+
+.widget .panel {
+    background-color: #282828;
+    padding: 10px 15px;
+}
+
+.widget .content {
+    padding: 8px 15px;
+}
 .widget .header h4 {
     border: medium none;
     color: #999999;
@@ -32,13 +47,26 @@
     height: 15px;
     padding: 8px 15px 10px;
 }
+
 .widget .body {
     border-bottom: 1px solid #131313;
     border-top: 1px solid #515151;
     overflow: hidden;
-    padding: 10px 15px;
-    height: 110px;
+    height: 130px;
 }
+.widget .body:last-child {
+    height: 162px;
+}
+
+.widget.short .body:last-child {
+    height: 42px;
+}
+.widget.short .panel {
+    padding: 8px 10px;
+    margin: 4px 5px;
+    background: #181818;
+}
+
 
 .h-dashboard .h-widget-1-1 .body, .h-dashboard .h-widget-2-1 .body, .h-dashboard .h-widget-3-1 .body, .h-dashboard .h-widget-4-1 .body, .h-dashboard .h-widget-5-1 .body {
     height: 90px;
@@ -54,25 +82,25 @@
     height: 20px;
     padding: 5px 15px;
 }
-.widget .h-widget-text-XXL {
+.widget .text-XXL {
     font-size: 56px;
     font-weight: bold;
     letter-spacing: -6px;
     line-height: 48px;
     text-shadow: 0 0 8px black;
 }
-.widget .h-widget-text-XL {
+.widget .text-XL {
     font-size: 44px;
     font-weight: bold;
     letter-spacing: -2px;
     line-height: 48px;
     text-shadow: 0 0 6px black;
 }
-.widget .h-widget-text-L {
+.widget .text-L {
     font-size: 32px;
     font-weight: bold;
 }
-.widget .h-widget-text-M {
+.widget .text-M {
     font-size: 18px;
     font-weight: bold;
 }
@@ -86,15 +114,12 @@
     float: left;
     height: 100%;
 }
-.widget .h-widget-progressBar .green {
+.widget .progressBar .green {
     background-color: green;
 }
-.widget .h-widget-progressBar.red {
+.widget .progressBar.red {
     background-color: red;
 }
-
-
-
 
 
 .widget {
