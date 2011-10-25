@@ -1,13 +1,12 @@
-<html>
+<html class="dashboard">
 	<head>
 		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+		<?php echo $head; ?>
 	</head>
-	<body>
-		<div id="header">
-			<h1>Example HoborgLabs Dashoboard</h1>
-		</div>
-		<div id="body" class="container">
+	<body class="dashboard">
+		<div class="container">
 			<div class="row">
 			<?php foreach ($widgets as & $widget) : ?>
 				<?php 
@@ -29,13 +28,12 @@
 				<div class="widget <?echo $class?>">
 					<div class="header"><?php echo $widget['name']; ?></div>
 					<div class="body"><?php echo render_widget($widget); ?></div>
-					<div class="footer"><?php echo $widget['footer']; ?></div>
+					<?php if (!empty($widget['footer'])) : ?>
+						<div class="footer"><?php echo $widget['footer']; ?></div>
+					<?php endif; ?>
 				</div>
 			<?php endforeach; unset($widget); ?>
 			</div>
-		</div>
-		<div id="footer" class="container">
-		power by hoborglabs &amp; <em>PH</em>objects.
 		</div>
 	</body>
 </html>

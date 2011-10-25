@@ -1,4 +1,4 @@
-#dashboard {
+html.dashboard, body.dashboard, #dashboard {
     background-color: #232323;
     color: #585858;
 }

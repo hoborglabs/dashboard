@@ -5,10 +5,13 @@ var data = [
 var line = new RGraph.Line("chart01", data);
 
 line.Set('chart.background.grid', false);
-line.Set('chart.colors', ['rgba(255,0,0,1)']);
+line.Set('chart.colors', ['rgba(255,0,0,1)', '#181818']);
 line.Set('chart.linewidth', 5);
 line.Set('chart.hmargin', 5);
 line.Set('chart.labels', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
 line.Set('chart.gutter.left', 40);
+line.Set('chart.text.color', 'white');
+line.Set('chart.axis.color', 'white');
+line.Set('chart.gutter.bottom', '150');
 
 line.Draw();

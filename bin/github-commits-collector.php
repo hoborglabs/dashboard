@@ -1,10 +1,17 @@
 <?php
 $url = 'https://api.github.com/repos/:user/:repo/commits/:ref';
-$params = array(
-	'repo' => 'Dashboard',
-	'user' => 'hoborglabs',
+$opt = array(
+	'r:' => 'repo:',
+	'u:' => 'user:',
+	'v::' => 'ref::',
+);
+$defaults = array(
 	'ref' => 'HEAD',
 );
+
+$params = get_options($opt);
+$params += $defaults;
+
 $storeFile = __DIR__ . "/../data/github-commits-{$params['user']}-{$params['repo']}.js";
 
 $storeData = json_decode(file_get_contents($storeFile), true);
@@ -29,3 +36,26 @@ $commitData = array(
 $storeData[$data['sha']] = $commitData;
 
 file_put_contents($storeFile, json_encode($storeData));
+
+
+
+function get_options(array $params) {
+	$options = array();
+	$shortOpt = array();
+	array_walk($params, function($val, $shortParam) use(& $shortOpt) {
+		$k = str_replace(':', '', $shortParam);
+		$v = str_replace(':', '', $val);
+		$shortOpt[$k] = $v;
+	 });
+
+	$opt = getopt(implode('', array_keys($params)), $params);
+	foreach ($opt as $key => $value) {
+		if (isset($shortOpt[$key])) {
+			$options[$shortOpt[$key]] = $value;
+		} else {
+			$options[$key] = $value;
+		}
+	}
+
+	return $options;
+}
