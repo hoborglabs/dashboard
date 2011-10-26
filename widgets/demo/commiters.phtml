@@ -1,0 +1,5 @@
+<div class="content">
+	<?php foreach ($authors as $author) : ?>
+		<img src="http://www.gravatar.com/avatar/<?php echo md5($author['email']);?>" />
+	<?php endforeach; ?>
+</div>

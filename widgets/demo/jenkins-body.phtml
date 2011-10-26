@@ -1,0 +1,27 @@
+<div class="panel" style="text-align:center">
+	<?php
+	$class = "positive";
+	switch ($lastBuild['lastBuild']['result']) {
+		case 'UNSTABLE':
+			$class = 'negative';
+			break;
+	}
+	?>
+	<span class="text-XL <?php echo $class ?>"><?php echo $lastBuild['lastBuild']['result'] ?></span><br />
+</div>
+<div class="content">
+	<?php echo date('Y.m.d H:i:s', $lastBuild['lastBuild']['timestamp']/1000); ?><br />
+
+	<?php
+	$testScoreClass = 'positive';
+	$testScore = $lastBuild['healthReport'][1]['score'];
+	?>
+        Tests Result: <span class="text-M <?php echo $testScoreClass; ?>"> <?php echo $testScore; ?> / 100 </span><br />
+
+	<?php
+	$healthScore = $lastBuild['healthReport'][0]['score'];
+	$healthScoreClass = 'positive';
+	if ($healthScoreClass < 75) $healthScoreClass = 'negative';
+	?>
+	Overall Health: <span class="text-M <?php echo $healthScoreClass; ?>"><?php echo $healthScore; ?> / 100 </span>
+</div>
