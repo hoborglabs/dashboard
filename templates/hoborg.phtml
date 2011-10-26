@@ -3,11 +3,22 @@
 		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('.container').masonry({
+    itemSelector: '.widget',
+    columnWidth: 40,
+    isFitWidth: true, 
+    isAnimated: true
+  });
+});
+</script>
 		<?php echo $head; ?>
 	</head>
 	<body class="dashboard">
 		<div class="container">
-			<div class="row">
 			<?php foreach ($widgets as & $widget) : ?>
 				<?php
 				$widget['name'] = empty($widget['name']) ? 'No Name' : $widget['name'];
@@ -15,10 +26,10 @@
 				$widget['body'] = empty($widget['body']) ? '' : $widget['body'];
 				$widget['size'] = empty($widget['size']) ? 'one-third' : $widget['size'];
 
-				$class = 'span-one-third';
+				$class = 'span8';
 				switch($widget['size']) {
 					case 'message':
-						$class = 'short span16';
+						$class = 'short span8';
 						break;
 					case 'full':
 						$class = 'span16';
@@ -33,7 +44,6 @@
 					<?php endif; ?>
 				</div>
 			<?php endforeach; unset($widget); ?>
-			</div>
 		</div>
 	</body>
 </html>

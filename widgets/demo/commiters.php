@@ -4,7 +4,13 @@ $data = json_decode(file_get_contents(__DIR__ . '/../../data/' . $widget['conf']
 $authors = array();
 
 foreach ($data as & $commit) {
-	$authors[$commit['commit']['committer']['email']] = $commit['commit']['committer'];
+	$addons = array(
+		'img' => 'http://www.gravatar.com/avatar/' . md5($commit['commit']['committer']['email']),
+	);
+	if ($widget['conf']['mustachify']) {
+		$addons['img'] = 'http://mustachify.me/?src=' . $addons['img'];
+	}
+	$authors[$commit['commit']['committer']['email']] = $commit['commit']['committer'] + $addons;
 }
 unset($commit);
 
