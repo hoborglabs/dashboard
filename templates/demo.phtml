@@ -5,6 +5,8 @@
 		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
+		<script type="text/javascript" src="/js/hoborg/bus.js"></script>
+		<script type="text/javascript" src="/js/hoborg/jquery.widgetManager.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function() {
 		  $('#dashboard .container').masonry({
@@ -13,6 +15,14 @@
 		    isFitWidth: true, 
 		    isAnimated: true
 		  });
+		  $(document).widgetManager();
+		<?php foreach ($widgets as $index => & $widget) : ?>
+			<?php if (!empty($widget['reload'])) : ?>
+				$('#widget-<?php echo $index; ?>').data('config', {tick: <?php echo $widget['reload']; ?>*1000});
+				$(document).widgetManager('addWidget', $('#widget-<?php echo $index; ?>'));
+			<?php endif; ?>
+		<?php endforeach; unset($widget); ?>
+		  $(document).widgetManager('start');
 		});
 		</script>
 
@@ -37,7 +47,7 @@
 		<div id="dashboard">
 		<div class="container">
 			<div class="row">
-			<?php foreach ($widgets as & $widget) : ?>
+			<?php foreach ($widgets as $index => & $widget) : ?>
 				<?php 
 				$widget['name'] = empty($widget['name']) ? 'No Name' : $widget['name'];
 				$widget['footer'] = empty($widget['footer']) ? '' : $widget['footer'];
@@ -54,7 +64,7 @@
 						break;
 				}
 				?>
-				<div class="widget <?echo $class?>">
+				<div class="widget <?echo $class?>" id="widget-<?php echo $index; ?>">
 					<div class="header"><?php echo $widget['name']; ?></div>
 					<div class="body"><?php echo render_widget($widget); ?></div>
 					<?php if (!empty($widget['footer'])) : ?>

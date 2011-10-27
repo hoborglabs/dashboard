@@ -1,9 +1,11 @@
 {
   "template": "demo",
+  "ajaxTemplate": "demo-ajax",
   "widgets": [
     {
       "size": "message",
       "name": "Last Commit Message",
+      "reload": 600,
       "php": "demo/commits.php",
       "conf": {
         "dataFile": "github-commits-hoborglabs-Dashboard.js"
