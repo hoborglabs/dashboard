@@ -41,6 +41,13 @@ html.dashboard, body.dashboard, #dashboard {
     margin-bottom: 10px;
 }
 
+.widget.hidden {
+    display: none;
+    height: 0px;
+    width: 0px;
+    margin: 0px;
+}
+
 .widget .header {
     border-bottom: 1px solid #131313;
     border-top: 1px solid #414141;

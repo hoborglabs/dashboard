@@ -15,7 +15,10 @@
 		    isFitWidth: true, 
 		    isAnimated: true
 		  });
-		  $(document).widgetManager();
+		  $(document).widgetManager({
+		    conf: 'demo',
+		    callback: function(widget) { $('#dashboard .container').masonry('reload'); }
+		  });
 		<?php foreach ($widgets as $index => & $widget) : ?>
 			<?php if (!empty($widget['reload'])) : ?>
 				$('#widget-<?php echo $index; ?>').data('config', {tick: <?php echo $widget['reload']; ?>*1000});

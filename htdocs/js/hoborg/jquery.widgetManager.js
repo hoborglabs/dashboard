@@ -2,6 +2,12 @@
 
 	var widgets = [];
 	var isActive = false;
+
+	var options = {
+		callback: function(widget) {},
+		conf: 'demo'
+	};	
+
 	var defaultWidgetConfig = {
 		tick: 60000
 	};
@@ -13,8 +19,8 @@
 		stop: stop
 	};
 
-	function init(options) {
-		console.log(options);
+	function init(opt) {
+		$.extend(options, opt);
 	}
 
 	function start() {
@@ -54,11 +60,12 @@
 
 	function renderWidget(widget, body) {
 		if (!body) {
-			widget.hide();
+			widget.addClass('hidden');
 		} else {
-			widget.show();
+			widget.removeClass('hidden');
 			widget.html(body);
 		}
+		options.callback(widget);
 	}
 
 
