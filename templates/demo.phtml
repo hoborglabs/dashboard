@@ -3,6 +3,20 @@
 		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function() {
+		  $('#dashboard .container').masonry({
+		    itemSelector: '.widget',
+		    columnWidth: 10,
+		    isFitWidth: true, 
+		    isAnimated: true
+		  });
+		});
+		</script>
+
+
 		<?php echo $head; ?>
 	</head>
 	<body>
@@ -30,13 +44,13 @@
 				$widget['body'] = empty($widget['body']) ? '' : $widget['body'];
 				$widget['size'] = empty($widget['size']) ? 'one-third' : $widget['size'];
 
-				$class = 'span-one-third';
+				$class = 'span5';
 				switch($widget['size']) {
 					case 'message':
-						$class = 'short span16';
+						$class = 'short span10';
 						break;
 					case 'full':
-						$class = 'span16';
+						$class = 'span10';
 						break;
 				}
 				?>
@@ -50,8 +64,12 @@
 			<?php endforeach; unset($widget); ?>
 			</div>
 		</div>
+		</div>
+
 		<div id="footer" class="container">
-		power by hoborglabs &amp; <em>PH</em>objects.
+			<p>
+			power by hoborglabs &amp; <em>PH</em>objects.
+			</p>
 		</div>
 		</div>
 	</body>
