@@ -152,6 +152,62 @@ return $widget;
 				<div class="span4">
 					<h2>How to Include Custom JS and CSS?</h2>
 				</div>
+				<div class="span12">
+<p>
+You can inject your own html into head section. There are few ways for injecting it.
+</p>
+<ul>
+    <li>Once Only</li>
+    <li>Always</li>
+    <li>On Load</li>
+</ul>
+
+<h3>Once Only</h3>
+<p>
+Once Only option allows you to include some head section only once for given type. If two or more widgets shares the same JavaScript or CSS files, you can simply include it like that:
+</p>
+<pre>
+{
+  "body": "body of my widget",
+  "head": {
+    "onceOnly": {
+      "myWidget": "<script>var test = 'test';</script>"
+    }
+  }
+}
+</pre>
+<p>
+Of course you don't have to specify the head section in configuration file, you can set it in your PHP file or via CGI call.
+</p>
+
+<h3>On Load</h3>
+<p>
+If you don't want to use jQuery, MooTools or any other JS framework, and you still want to run some JS on page load, you can simply use onLoad section. All onLoad code will be put in one window.onload function.
+</p>
+<pre>
+{
+  "body": "body of my widget",
+  "head": {
+    "onLoad": {
+      "myWidget": "var test = 'test';"
+    }
+  }
+}
+</pre>
+
+<p>
+With that config you will get this section in head
+</p>
+<pre>
+&lt;head>
+  &lt;script type="text/javascript">
+    window.onload = function () {
+      var test = 'test';
+    }
+  &lt;/script>
+&lt;/head>
+</pre>
+				</div>
 			</div>
 		</div>
 
