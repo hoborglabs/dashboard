@@ -8,7 +8,8 @@ foreach ($data as & $commit) {
 		'img' => 'http://www.gravatar.com/avatar/' . md5($commit['commit']['committer']['email']),
 	);
 	if ($widget['conf']['mustachify']) {
-		$addons['img'] = 'http://mustachify.me/?src=' . $addons['img'];
+		$id = rand(0, 2);
+		$addons['img'] = 'http://mustachify.me/' . $id . '?src=' . $addons['img'];
 	}
 	$authors[$commit['commit']['committer']['email']] = $commit['commit']['committer'] + $addons;
 }
