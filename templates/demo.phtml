@@ -12,7 +12,7 @@
 		  $('#dashboard .container').masonry({
 		    itemSelector: '.widget',
 		    columnWidth: 10,
-		    isFitWidth: true, 
+		    isFitWidth: true,
 		    isAnimated: true
 		  });
 		  $(document).widgetManager({
@@ -28,7 +28,6 @@
 		  $(document).widgetManager('start');
 		});
 		</script>
-
 
 		<?php echo $head; ?>
 	</head>
@@ -51,7 +50,7 @@
 		<div class="container">
 			<div class="row">
 			<?php foreach ($widgets as $index => & $widget) : ?>
-				<?php 
+				<?php
 				$widget['name'] = empty($widget['name']) ? 'No Name' : $widget['name'];
 				$widget['footer'] = empty($widget['footer']) ? '' : $widget['footer'];
 				$widget['body'] = empty($widget['body']) ? '' : $widget['body'];

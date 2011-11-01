@@ -23,7 +23,13 @@ $config = json_decode(file_get_contents($configFile), true);
 $widgets = $config['widgets'];
 
 // now we bootstrap each widget
-foreach ($widgets as & $widget) {
+foreach ($widgets as $index => & $widget) {
+    if (isset($widget['enabled'])) {
+        if (!$widget['enabled']) {
+            unset($widgets[$index]);
+            continue;
+        }
+    }
 	bootstrap_widget($widget);
 }
 unset($widget);

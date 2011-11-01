@@ -71,12 +71,16 @@ function get_widget_from_url(array & $widget) {
 	switch ($method) {
 		case 'GET':
 			// @todo: add proper handler (add GET widget=json_encode($widget))
-			$body = file_get_contents($widget['url']);
+			//$body = file_get_contents($widget['url']);
+			$widgetNew = json_decode(file_get_contents($widget['url']), true);
+			if (!empty($widgetNew)) {
+			    $widget = $widgetNew + $widget;
+			}
 			break;
 
 		default:
 			break;
 	}
 
-	$widget['body'] = $body;
+	//$widget['body'] = $body;
 }

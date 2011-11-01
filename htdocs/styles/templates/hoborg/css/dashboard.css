@@ -37,8 +37,10 @@ html.dashboard, body.dashboard, #dashboard {
     background-color: #373737;
     color: #FFFFFF;
     float: left;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    margin: 5px 0px 10px 10px;
+}
+.widget * {
+    color: #FFFFFF;
 }
 
 .widget.hidden {

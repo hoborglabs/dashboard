@@ -6,7 +6,7 @@
 	var options = {
 		callback: function(widget) {},
 		conf: 'demo'
-	};	
+	};
 
 	var defaultWidgetConfig = {
 		tick: 60000
@@ -45,13 +45,12 @@
 	}
 
 	function reloadWidget(widget) {
-		console.log(widget, widget.data('config'));
-		var body = '';
+		widgetConfig = widget.data('config')
 
 		// get new body
 		$.ajax({
 			url: '/ajax-widget.php',
-			data: {c: 'demo', i: 0},
+			data: {c: options.conf, i: widgetConfig.id},
 			type: 'GET',
 			context: widget,
 			success: function(body) { renderWidget(this, body); activateWidget(this); }
