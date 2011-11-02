@@ -11,7 +11,7 @@ error_reporting(0);
 // s    status id or "*" for all (default *)
 // l    limit number (default 100)
 // o    output folder (default data/)
-$opt = getopt('hu:k:p:v:t:s:l:o:');
+$opt = getopt('hu:k:p:v:t:s:l:o:q:');
 
 // show help
 if (isset($opt['h'])) {
@@ -23,7 +23,7 @@ if (isset($opt['h'])) {
 $defaults = array(
     't' => '*',
     's' => '*',
-    'l' => 1000,
+    'l' => 100,
     'o' => 'data/',
 );
 
@@ -33,8 +33,9 @@ $domain = preg_replace('/https?:\/\/(.*)/', '$1', $redmineUrl);
 $dataFolder = isset($opt['o']) ? $opt['o'] : $defaults['o'];
 // redmine API options
 $options = array(
-    'project_id' => isset($opt['p']) ? $opt['p'] : null,         // Sportsbook In Hous 39
-    'fixed_version_id' => isset($opt['v']) ? $opt['v'] : null,   // SBIH Sprint 8 - 57
+    'query_id' => isset($opt['q']) ? $opt['q'] : null,
+    'project_id' => isset($opt['p']) ? $opt['p'] : null,
+    'fixed_version_id' => isset($opt['v']) ? $opt['v'] : null,
     'tracker_id' => isset($opt['t']) ? $opt['t'] : $defaults['t'],
     'status_id' => isset($opt['s']) ? $opt['s'] : $defaults['s'],
     'limit' => isset($opt['l']) ? $opt['l'] : $defaults['l'],
@@ -57,27 +58,17 @@ $url = $redmineUrl . "/issues.xml?key=$key";
 foreach ($options as $param => $value) {
     $url .= '&' . $param . '=' . urlencode($value);
 }
-$data = file_get_contents($url);
 
-if (empty($data)) {
-    outputError('No data returned from: ' . $redmineUrl);
-    outputError('Full request: ' . $url);
-    exit();
-}
-// save issues data
-$d = new SimpleXMLElement($data);
-$issuesData = array();
-foreach($d->issue as $issue) {
-    $issueCopy = array();
-    $save = array(
+$issuesData = callApi($url,
+    array(
         'id' => true,
         'done_ratio' => true,
         'tracker' => array('name', 'id'),
         'priority' => array('name', 'id'),
         'status' => array('name', 'id'),
         'parent' => array('id'),
-    );
-    $customFields = array(
+    ),
+    array(
         6 => 'initial_dev_estimate',
         8 => 'initial_des_estimate',
         13 => 'initial_tst_estimate',
@@ -85,36 +76,9 @@ foreach($d->issue as $issue) {
         12 => 'remaining_des_estimate',
         14 => 'remaining_tst_estimate',
         17 => 'story_points',
-    );
+    )
+);
 
-    foreach ($save as $key => $opt) {
-        if (is_array($opt)) {
-            if (isset($issue->$key)) {
-                foreach ($issue->$key->attributes() as $attr => $val) {
-                    if (in_array($attr, $opt)) {
-                        $issueCopy[$key.'_'.$attr] = (string) $val;
-                    }
-                }
-            }
-        }
-        else {
-            $issueCopy[$key] = (string) $issue->$key;
-        }
-    }
-
-    foreach ($issue->custom_fields->custom_field as $customField) {
-        foreach($customField->attributes() as $attr => $val) {
-            if ('id' === $attr) {
-                $val = (string) $val;
-                if (isset($customFields[$val])) {
-                    $issueCopy[$customFields[$val]] = (string)$customField->value;
-                }
-            }
-        }
-    }
-
-    $issuesData[] = $issueCopy;
-}
 $stored[$date] = $issuesData;
 file_put_contents($storeFile, json_encode($stored));
 
@@ -139,4 +103,61 @@ options:
 }
 function outputError($message) {
     echo "  [ERROR] $message\n";
+}
+
+function callApi($url, array $save, array $customFields) {
+    var_dump($url);
+    $data = file_get_contents($url);
+    $issuesData = array();
+
+    if (empty($data)) {
+        outputError('No data returned from: ' . $redmineUrl);
+        outputError('Full request: ' . $url);
+        return $issuesData;
+    }
+
+    // save issues data
+    $d = new SimpleXMLElement($data);
+    foreach($d->issue as $issue) {
+        $issueCopy = array();
+
+
+        foreach ($save as $key => $opt) {
+            if (is_array($opt)) {
+                if (isset($issue->$key)) {
+                    foreach ($issue->$key->attributes() as $attr => $val) {
+                        if (in_array($attr, $opt)) {
+                            $issueCopy[$key.'_'.$attr] = (string) $val;
+                        }
+                    }
+                }
+            }
+            else {
+                $issueCopy[$key] = (string) $issue->$key;
+            }
+        }
+
+        foreach ($issue->custom_fields->custom_field as $customField) {
+            foreach($customField->attributes() as $attr => $val) {
+                if ('id' === $attr) {
+                    $val = (string) $val;
+                    if (isset($customFields[$val])) {
+                        $issueCopy[$customFields[$val]] = (string)$customField->value;
+                    }
+                }
+            }
+        }
+
+        $issuesData[] = $issueCopy;
+    }
+
+    $t = (int)$d['total_count'];
+    $o = (int)$d['offset'];
+    $l = (int)$d['limit'];
+    if ($t > $o + $l) {
+        $url .= '&offset=' . ($o + $l);
+        $issuesData = array_merge($issuesData, callApi($url, $save, $customFields));
+    }
+
+    return $issuesData;
 }
