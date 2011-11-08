@@ -1,8 +1,18 @@
 (function ( $ ){
 
+	/**
+	 * @var array List of widgets.
+	 **/
 	var widgets = [];
+
+	/**
+	 * @var boolean On/Off flag.
+	 **/
 	var isActive = false;
 
+	/**
+	 * @var object Default options.
+	 */
 	var options = {
 		callback: function(widget) {},
 		conf: 'demo'
@@ -12,6 +22,9 @@
 		tick: 60000
 	};
 
+	/**
+	 * var object List of public methods.
+	 */
 	var methods = {
 		init : init,
 		addWidget : addWidget,
@@ -45,12 +58,17 @@
 	}
 
 	function reloadWidget(widget) {
-		widgetConfig = widget.data('config')
+		if (!isActive) {
+			return;
+		}
+
+		widgetConfig = widget.data('config');
+
 
 		// get new body
 		$.ajax({
 			url: '/ajax-widget.php',
-			data: {c: options.conf, i: widgetConfig.id},
+			data: {c: options.conf, i: widgetConfig.id, widget: widgetConfig},
 			type: 'GET',
 			context: widget,
 			success: function(body) { renderWidget(this, body); activateWidget(this); }
@@ -68,6 +86,7 @@
 	}
 
 
+	// register plugin
 	$.fn.widgetManager = function(method) {
 		if ( methods[method] ) {
 			return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
