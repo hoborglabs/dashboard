@@ -62,17 +62,18 @@
 			return;
 		}
 
-		widgetConfig = widget.data('config');
+		var widgetConfig = widget.data('config');
+		
 
+   		$.ajax({
+   		    url: '/ajax-widget.php',
+   			data: {c: options.conf, widget: widgetConfig},
+   			type: 'GET',
+   			dataTypeString: 'json',
+   			context: widget,
+  			success: function(body) { renderWidget(this, body); activateWidget(this); }
+  		});
 
-		// get new body
-		$.ajax({
-			url: '/ajax-widget.php',
-			data: {c: options.conf, i: widgetConfig.id, widget: widgetConfig},
-			type: 'GET',
-			context: widget,
-			success: function(body) { renderWidget(this, body); activateWidget(this); }
-		});
 	}
 
 	function renderWidget(widget, body) {
@@ -84,6 +85,12 @@
 		}
 		options.callback(widget);
 	}
+	
+	function renderWidgetJson(widget, json) {
+	    if (!json.body) {
+	        renderWidget(widget, json.body);
+	    }
+	}
 
 
 	// register plugin
@@ -94,7 +101,7 @@
 			return methods.init.apply(this, arguments);
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.widgetManager' );
-		}  
+		}
 	};
 
 })(jQuery);

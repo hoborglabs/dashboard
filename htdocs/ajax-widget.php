@@ -3,7 +3,8 @@ require_once __DIR__ . '/../src/core.php';
 
 $confDir = realpath(__DIR__ . '/../conf');
 $config = $_GET['c'];
-$widgetIndex = $_GET['i'];
+$widget = $_GET['widget'];
+$widgetIndex = $widget['id'];
 $configFile = realpath($confDir .'/' . $config . '.js');
 
 if (empty($configFile)) {
