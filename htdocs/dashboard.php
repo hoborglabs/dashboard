@@ -1,13 +1,19 @@
 <?php
-require_once __DIR__ . '/../src/core.php';
+require_once __DIR__ . '/../src/autoload.php';
 
-$confDir = realpath(__DIR__ . '/../conf');
+define('HD_PUBLIC', '/projects/Dashboard/htdocs/');
+
+if (empty($_GET['conf'])) {
+	$error = "no configuration specified";
+        include TEMPLATE_DIR . '/error.phtml';
+	return;
+}
 $config = $_GET['conf'];
-$configFile = realpath($confDir .'/' . $config . '.js');
 
+$configFile = realpath(CONFIG_DIR .'/' . $config . '.js');
 if (empty($configFile)) {
-	echo "erorr - no config";
-	// redirect to error page;
+	$error = "configuration file not found";
+        include TEMPLATE_DIR . '/error.phtml';
 	return;
 }
 
