@@ -18,6 +18,11 @@
 	padding: 10px 0px;
 }
 
+.error .code {
+  font-size: 64px;
+  line-height: 70px;
+}
+
 #footer {
 	padding: 20px 15px 30px 15px;
 }
