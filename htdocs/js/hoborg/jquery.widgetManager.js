@@ -64,20 +64,35 @@
 
 		var widgetConfig = widget.data('config');
 		
-
-   		$.ajax({
-   		    url: '/ajax-widget.php',
-   			data: {c: options.conf, widget: widgetConfig},
-   			type: 'GET',
-   			dataTypeString: 'json',
-   			context: widget,
-  			success: function(body) { renderWidget(this, body); activateWidget(this); }
-  		});
+		if (widgetConfig.url) {
+		    $.ajax({
+                url: '/ajax-proxy-new.php',
+                data: {c: options.conf, widget: widgetConfig, url: widgetConfig.url},
+                type: 'GET',
+                dataType: 'json',
+                context: widget,
+                success: function(body) { renderWidgetJson(this, body); activateWidget(this); }
+            });
+		} else {
+    		$.ajax({
+    		    url: '/ajax-widget.php',
+    			data: {c: options.conf, widget: widgetConfig},
+    			type: 'GET',
+    			context: widget,
+    			success: function(body) { renderWidget(this, body); activateWidget(this); }
+    		});
+		}
 
 	}
 
+	/**
+	 * Renders widget.
+	 * 
+	 * @param {object} widget
+	 * @param {string} body
+	 */
 	function renderWidget(widget, body) {
-		if (!body) {
+	    if (!body) {
 			widget.addClass('hidden');
 		} else {
 			widget.removeClass('hidden');
@@ -87,11 +102,10 @@
 	}
 	
 	function renderWidgetJson(widget, json) {
-	    if (!json.body) {
+	    if (json.body) {
 	        renderWidget(widget, json.body);
 	    }
 	}
-
 
 	// register plugin
 	$.fn.widgetManager = function(method) {

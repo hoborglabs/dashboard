@@ -9,6 +9,8 @@
 /conf/*.js
 !/conf/*.default.js
 !/conf/demo.js
+/conf/*.php
+!/conf/*.dist.php
 
 
 

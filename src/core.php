@@ -3,6 +3,38 @@ define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
 date_default_timezone_set('UTC');
 
 /**
+ * Returns Configurtation array
+ *
+ * @return array
+ */
+function get_config() {
+	if (empty($_GET['conf'])) {
+		$error = "no configuration specified";
+		include TEMPLATE_DIR . '/error.phtml';
+		die(1);
+	}
+	$configName = $_GET['conf'];
+
+	$configFile = realpath(CONFIG_DIR .'/' . $configName . '.js');
+	if (empty($configFile)) {
+		$error = "configuration file not found";
+		include TEMPLATE_DIR . '/error.phtml';
+		die(1);
+	}
+
+	// get configuration
+	$config = json_decode(file_get_contents($configFile), true);
+
+	if (empty($config)) {
+		$error = "You have an error in your configuration";
+		include TEMPLATE_DIR . '/error.phtml';
+		die(1);
+	}
+
+	return $config;
+}
+
+/**
  * Bootstraps all widgets
  *
  * @param array $widget

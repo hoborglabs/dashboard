@@ -1,41 +1,23 @@
 <?php
-require_once __DIR__ . '/../src/autoload.php';
+/**
+ * Hoborg Dashboard.
+ * @author Wojtek Oledzki <wojtek@hoborglabs.com>
+ *
+ */
 
-define('HD_PUBLIC', '/projects/Dashboard/htdocs/');
+require_once __DIR__ . '/../autoload.php';
 
-if (empty($_GET['conf'])) {
-	$error = "no configuration specified";
-        include TEMPLATE_DIR . '/error.phtml';
-	return;
-}
-$config = $_GET['conf'];
-
-$configFile = realpath(CONFIG_DIR .'/' . $config . '.js');
-if (empty($configFile)) {
-	$error = "configuration file not found";
-        include TEMPLATE_DIR . '/error.phtml';
-	return;
-}
-
-if (strpos($confDir, $configFile)) {
-	echo "erorr :(";
-	// redirect to error page;
-	return;
-}
-
-// get widgets
-$config = json_decode(file_get_contents($configFile), true);
-
+$config = get_config();
 $widgets = $config['widgets'];
 
 // now we bootstrap each widget
 foreach ($widgets as $index => & $widget) {
-    if (isset($widget['enabled'])) {
-        if (!$widget['enabled']) {
-            unset($widgets[$index]);
-            continue;
-        }
-    }
+	if (isset($widget['enabled'])) {
+		if (!$widget['enabled']) {
+			unset($widgets[$index]);
+			continue;
+		}
+	}
 	bootstrap_widget($widget);
 }
 unset($widget);
