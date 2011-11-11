@@ -10,6 +10,7 @@ date_default_timezone_set('UTC');
 function get_config() {
 	if (empty($_GET['conf'])) {
 		$error = "no configuration specified";
+		$code = '500';
 		include TEMPLATE_DIR . '/error.phtml';
 		die(1);
 	}
@@ -18,6 +19,7 @@ function get_config() {
 	$configFile = realpath(CONFIG_DIR .'/' . $configName . '.js');
 	if (empty($configFile)) {
 		$error = "configuration file not found";
+		$code = '404';
 		include TEMPLATE_DIR . '/error.phtml';
 		die(1);
 	}
@@ -27,6 +29,7 @@ function get_config() {
 
 	if (empty($config)) {
 		$error = "You have an error in your configuration";
+		$code = '500';
 		include TEMPLATE_DIR . '/error.phtml';
 		die(1);
 	}
