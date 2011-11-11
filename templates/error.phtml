@@ -10,7 +10,9 @@
                                         <img src="<?php echo HD_PUBLIC ?>/images/error.png">
                                 </div>
                                 <div class="span12">
-                                        <h1 style="margin-top: 65px; color: #F53D00"><span class="code">Oops! {404} </span> something went wrong</h1>
+                                        <h1 style="margin-top: 65px; color: #F53D00">
+                                        <span class="code">{<?php echo empty($code) ? '404':$code ; ?>} </span>
+                                        something went wrong</h1>
                                         <h2>Sorry, but the page you want to see caused some problems. Try checking the URL for errors. 
                                         And if you really want to know, the geeke explanation is: <em><?php echo $error; ?></em></h2>
                                 </div>
