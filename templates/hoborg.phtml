@@ -3,18 +3,44 @@
 		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $('.container').masonry({
-    itemSelector: '.widget',
-    columnWidth: 40,
-    isFitWidth: true, 
-    isAnimated: true
-  });
-});
-</script>
+		<link href="/styles/templates/sbih/css/global.css" media="all" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/jquery/jquery.mustache.js"></script>
+		<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
+		<script type="text/javascript" src="/js/hoborg/bus.js"></script>
+		<script type="text/javascript" src="/js/hoborg/jquery.widgetManager.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			var d_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
+
+			$('#dashboard .container').masonry({
+				itemSelector: '.widget',
+				columnWidth: 10,
+				isFitWidth: true,
+				isAnimated: true
+			});
+
+			$(document).widgetManager({
+				conf: 'sbih',
+				callback: function(widget) { $('#dashboard .container').masonry('reload'); },
+				template: d_tpl
+			});
+
+			<?php foreach ($widgets as $index => & $widget) : ?>
+				<?php if (!empty($widget['reload'])) : ?>
+					<?php
+					$widget['tick'] = $widget['reload'] * 1000;
+					$widget['id'] = $index;
+					?>
+					$('#widget-<?php echo $index; ?>').data('config', <?php echo json_encode($widget); ?>);
+					$(document).widgetManager('addWidget', $('#widget-<?php echo $index; ?>'));
+				<?php endif; ?>
+			<?php endforeach; unset($widget); ?>
+
+			$(document).widgetManager('start');
+		});
+		</script>
+
 		<?php echo $head; ?>
 	</head>
 	<body class="dashboard">
