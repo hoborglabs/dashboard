@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/../src/core.php';
 
+$headers = array(
+    'Expires' => '-1',
+);
+foreach ($headers as $k => $v) {
+	header("$k: $v");
+}
+
 $confDir = realpath(__DIR__ . '/../conf');
 $config = $_GET['c'];
 $widget = $_GET['widget'];

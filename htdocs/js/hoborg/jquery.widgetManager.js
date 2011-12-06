@@ -64,23 +64,27 @@
 		}
 
 		var widgetConfig = widget.data('config');
-		
+
 		if (widgetConfig.url) {
 			$.ajax({
 				url: '/ajax-proxy-new.php',
+				processData: true,
 				data: {c: options.conf, widget: widgetConfig, url: widgetConfig.url},
 				type: 'GET',
 				dataType: 'json',
 				context: widget,
-				success: function(body) { renderWidgetJson(this, body); activateWidget(this); }
+				success: function(body) { renderWidgetJson(this, body); activateWidget(this); },
+				error: function() {renderWidget(this, 'JSON ERROR'); activateWidget(this);}
 			});
 		} else {
 			$.ajax({
 				url: '/ajax-widget.php',
+                processData: true,
 				data: {c: options.conf, widget: widgetConfig},
 				type: 'GET',
 				context: widget,
-				success: function(body) { renderWidget(this, body); activateWidget(this); }
+				success: function(body) { renderWidget(this, body); activateWidget(this); },
+				error: function() {renderWidget(this, 'JSON ERROR'); activateWidget(this);}
 			});
 		}
 
@@ -103,6 +107,10 @@
 	}
 
 	function renderWidgetJson(widget, json) {
+	    if (!json) {
+	        renderWidget(widget, 'JSON ERROR');
+	        return;
+	    }
 	    var tpl = json.template || options.template;
 	    var body = $.mustache(tpl, json);
         renderWidget(widget, body);

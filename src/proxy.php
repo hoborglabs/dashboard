@@ -563,8 +563,7 @@ class AjaxProxy {
         $headers = array();
         $headers['Content-Type'] = $this->requestContentType;
 
-        if($as_string)
-        {
+        if($as_string) {
             $data = "";
             foreach($headers as $name => $value)
                 if($value)
@@ -606,9 +605,7 @@ class AjaxProxy {
     /**
 * Generate the headers and send the final response to the output stream
 */
-    protected function _buildAndExecuteProxyResponse()
-    {
-
+    protected function _buildAndExecuteProxyResponse() {
         $this->_generateProxyResponseHeaders();
         $this->_output($this->responseBody);
     }
