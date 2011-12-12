@@ -63,4 +63,4 @@ foreach ($widgets as $widget) {
 $head .= '<script type="text/javascript">
 window.onload = function () {' . join("\n\n", $onLoad) . '};</script>';
 
-include __DIR__ . '/../templates/' . $config['template'] . '.phtml';
+include TEMPLATE_DIR. '/' . $config['template'] . '.phtml';

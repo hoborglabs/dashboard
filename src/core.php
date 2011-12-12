@@ -8,20 +8,24 @@ date_default_timezone_set('UTC');
  * @return array
  */
 function get_config() {
-	if (empty($_GET['conf'])) {
+	if (empty($_GET['conf']) && !defined('DEFAULT_CONFIG')) {
 		$error = "no configuration specified";
 		$code = '500';
 		include TEMPLATE_DIR . '/error.phtml';
 		die(1);
 	}
-	$configName = $_GET['conf'];
+	
+	$configName = empty($_GET['conf']) ? DEFAULT_CONFIG : $_GET['conf'];
 
 	$configFile = realpath(CONFIG_DIR .'/' . $configName . '.js');
 	if (empty($configFile)) {
-		$error = "configuration file not found";
-		$code = '404';
-		include TEMPLATE_DIR . '/error.phtml';
-		die(1);
+		$configFile = realpath(CONFIG_DIR .'/' . $configName . '.json');
+		if (empty($configFile)) {
+			$error = "configuration file not found";
+			$code = '404';
+			include TEMPLATE_DIR . '/error.phtml';
+			die(1);
+		}
 	}
 
 	// get configuration
@@ -46,8 +50,8 @@ function get_config() {
  */
 function bootstrap_widget(array & $widget) {
 	if (!empty($widget['static'])) {
-		if (is_readable(WIDGETS_ROOT . '/' . $widget['static'])) {
-			$widget['body'] = file_get_contents(WIDGETS_ROOT . '/' . $widget['static']);
+		if ($path = get_widget_path($widget['static'])) {
+			$widget['body'] = file_get_contents($path);
 		}
 	}
 
@@ -60,10 +64,21 @@ function bootstrap_widget(array & $widget) {
 	}
 
 	if (!empty($widget['php'])) {
-		if (is_readable(WIDGETS_ROOT . '/' . $widget['php'])) {
-			$widget + include WIDGETS_ROOT . '/' . $widget['php'];
+		if ($path = get_widget_path($widget['php'])) {
+			$widget + include $path;
 		}
 	}
+}
+
+function get_widget_path($widgetFile) {
+	$paths = explode(PATH_SEPARATOR, WIDGETS_ROOT);
+	foreach ($paths as $path) {
+		if (is_readable($path . '/' . $widgetFile)) {
+			return $path . '/' . $widgetFile;
+		}
+	}
+	
+	return null;
 }
 
 /**

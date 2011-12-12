@@ -111,6 +111,10 @@
 	        renderWidget(widget, 'JSON ERROR');
 	        return;
 	    }
+	    if (!json.body) {
+	    	renderWidget(widget, '');
+	        return;
+	    }
 	    var tpl = json.template || options.template;
 	    var body = $.mustache(tpl, json);
         renderWidget(widget, body);
