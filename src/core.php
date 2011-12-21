@@ -1,5 +1,4 @@
 <?php
-define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
 date_default_timezone_set('UTC');
 
 /**

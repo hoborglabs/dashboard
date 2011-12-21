@@ -5,7 +5,7 @@ namespace Hoborg\Dashboard;
 defined('CONFIG_DIR') ||
 	define('CONFIG_DIR', realpath(__DIR__ . '/../conf'));
 defined('WIDGETS_ROOT') ||
-	define('WIDGETS_ROOT', realpath(__DIR__ . '/../widget'));
+	define('WIDGETS_ROOT', realpath(__DIR__ . '/../widgets'));
 defined('TEMPLATE_DIR') ||
 	define('TEMPLATE_DIR', realpath(__DIR__ . '/../templates'));
 defined('DATA_DIR') ||
