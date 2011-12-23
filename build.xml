@@ -3,13 +3,19 @@
     <property name="dir.base" location="." />
     <property name="dir.build" value="${dir.base}/build" />
 
-    <!-- discover modules and libs -->
     <target name="prepare" depends="clean" description="Prepare folder structure">
         <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.build}/phar" />
+        <mkdir dir="${dir.build}/assets" />
     </target>
 
+    <target name="build" 
+        depends="prepare, build-phar, build-assets"
+        description="Builds dashboard packages." 
+    />
+
     <target name="build-phar" depends="prepare" description="Builds phar file">
-        <echo message="Copy source files to build folder `${dir.build}`." />
+        <echo message="Copy source files to build folder `${dir.build}/phar`." />
         <copy todir="${dir.build}/phar">
             <fileset dir="${dir.base}">
                 <include name="autoload.php"/>
@@ -37,6 +43,22 @@
             <arg line="${dir.base}/bin/build.php" />
             <arg line="${dir.build}/phar" />
         </exec>
+    </target>
+
+    <target name="build-assets" depends="prepare" description="Build assets tgz file">
+        <echo message="Copy assets to build folder `${dir.build}/assets`." />
+        <copy todir="${dir.build}/assets">
+            <fileset dir="${dir.base}/htdocs">
+                <include name="images/*" />
+                <include name="js/*" />
+                <include name="styles/*" />
+            </fileset>
+        </copy>
+
+        <tar destfile="${dir.build}/dashboard-assets.tgz" 
+            basedir="${dir.build}/assets" 
+            compression="gzip" 
+        />
     </target>
 
     <target name="phpunit">
