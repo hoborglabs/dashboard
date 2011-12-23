@@ -12,7 +12,7 @@
 /conf/*.php
 !/conf/*.dist.php
 
-
+/build
 
 ##
 # Logs

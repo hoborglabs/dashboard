@@ -1,13 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/core.php';
 
-$headers = array(
-    'Expires' => '-1',
-);
-foreach ($headers as $k => $v) {
-	header("$k: $v");
-}
-
 $confDir = realpath(__DIR__ . '/../conf');
 $config = $_GET['c'];
 $widget = $_GET['widget'];
@@ -34,4 +27,7 @@ $widget = $config['widgets'][$widgetIndex];
 bootstrap_widget($widget);
 if (!empty($config['ajaxTemplate'])) {
 	include __DIR__ . '/../templates/' . $config['ajaxTemplate'] . '.phtml';
+} else {
+	header('Content-type: application/json');
+	return json_encode($widget);
 }

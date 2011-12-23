@@ -1,6 +1,5 @@
 {
-  "template": "demo",
-  "ajaxTemplate": "demo-ajax",
+  "template": "hoborg",
   "widgets": [
     {
       "size": "message",

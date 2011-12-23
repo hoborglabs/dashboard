@@ -16,10 +16,10 @@ function get_config() {
 	
 	$configName = empty($_GET['conf']) ? DEFAULT_CONFIG : $_GET['conf'];
 
-	$configFile = realpath(CONFIG_DIR .'/' . $configName . '.js');
-	if (empty($configFile)) {
-		$configFile = realpath(CONFIG_DIR .'/' . $configName . '.json');
-		if (empty($configFile)) {
+	$configFile = CONFIG_DIR .'/' . $configName . '.js';
+	if (!is_file($configFile)) {
+		$configFile = CONFIG_DIR .'/' . $configName . '.json';
+		if (!is_file($configFile)) {
 			$error = "configuration file not found";
 			$code = '404';
 			include TEMPLATE_DIR . '/error.phtml';
@@ -74,6 +74,17 @@ function get_widget_path($widgetFile) {
 	foreach ($paths as $path) {
 		if (is_readable($path . '/' . $widgetFile)) {
 			return $path . '/' . $widgetFile;
+		}
+	}
+	
+	return null;
+}
+
+function get_template_path($templateFile) {
+	$paths = explode(PATH_SEPARATOR, TEMPLATE_DIR);
+	foreach ($paths as $path) {
+		if (is_readable($path . '/' . $templateFile)) {
+			return $path . '/' . $templateFile;
 		}
 	}
 	
