@@ -36,22 +36,15 @@ foreach ($widgets as & $widget) {
 
 	foreach ($widget['head'] as $key => $values) {
 		if ('onceOnly' === $key) {
-			foreach ($values as $k => $v) { $onceOnly[$k] = $v; }
+			foreach ($values as $k => $v) { 
+				$onceOnly[$k] = $v; 
+			}
 		}
 		if ('onLoad' === $key) {
-			foreach ($values as $k => $v) { $onLoad[$k] = $v; }
+			foreach ($values as $k => $v) { 
+				$onLoad[$k] = $v; 
+			}
 		}
-	}
-}
-unset($widget);
-$head .= join("\n", $onceOnly);
-
-foreach ($widgets as $widget) {
-	if (empty($widget['head'])) {
-		continue;
-	}
-
-	foreach ($widget['head'] as $key => $values) {
 		if ('always' === $key) {
 			foreach ($values as $k => $v) {
 				$head .= "\n" . $v;
@@ -59,6 +52,8 @@ foreach ($widgets as $widget) {
 		}
 	}
 }
+unset($widget);
+$head .= join("\n", $onceOnly);
 
 $head .= '<script type="text/javascript">
 window.onload = function () {' . join("\n\n", $onLoad) . '};</script>';

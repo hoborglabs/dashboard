@@ -1,74 +1,53 @@
+<!doctype html>
+<?php
+$p = ''; // $this->getPublicPrefix();
+?>
 <html class="dashboard">
 	<head>
-		<link href="/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-		<script type="text/javascript" src="/js/jquery/jquery.mustache.js"></script>
-		<script type="text/javascript" src="/js/jquery/jquery.masonry.min.js"></script>
-		<script type="text/javascript" src="/js/hoborg/bus.js"></script>
-		<script type="text/javascript" src="/js/hoborg/jquery.widgetManager.js"></script>
+		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.mustache.js"></script>
+		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.masonry.min.js"></script>
+		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/bus.js"></script>
+		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/jquery.widgetManager.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function() {
-			var d_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
+			var hoborg_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
 
+			$(document).widgetManager({
+				conf: 'demo',
+				callback: function(widget) { $('#dashboard .container').masonry('reload'); },
+				template: hoborg_tpl
+			});
+
+			var widgets = [
+			<?php $coma = '' ?>
+			<?php foreach ($this->widgets as $index => & $widget) : ?>
+				<?php echo $coma . $widget->getJson() . "\n"; $coma = ','; ?>
+			<?php endforeach; unset($widget); ?>
+			];
+
+			$(document).widgetManager('addWidgets', widgets);
+			$(document).widgetManager('init');
+			$(document).widgetManager('start');
+
+			// distribute widgets on the screen.
 			$('#dashboard .container').masonry({
 				itemSelector: '.widget',
 				columnWidth: 10,
 				isFitWidth: true,
 				isAnimated: true
 			});
-
-			$(document).widgetManager({
-				conf: 'sbih',
-				callback: function(widget) { $('#dashboard .container').masonry('reload'); },
-				template: d_tpl
-			});
-
-			<?php foreach ($widgets as $index => & $widget) : ?>
-				<?php if (!empty($widget['reload'])) : ?>
-					<?php
-					$widget['tick'] = $widget['reload'] * 1000;
-					$widget['id'] = $index;
-					?>
-					$('#widget-<?php echo $index; ?>').data('config', <?php echo json_encode($widget); ?>);
-					$(document).widgetManager('addWidget', $('#widget-<?php echo $index; ?>'));
-				<?php endif; ?>
-			<?php endforeach; unset($widget); ?>
-
-			$(document).widgetManager('start');
 		});
 		</script>
 
-		<?php echo $head; ?>
+		<?php echo ''; //$head; ?>
 	</head>
 	<body class="dashboard">
+		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
 		<div class="container">
-			<?php foreach ($widgets as & $widget) : ?>
-				<?php
-				$widget['name'] = empty($widget['name']) ? 'No Name' : $widget['name'];
-				$widget['footer'] = empty($widget['footer']) ? '' : $widget['footer'];
-				$widget['body'] = empty($widget['body']) ? '' : $widget['body'];
-				$widget['size'] = empty($widget['size']) ? 'one-third' : $widget['size'];
-
-				$class = 'span8';
-				switch($widget['size']) {
-					case 'message':
-						$class = 'short span8';
-						break;
-					case 'full':
-						$class = 'span16';
-						break;
-				}
-				?>
-				<div class="widget <?echo $class?>">
-					<div class="header"><?php echo $widget['name']; ?></div>
-					<div class="body"><?php echo render_widget($widget); ?></div>
-					<?php if (!empty($widget['footer'])) : ?>
-						<div class="footer"><?php echo $widget['footer']; ?></div>
-					<?php endif; ?>
-				</div>
-			<?php endforeach; unset($widget); ?>
 		</div>
 	</body>
 </html>
