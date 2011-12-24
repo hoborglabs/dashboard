@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" 
+	strict="true"
+	colors="true"
+	backupGlobals="false"
+	backupStaticAttributes="false"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	processIsolation="false"
+	stopOnFailure="false"
+	syntaxCheck="false"
+>
+	<testsuites>
+		<testsuite name="Hoborg_Dashboard">
+			<directory>./tests/Hoborg/Dashboard</directory>
+		</testsuite>
+	</testsuites>
+
+</phpunit>

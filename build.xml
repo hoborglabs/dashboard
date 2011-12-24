@@ -1,12 +1,23 @@
 <project name="Hoborg Commons" default="help" basedir=".">
 
+    <property file="build.properties" />
+
     <property name="dir.base" location="." />
     <property name="dir.build" value="${dir.base}/build" />
+    <property name="dir.logs" value="${dir.base}/logs" />
+    <property name="cmd.phpunit" value="phpunit" />
 
     <target name="prepare" depends="clean" description="Prepare folder structure">
         <mkdir dir="${dir.build}" />
         <mkdir dir="${dir.build}/phar" />
         <mkdir dir="${dir.build}/assets" />
+
+        <mkdir dir="${dir.logs}" />
+        <mkdir dir="${dir.logs}/phpmd" />
+        <mkdir dir="${dir.logs}/phpcs" />
+        <mkdir dir="${dir.logs}/phpcpd" />
+        <mkdir dir="${dir.logs}/phpdepend" />
+        <mkdir dir="${dir.logs}/phpunit" />
     </target>
 
     <target name="build" 
@@ -63,7 +74,7 @@
 
     <target name="phpunit">
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
-            <arg line="-c phpunit-cmns.xml" />
+            <arg line="-c phpunit.xml" />
             <arg line="--log-junit ${dir.logs}/phpunit/cmns-phpunit.xml" />
         </exec>
     </target>
@@ -106,6 +117,7 @@
     <!-- Clean up -->
     <target name="clean" description="Clean up workspace">
         <delete dir="${dir.build}" />
+        <delete dir="${dir.logs}" />
     </target>
 
     <!-- Help Message -->
