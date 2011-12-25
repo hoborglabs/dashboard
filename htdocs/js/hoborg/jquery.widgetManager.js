@@ -1,5 +1,4 @@
-(function ( $ ){
-
+(function ( $ ) {
 	/**
 	 * @var array List of widgets.
 	 **/
@@ -14,13 +13,18 @@
 	 * @var object Default options.
 	 */
 	var options = {
-		callback: function(widget) {},
 		conf: 'demo',
-		template: '{{body}}'
+		url: '',
+		callback: function(widget) {},
+		widgetWrapper: '<div class="widget"></div>',
+		template: '{{body}}',
+		defaults: {
+			size: 'span6'
+		}
 	};
 
 	var defaultWidgetConfig = {
-		tick: 60000
+		tick: 60
 	};
 
 	/**
@@ -29,6 +33,7 @@
 	var methods = {
 		init : init,
 		addWidget : addWidget,
+		addWidgets : addWidgets,
 		start: start,
 		stop: stop
 	};
@@ -47,14 +52,40 @@
 	}
 
 	function addWidget(widget) {
-		widgets.push(widget);
-		activateWidget(widget);
+		// create 
+		widgetDiv = createWidget(widget);
+
+		widgets.push(widgetDiv);
+		this.append(widgetDiv);
+
+		renderWidgetJson(widgetDiv, widget);
+		activateWidget(widgetDiv);
+		options.callback(widgetDiv);
+	}
+
+	function addWidgets(newWidgets) {
+		m = this;
+		$.each(newWidgets, function() { addWidget.apply(m, [this]); });
+	}
+	
+	function createWidget(widget) {
+		var widgetDiv = $(options.widgetWrapper);
+		widgetDiv.data('config', widget);
+		
+		var size = widget['size'] || options.defaults.size;
+		
+		widgetDiv.addClass(size);
+		
+		return widgetDiv;
 	}
 
 	function activateWidget(widget) {
 		if (isActive) {
 			widgetConfig = $.extend(defaultWidgetConfig, widget.data('config'));
-			var t = setTimeout(function() { reloadWidget(widget); }, widgetConfig.tick);
+			var t = setTimeout(
+				function() { reloadWidget(widget); }, 
+				widgetConfig.tick * 1000
+			);
 		}
 	}
 
@@ -65,29 +96,20 @@
 
 		var widgetConfig = widget.data('config');
 
-		if (widgetConfig.url) {
-			$.ajax({
-				url: '/ajax-proxy-new.php',
-				processData: true,
-				data: {c: options.conf, widget: widgetConfig, url: widgetConfig.url},
-				type: 'GET',
-				dataType: 'json',
-				context: widget,
-				success: function(body) { renderWidgetJson(this, body); activateWidget(this); },
-				error: function() {renderWidget(this, 'JSON ERROR'); activateWidget(this);}
-			});
-		} else {
-			$.ajax({
-				url: '/ajax-widget.php',
-                processData: true,
-				data: {c: options.conf, widget: widgetConfig},
-				type: 'GET',
-				context: widget,
-				success: function(body) { renderWidget(this, body); activateWidget(this); },
-				error: function() {renderWidget(this, 'JSON ERROR'); activateWidget(this);}
-			});
-		}
-
+		$.ajax({
+			url: options.url,
+			processData: true,
+			data: {conf: options.conf, widget: widgetConfig},
+			type: 'GET',
+			dataType: 'json',
+			context: widget,
+			success: function(body) { 
+				renderWidgetJson(this, body);
+				options.callback(this);
+				activateWidget(this);
+			},
+			error: function() { widgetConfig.body =  'JSON Error'; renderWidgetJson(this, widgetConfig); activateWidget(this);}
+		});
 	}
 
 	/**
@@ -103,7 +125,6 @@
 			widget.removeClass('hidden');
 			widget.html(body);
 		}
-		options.callback(widget);
 	}
 
 	function renderWidgetJson(widget, json) {

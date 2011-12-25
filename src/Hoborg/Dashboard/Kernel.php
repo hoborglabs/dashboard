@@ -20,6 +20,7 @@ class Kernel {
 		$this->environment = $env;
 
 		$this->paths['templates'][] = H_D_ROOT . '/templates';
+		$this->paths['widgets'][] = H_D_ROOT . '/widgets';
 	}
 
 	public function handle(array $params, Dashboard $dashboard = null, WidgetProvider $widgetProvider = null) {
@@ -30,11 +31,12 @@ class Kernel {
 				// render selected widget
 				$widget = null;
 				if (null == $widgetProvider) {
-					$widget = new Widget($this);
+					$widget = new Widget($this, $this->getParam('widget'));
 				} else {
 					$widget = $widgetProvider->createWidget($this, $this->getParam('widget'));
 				}
-				$this->send($widget->render());
+				$widget->bootstrap();
+				$this->send($widget->getJson());
 			} else {
 				// render whole dashboard
 				if (null == $dashboard) {
@@ -79,6 +81,15 @@ class Kernel {
 
 	public function setTemplatesPath(array $paths) {
 		$this->paths['templates'] = $paths;
+		return $this;
+	}
+
+	public function getWidgetsPath() {
+		return $this->paths['widgets'];
+	}
+
+	public function setWidgetsPath(array $paths) {
+		$this->paths['widgets'] = $paths;
 		return $this;
 	}
 

@@ -14,11 +14,20 @@ $p = ''; // $this->getPublicPrefix();
 		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/jquery.widgetManager.js"></script>
 		<script type="text/javascript">
 		$(document).ready(function() {
+			// distribute widgets on the screen.
+			$('.dashboard .container').masonry({
+				itemSelector: '.widget',
+				columnWidth: 10,
+				isFitWidth: true,
+				isAnimated: true
+			});
+
 			var hoborg_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
 
-			$(document).widgetManager({
+			$('.dashboard .container').widgetManager({
+				url: '/index.php',
 				conf: 'demo',
-				callback: function(widget) { $('#dashboard .container').masonry('reload'); },
+				callback: function(widget) { $('.dashboard .container').masonry('reload'); },
 				template: hoborg_tpl
 			});
 
@@ -29,17 +38,9 @@ $p = ''; // $this->getPublicPrefix();
 			<?php endforeach; unset($widget); ?>
 			];
 
-			$(document).widgetManager('addWidgets', widgets);
-			$(document).widgetManager('init');
-			$(document).widgetManager('start');
+			$('.dashboard .container').widgetManager('addWidgets', widgets);
+			$('.dashboard .container').widgetManager('start');
 
-			// distribute widgets on the screen.
-			$('#dashboard .container').masonry({
-				itemSelector: '.widget',
-				columnWidth: 10,
-				isFitWidth: true,
-				isAnimated: true
-			});
 		});
 		</script>
 
@@ -47,7 +48,6 @@ $p = ''; // $this->getPublicPrefix();
 	</head>
 	<body class="dashboard">
 		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
-		<div class="container">
-		</div>
+		<div class="container"></div>
 	</body>
 </html>

@@ -44,7 +44,7 @@ class Dashboard {
 			if (!$widget->hasHead()) {
 				continue;
 			}
-
+			/*
 			if (is_callable($widget['head'])) {
 				$widget['head'] = $widget['head']();
 			}
@@ -66,6 +66,7 @@ class Dashboard {
 					}
 				}
 			}
+			*/
 		}
 		unset($widget);
 

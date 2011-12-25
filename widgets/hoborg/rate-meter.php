@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 if (empty($widget['conf']['data'])) {
-	$widget['body'] = '';
+	$widget['body'] = 'no conf';
 	$widget['error'] = "Data file not configured: widget->conf->data";
 	return $widget;
 }
@@ -9,7 +9,7 @@ if (empty($widget['conf']['data'])) {
 $dataFile = DATA_DIR . '/' . $widget['conf']['data'];
 
 if (!is_readable($dataFile)) {
-	$widget['body'] = '';
+	$widget['body'] = "$dataFile not readable";
 	$widget['error'] = "Data file ({$dataFile}) not readable";
 	return $widget;
 }
@@ -25,5 +25,6 @@ $class = $delta >= 0 ? 'positive' : 'negative';
 ob_start();
 include __DIR__ . '/rate-meter.phtml';
 $widget['body'] = ob_get_clean();
+
 
 return $widget;

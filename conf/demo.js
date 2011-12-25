@@ -1,27 +1,21 @@
 {
   "template": "hoborg",
   "widgets": [
-    {
-      "size": "message",
-      "name": "Last Commit Message",
-      "reload": 600,
-      "php": "demo/commits.php",
-      "conf": {
-        "dataFile": "github-commits-hoborglabs-Dashboard.js"
-      }
-    },
-    {
-      "name": "Issues",
-      "footer": "Last update: 23 Oct 2011",
-      "static": "demo/issues.html"
-    }, 
-    {"name": "test2", "body" : "test"},
-    {},
-    {
-      "name": "test5",
-      "footer": "Demo chart widget",
-      "size": "full",
-      "php": "demo/chart.php"
-    }
+	{
+		"name": "Page visits (monthly)",
+		"footer": "hoborg/rate-meter.php",
+		"size": "span4",
+		"body" : "test",
+		"php": "hoborg/rate-meter.php",
+		"conf" : {
+			"data" : "hoborg/numbers-01.json"
+		}
+	},
+	{
+		"name": "Issues",
+		"footer": "Last update: 23 Oct 2011",
+		"size": "span4",
+		"static": "demo/issues.html"
+	}
   ]
 }
