@@ -31,10 +31,9 @@
             <fileset dir="${dir.base}">
                 <include name="autoload.php"/>
                 <include name="conf/*" />
-                <include name="htdocs/dashboard.php" />
                 <include name="src/*" />
                 <include name="templates/*" />
-                <include name="widgets/hoborg/*" />
+                <include name="widgets/*" />
                 <include name="data/hoborg/*" />
             </fileset>
         </copy>
