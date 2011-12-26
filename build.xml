@@ -76,7 +76,7 @@
     <target name="phpunit">
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
             <arg line="-c phpunit.xml" />
-            <arg line="--log-junit ${dir.logs}/phpunit/cmns-phpunit.xml" />
+            <arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
         </exec>
     </target>
     
@@ -86,7 +86,7 @@
     >
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
             <arg line="-c phpunit.xml" />
-            <arg line="--log-junit ${dir.logs}/phpunit/cmns-phpunit.xml" />
+            <arg line="--log-junit ${dir.logs}/phpunit/phpunit-phar.xml" />
         </exec>
     </target>
 
@@ -95,13 +95,13 @@
             <arg line="${dir.src}/Hoborg" />
             <arg line="xml" />
             <arg line="codesize,unusedcode,naming" />
-            <arg line="--reportfile ${dir.logs}/phpmd/cmns-phpmd.xml" />
+            <arg line="--reportfile ${dir.logs}/phpmd/phpmd.xml" />
         </exec>
     </target>
 
     <target name="phpcpd">
         <exec dir="${dir.base}" executable="phpcpd" failonerror="false">
-            <arg line="--log-pmd ${dir.logs}/phpcpd/cmns-phpcpd.xml" />
+            <arg line="--log-pmd ${dir.logs}/phpcpd/phpcpd.xml" />
             <arg value="${dir.src}/Hoborg" />
         </exec>
     </target>
@@ -110,7 +110,7 @@
         <exec dir="${dir.base}" executable="phpcs" failonerror="false">
             <arg value="--standard=${dir.base}/misc/code_sniffer/Hoborg/" />
             <arg value="--report=checkstyle" />
-            <arg value="--report-file=${dir.logs}/phpcs/cmns-sniffs.xml" />
+            <arg value="--report-file=${dir.logs}/phpcs/sniffs.xml" />
             <arg value="-p" />
             <arg value="${dir.src}/Hoborg" />
         </exec>
