@@ -13,6 +13,7 @@
 !/conf/*.dist.php
 
 /build
+build.properties
 
 ##
 # Logs
