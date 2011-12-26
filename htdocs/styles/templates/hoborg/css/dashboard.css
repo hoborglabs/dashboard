@@ -7,6 +7,11 @@ html.dashboard, body.dashboard, #dashboard {
     width: 450px;
 }
 
+.widget.autoHeight,
+.widget.autoHeight .body {
+    height: auto;
+}
+
 .widget .positive {
     color: #77AB13;
 }

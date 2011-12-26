@@ -107,6 +107,10 @@ class Widget {
 		}
 	}
 
+	public function setDefaults(array $data) {
+		$this->data = $this->arrayMergeRecursive($data, $this->data);
+	}
+
 	public function getJson() {
 		return json_encode($this->data);
 	}
@@ -118,7 +122,7 @@ class Widget {
 		);
 
 		if ($path) {
-			$widget = $this->data;
+			$widget = & $this->data;
 			return include $path;
 		}
 
@@ -141,5 +145,28 @@ class Widget {
 
 	protected function loadBodyFromUrl($src) {
 		return false;
+	}
+
+	protected function arrayMergeRecursive($arrayA, $arrayB) {
+		// merge arrays if both variables are arrays
+		if (is_array($arrayA) && is_array($arrayB)) {
+			// loop through each right array's entry and merge it into $arrayA
+			foreach ($arrayB as $key => $value) {
+				if (isset($arrayA[$key])) {
+					$arrayA[$key] = $this->arrayMergeRecursive($arrayA[$key], $value);
+				} else {
+					if ($key === 0) {
+						$arrayA= array(0 => $this->arrayMergeRecursive($arrayA, $value));
+					} else {
+						$arrayA[$key] = $value;
+					}
+				}
+			}
+		} else {
+			// one of values is not an array
+			$arrayA = $arrayB;
+		}
+
+		return $arrayA;
 	}
 }

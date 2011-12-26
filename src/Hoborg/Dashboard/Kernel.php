@@ -21,6 +21,7 @@ class Kernel {
 
 		$this->paths['templates'][] = H_D_ROOT . '/templates';
 		$this->paths['widgets'][] = H_D_ROOT . '/widgets';
+		$this->paths['data'][] = H_D_ROOT . '/data';
 	}
 
 	public function handle(array $params, Dashboard $dashboard = null, WidgetProvider $widgetProvider = null) {
@@ -91,6 +92,10 @@ class Kernel {
 	public function setWidgetsPath(array $paths) {
 		$this->paths['widgets'] = $paths;
 		return $this;
+	}
+
+	public function getDataPath() {
+		return $this->paths['data'];
 	}
 
 	public function getConfig() {
