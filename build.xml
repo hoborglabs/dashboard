@@ -79,6 +79,16 @@
             <arg line="--log-junit ${dir.logs}/phpunit/cmns-phpunit.xml" />
         </exec>
     </target>
+    
+    <target name="phpunit-phar" 
+        depends="build-phar"
+        description="Runs phpunits for dashboard.phar"
+    >
+        <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
+            <arg line="-c phpunit.xml" />
+            <arg line="--log-junit ${dir.logs}/phpunit/cmns-phpunit.xml" />
+        </exec>
+    </target>
 
     <target name="phpmd">
         <exec dir="${dir.base}" executable="phpmd" failonerror="false">
