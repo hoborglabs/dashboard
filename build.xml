@@ -1,11 +1,16 @@
 <project name="Hoborg Commons" default="help" basedir=".">
 
+    <!-- optional environmental settings -->
     <property file="build.properties" />
 
+    <!-- set default values if not already set in build.properties -->
     <property name="dir.base" location="." />
     <property name="dir.build" value="${dir.base}/build" />
     <property name="dir.logs" value="${dir.base}/logs" />
     <property name="cmd.phpunit" value="phpunit" />
+    <property name="cmd.phpmd" value="phpmd" />
+    <property name="cmd.phpcpd" value="phpcpd" />
+    <property name="cmd.phpcs" value="phpcs" />
 
     <target name="prepare" depends="clean" description="Prepare folder structure">
         <mkdir dir="${dir.build}" />
@@ -72,7 +77,7 @@
         />
     </target>
 
-    <target name="phpunit">
+    <target name="phpunit" description="Runs PHPUnit tests.">
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
             <arg line="-c phpunit.xml" />
             <arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
@@ -81,7 +86,7 @@
     
     <target name="phpunit-phar" 
         depends="build-phar"
-        description="Runs phpunits for dashboard.phar"
+        description="Runs PHPUnits tests for dashboard.phar"
     >
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
             <arg line="-c phpunit.xml" />
@@ -89,8 +94,8 @@
         </exec>
     </target>
 
-    <target name="phpmd">
-        <exec dir="${dir.base}" executable="phpmd" failonerror="false">
+    <target name="phpmd" description="PHP Mess Detector">
+        <exec dir="${dir.base}" executable="${cmd.phpmd}" failonerror="false">
             <arg line="${dir.src}/Hoborg" />
             <arg line="xml" />
             <arg line="codesize,unusedcode,naming" />
@@ -98,15 +103,15 @@
         </exec>
     </target>
 
-    <target name="phpcpd">
-        <exec dir="${dir.base}" executable="phpcpd" failonerror="false">
+    <target name="phpcpd" description="PHP Copy &amp; Paste sniffer">
+        <exec dir="${dir.base}" executable="${cmd.phpcpd}" failonerror="false">
             <arg line="--log-pmd ${dir.logs}/phpcpd/phpcpd.xml" />
             <arg value="${dir.src}/Hoborg" />
         </exec>
     </target>
 
-    <target name="phpcs">
-        <exec dir="${dir.base}" executable="phpcs" failonerror="false">
+    <target name="phpcs" description="PHP Code Sniffer">
+        <exec dir="${dir.base}" executable="${cmd.phpcs}" failonerror="false">
             <arg value="--standard=${dir.base}/misc/code_sniffer/Hoborg/" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${dir.logs}/phpcs/sniffs.xml" />
