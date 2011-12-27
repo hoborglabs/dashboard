@@ -50,6 +50,11 @@ class Kernel {
 		}
 	}
 
+	public function handleCli(array $params) {
+		$cli = new Cli($this);
+		$cli->handle($params);
+	}
+
 	public function hasWidgetParam() {
 		return array_key_exists('widget', $this->params);
 	}
