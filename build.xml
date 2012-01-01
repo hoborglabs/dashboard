@@ -12,7 +12,7 @@
     <property name="cmd.phpcpd" value="phpcpd" />
     <property name="cmd.phpcs" value="phpcs" />
 
-    <target name="prepare" depends="clean" description="Prepare folder structure">
+    <target name="prepare" description="Prepare folder structure">
         <mkdir dir="${dir.build}" />
         <mkdir dir="${dir.build}/phar" />
         <mkdir dir="${dir.build}/assets" />
