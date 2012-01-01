@@ -21,11 +21,18 @@ class Cli {
 			exit($this->printHelp($commands));
 		}
 
-		$file = $params['c'];
+		$commandName = $params['c'];
 		unset($params['c']);
 
-		echo "\nRunning {$file} ...\n";
-		include $commands[$file];
+		echo "\nRunning {$commandName} ...\n";
+
+		include $commands[$commandName]['path'];
+		if (empty($commands[$commandName]['class'])) {
+			echo "Running in deprecated mode. Please encapsulate your CLI in execute class.\n";
+		}
+		$cmd = new $commands[$commandName]['class'];
+		$cmd->execute($params);
+
 		echo "Done\n";
 	}
 
@@ -67,7 +74,7 @@ class Cli {
 		return $cmds;
 	}
 
-	protected function getCmdFromDir($dir, $prefix = '') {
+	private function getCmdFromDir($dir, $prefix = '') {
 		$c = scandir($dir);
 		$phpFiles = array();
 
@@ -80,12 +87,44 @@ class Cli {
 			}
 			if (is_dir($dir . '/' . $entry)) {
 				$phpFiles += $this->getCmdFromDir($dir . '/' . $entry, $prefix.$entry.'.');
+				continue;
 			}
 			if (false !== strpos($entry, 'cmd-')) {
-				$phpFiles[$prefix . substr($entry, 4, -4)] = $dir . '/' . $entry;
+				$phpFiles[$prefix . substr($entry, 4, -4)] = $this->getFileMeta($dir . '/' . $entry);
 			}
 		}
 
 		return $phpFiles;
+	}
+
+	private function getFileMeta($file) {
+		$fileMeta = array(
+			'path' => $file,
+			'class' => null,
+		);
+
+		// get class names
+		$tokens = token_get_all(file_get_contents($file));
+		$fullClassName = '';
+		for ($i = 0; $i < count($tokens); $i++) {
+			$tokenName = is_array($tokens[$i]) ? $tokens[$i][0] : null;
+			if (T_NAMESPACE == $tokenName) {
+				$i += 2;
+				$tokenValue = is_array($tokens[$i]) ? '\\' . $tokens[$i][1] : null;
+				while (is_array($tokens[++$i])) {
+					$tokenValue .= $tokens[$i][1];
+				}
+				$fullClassName .= $tokenValue;
+				continue;
+			}
+			if (T_CLASS == $tokenName) {
+				$tokenValue = is_array($tokens[$i+2]) ? $tokens[$i+2][1] : null;
+				$fullClassName .= '\\' . $tokenValue;
+				break;
+			}
+		}
+		$fileMeta['class'] = $fullClassName;
+
+		return $fileMeta;
 	}
 }
