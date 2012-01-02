@@ -5,20 +5,20 @@ class Widget {
 
 	protected $kernel = null;
 
-	protected $data = array(
+	private $defaults = array(
 		'name' => '',
 		'body' => '',
 	);
 
+	protected $data = array();
+
 	public function __construct(Kernel $kernel, array $data = array()) {
 		$this->kernel = $kernel;
-		if (!empty($data)) {
-			$this->setData($data);
-		}
+		$this->setData($data);
 	}
 
 	public function setData(array $data) {
-		$this->data = $data;
+		$this->data = $data + $this->defaults;
 	}
 
 	public function bootstrap() {
@@ -61,6 +61,7 @@ class Widget {
 		if (empty($sources)) {
 			$this->data['hasBody'] = 0;
 			$this->data['body'] = '';
+			return;
 		}
 
 		if ('static' ==  $type) {
@@ -108,7 +109,7 @@ class Widget {
 	}
 
 	public function setDefaults(array $data) {
-		$this->data = $this->arrayMergeRecursive($data, $this->data);
+		$this->defaults = $data;
 	}
 
 	public function getJson() {

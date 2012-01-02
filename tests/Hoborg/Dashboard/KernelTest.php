@@ -2,8 +2,18 @@
 namespace Hoborg\Dashboard;
 
 require_once 'WidgetMockProvider.php';
+require_once 'MockFactory.php';
 
 class KernelTest extends \PHPUnit_Framework_TestCase {
+
+	/**
+	* @var Hoborg\Dashboard\MockFactory
+	*/
+	private $mockFactory = null;
+
+	public function setup() {
+		$this->mockFactory = new MockFactory($this);
+	}
 
 	public function testDefaultEnv() {
 		$kernel = new Kernel();
@@ -31,8 +41,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 
 	public function testHandleDashboard() {
 		$kernel = $this->getKernel();
-		$dashboardMock = $this->getDashboardMock($kernel);
-
+		$dashboardMock = $this->mockFactory->getDashboardMock($kernel);
 		$dashboardMock->expects($this->once())
 				->method('render');
 
@@ -41,7 +50,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 
 	public function testHandleWidget() {
 		$kernel = $this->getKernel();
-		$widgetMock = $this->getWidgetMock($kernel);
+		$widgetMock = $this->mockFactory->getWidgetMock($kernel);
 		$widgetMock->expects($this->once())
 				->method('getJson');
 
@@ -56,15 +65,6 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		$kernel->setDefaultParam('conf', 'test');
 
 		return $kernel;
-	}
-	protected function getDashboardMock($kernel) {
-		$mock = $this->getMock('\Hoborg\Dashboard\Dashboard', array('render'), array($kernel));
-		return $mock;
-	}
-
-	protected function getWidgetMock($kernel) {
-		$mock = $this->getMock('\Hoborg\Dashboard\Widget', array('getJson'), array($kernel));
-		return $mock;
 	}
 
 	protected function getWidgetMockProvider() {

@@ -2,11 +2,21 @@
 namespace Hoborg\Dashboard;
 
 require_once 'WidgetMockProvider.php';
+require_once 'MockFactory.php';
 
 class DashboardTest extends \PHPUnit_Framework_TestCase {
 
+	/**
+	* @var Hoborg\Dashboard\MockFactory
+	*/
+	private $mockFactory = null;
+
+	public function setup() {
+		$this->mockFactory = new MockFactory($this);
+	}
+
 	public function testRenderWithOneWidget() {
-		$kernelMock = $this->getKernelMock();
+		$kernelMock = $this->mockFactory->getKernelMock();
 		$kernelMock->expects($this->once())
 				->method('getConfig')
 				->will($this->returnValue( array(
@@ -32,12 +42,6 @@ class DashboardTest extends \PHPUnit_Framework_TestCase {
 
 		$dashboard = new Dashboard($kernelMock, $widgetProviderMock);
 		$dashboard->render();
-	}
-
-	protected function getKernelMock() {
-		$mock = $this->getMock('\Hoborg\Dashboard\Kernel',
-				array('getParam', 'getConfig', 'findFileOnPath'));
-		return $mock;
 	}
 
 	protected function getWidgetMock($kernel) {
