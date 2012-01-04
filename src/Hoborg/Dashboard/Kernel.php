@@ -99,6 +99,11 @@ class Kernel {
 		return $this;
 	}
 
+	public function setPath($key, array $paths) {
+		$this->paths[$key] = $paths;
+		return $this;
+	}
+
 	public function getWidgetsPath() {
 		return $this->paths['widgets'];
 	}
