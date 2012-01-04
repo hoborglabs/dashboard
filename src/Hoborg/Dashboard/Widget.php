@@ -21,6 +21,22 @@ class Widget {
 		$this->data = $data + $this->defaults;
 	}
 
+	/**
+	 * Returns widget data array.
+	 * You can specify data key and default value.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 */
+	public function getData($key = null, $default = null) {
+		if (null !== $key) {
+			return isset($this->data[$key]) ?
+					$this->data[$key] : $default;
+		}
+
+		return $this->data;
+	}
+
 	public function bootstrap() {
 		// first load static content (body only
 		$bodyFields = array(
@@ -110,6 +126,12 @@ class Widget {
 
 	public function setDefaults(array $data) {
 		$this->defaults = $data;
+		$this->applyDefaults();
+	}
+
+	public function addDefaults(array $data) {
+		$this->defaults = $this->arrayMergeRecursive($data, $this->defaults);
+		$this->applyDefaults();
 	}
 
 	public function getJson() {
@@ -169,5 +191,9 @@ class Widget {
 		}
 
 		return $arrayA;
+	}
+
+	private function applyDefaults() {
+		$this->data = $this->arrayMergeRecursive($this->data, $this->defaults);
 	}
 }

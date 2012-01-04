@@ -24,6 +24,15 @@ class Kernel {
 		$this->paths['data'][] = H_D_ROOT . '/data';
 	}
 
+	/**
+	 * Handles dashboard request.
+	 *
+	 *
+	 * @param array $params
+	 * @param Hoborg\Dashboard\Dashboard $dashboard
+	 * 			Optional dashboard object for handling
+	 * @param Hoborg\Dashboard\WidgetProvider $widgetProvider
+	 */
 	public function handle(array $params, Dashboard $dashboard = null, WidgetProvider $widgetProvider = null) {
 		try {
 			$this->setParams($params);

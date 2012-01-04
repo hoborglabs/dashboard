@@ -25,6 +25,16 @@
 		}
 	},
 	{
+		"name": "Jenkins Job Status",
+		"footer": "hoborg/jenkins/widget.php",
+		"size": "span8 autoHeight",
+		"body" : "Loading Content...",
+		"php": "hoborg/jenkins/widget.php",
+		"conf" : {
+			"data" : "hoborg/jobs.json"
+		}
+	},
+	{
 		"name": "Issues",
 		"footer": "Last update: 23 Oct 2011",
 		"size": "span4",
