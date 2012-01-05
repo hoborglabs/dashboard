@@ -6,6 +6,9 @@ html.dashboard, body.dashboard, #dashboard {
 .span8 {
     width: 450px;
 }
+.span4 {
+    width: 220px;
+}
 
 .widget.autoHeight,
 .widget.autoHeight .body {
