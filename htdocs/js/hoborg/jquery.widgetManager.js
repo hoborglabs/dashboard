@@ -132,7 +132,7 @@
 	        renderWidget(widget, 'JSON ERROR');
 	        return;
 	    }
-	    if (!json.body) {
+	    if (!json.body && !json.template) {
 	    	renderWidget(widget, '');
 	        return;
 	    }

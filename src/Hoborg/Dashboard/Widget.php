@@ -109,7 +109,7 @@ class Widget {
 			foreach ($sources as $src) {
 				$w = $this->loadWidgetFromCgi($src);
 				if (!empty($w)) {
-					$this->data = $w;
+					$this->data += $w;
 					return;
 				}
 			}
@@ -153,7 +153,10 @@ class Widget {
 	}
 
 	protected function loadWidgetFromCgi($src) {
-		return false;
+		$json = file_get_contents($src);
+
+		$json = json_decode($json, true);
+		return $json;
 	}
 
 	protected function loadBodyFromStatic($src) {
