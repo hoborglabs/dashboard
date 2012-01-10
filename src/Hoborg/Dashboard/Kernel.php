@@ -14,6 +14,7 @@ class Kernel {
 	protected $paths = array(
 		'templates' => array(),
 		'widgets' => array(),
+		'data' => array(),
 	);
 
 	public function __construct($env = 'prod') {
@@ -26,7 +27,6 @@ class Kernel {
 
 	/**
 	 * Handles dashboard request.
-	 *
 	 *
 	 * @param array $params
 	 * @param Hoborg\Dashboard\Dashboard $dashboard
@@ -118,6 +118,10 @@ class Kernel {
 	}
 
 	public function getConfig() {
+		if (!empty($this->config)) {
+			return $this->config;
+		}
+
 		if (empty($this->params['conf'])) {
 			throw new Exception('no configuration specified', 500);
 		}

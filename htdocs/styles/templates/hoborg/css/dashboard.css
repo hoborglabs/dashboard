@@ -3,6 +3,9 @@ html.dashboard, body.dashboard, #dashboard {
     color: #585858;
 }
 
+.span4 {
+    width: 220px;
+}
 .span8 {
     width: 450px;
 }
