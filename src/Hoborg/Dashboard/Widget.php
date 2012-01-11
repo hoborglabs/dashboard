@@ -17,8 +17,18 @@ class Widget {
 		$this->setData($data);
 	}
 
+	/**
+	 * Sets widget data.
+	 * Data array is automatically extended with default values.
+	 *
+	 * @param array $data
+	 *
+	 * @return Hoborg\Dashboard\Widget
+	 */
 	public function setData(array $data) {
-		$this->data = $data + $this->defaults;
+		$this->data = $this->arrayMergeRecursive($this->defaults, $data);
+
+		return $this;
 	}
 
 	/**
@@ -27,6 +37,8 @@ class Widget {
 	 *
 	 * @param string $key
 	 * @param mixed $default
+	 *
+	 * @return mixed
 	 */
 	public function getData($key = null, $default = null) {
 		if (null !== $key) {
@@ -37,93 +49,11 @@ class Widget {
 		return $this->data;
 	}
 
-	public function bootstrap() {
-		// first load static content (body only
-		$bodyFields = array(
-			'static',
-			'url',
-		);
-		foreach ($this->data as $key => $value) {
-			if (in_array($key, $bodyFields)) {
-				if (!is_array($value)) {
-					$value = array($value);
-				}
-				$this->loadBody($key, $value);
-			}
-		}
-
-		// now load dynamic content
-		$cgiFields = array(
-			'cgi',
-			'php',
-		);
-		foreach ($this->data as $key => $value) {
-			if (in_array($key, $cgiFields)) {
-				if (!is_array($value)) {
-					$value = array($value);
-				}
-				$this->loadWidget($key, $value);
-			}
-		}
-
-		return $this;
-	}
-
-	public function hasHead() {
-		return !empty($this->data['head']);
-	}
-
-	public function loadBody($type, $sources) {
-		if (empty($sources)) {
-			$this->data['hasBody'] = 0;
-			$this->data['body'] = '';
-			return;
-		}
-
-		if ('static' ==  $type) {
-			foreach ($sources as $src) {
-				$body = $this->loadBodyFromStatic($src);
-				if (!empty($body)) {
-					$this->data['body'] = $body;
-					return;
-				}
-			}
-		} else if ('url' == $type) {
-			foreach ($sources as $src) {
-				$body = $this->loadBodyFromUrl($src);
-				if (!empty($body)) {
-					$this->data['body'] = $body;
-					return;
-				}
-			}
-		}
-	}
-
-	public function loadWidget($type, $sources) {
-		if (empty($sources)) {
-			$this->data['hasBody'] = 0;
-			$this->data['body'] = '';
-		}
-
-		if ('cgi' == $type) {
-			foreach ($sources as $src) {
-				$w = $this->loadWidgetFromCgi($src);
-				if (!empty($w)) {
-					$this->data += $w;
-					return;
-				}
-			}
-		} else if ('php' == $type) {
-			foreach ($sources as $src) {
-				$w = $this->loadWidgetFromPhp($src);
-				if (!empty($w)) {
-					$this->data = $w;
-					return;
-				}
-			}
-		}
-	}
-
+	/**
+	 * Sets widget default values.
+	 *
+	 * @param array $data
+	 */
 	public function setDefaults(array $data) {
 		$this->defaults = $data;
 		$this->applyDefaults();
@@ -138,42 +68,16 @@ class Widget {
 		return json_encode($this->data);
 	}
 
-	protected function loadWidgetFromPhp($src) {
-		$path = $this->kernel->findFileOnPath(
-			$src,
-			$this->kernel->getWidgetsPath()
-		);
-
-		if ($path) {
-			$widget = & $this->data;
-			return include $path;
-		}
-
-		return false;
+	public function bootstrap() {
+		// first load static content (body only
+		return $this;
 	}
 
-	protected function loadWidgetFromCgi($src) {
-		$json = file_get_contents($src);
-
-		$json = json_decode($json, true);
-		return $json;
+	public function hasHead() {
+		return !empty($this->data['head']);
 	}
 
-	protected function loadBodyFromStatic($src) {
-		$path = $this->kernel->findFileOnPath(
-			$src,
-			$this->kernel->getWidgetsPath()
-		);
-
-		$body = file_get_contents($path);
-		return $body;
-	}
-
-	protected function loadBodyFromUrl($src) {
-		return false;
-	}
-
-	protected function arrayMergeRecursive($arrayA, $arrayB) {
+	private function arrayMergeRecursive($arrayA, $arrayB) {
 		// merge arrays if both variables are arrays
 		if (is_array($arrayA) && is_array($arrayB)) {
 			// loop through each right array's entry and merge it into $arrayA

@@ -13,6 +13,12 @@
 		}
 	},
 	{
+		"name": "Issues",
+		"footer": "static: issues.html",
+		"size": "span4",
+		"static": "issues.html"
+	},
+	{
 		"name": "Code commiters",
 		"footer": "hoborg/commiters/widget.php",
 		"size": "span8 autoHeight",
@@ -33,18 +39,6 @@
 		"conf" : {
 			"data" : "hoborg/jobs.json"
 		}
-	},
-	{
-		"name": "Issues",
-		"footer": "Last update: 23 Oct 2011",
-		"size": "span4",
-		"static": "demo/issues.html"
-	},
-	{
-		"name": "Chart",
-		"footer": "Last update: 23 Oct 2011",
-		"size": "span4",
-		"php": "demo/chart.html"
 	}
   ]
 }

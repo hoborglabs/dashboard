@@ -20,7 +20,7 @@ class MockFactory {
 
 	public function getWidgetMock($kernel) {
 		$mock = $this->testCase->getMock('\Hoborg\Dashboard\Widget',
-			array('getJson'),
+			array('getJson', 'getData'),
 			array($kernel)
 		);
 

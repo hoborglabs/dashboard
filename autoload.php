@@ -15,6 +15,7 @@ if (is_file($confDir . '/init.php')) {
     include_once $confDir . '/init.dist.php';
 }
 
+include_once SRC_DIR . '/Hoborg/Dashboard/IWidgetProvider.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Cli.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Dashboard.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Exception.php';
