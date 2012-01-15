@@ -36,9 +36,9 @@
             <fileset dir="${dir.base}">
                 <include name="autoload.php"/>
                 <include name="conf/*" />
-                <include name="src/*" />
+                <include name="src/**" />
                 <include name="templates/*" />
-                <include name="widgets/*" />
+                <include name="widgets/**" />
                 <include name="data/hoborg/*" />
             </fileset>
         </copy>
@@ -65,9 +65,9 @@
         <echo message="Copy assets to build folder `${dir.build}/assets`." />
         <copy todir="${dir.build}/assets">
             <fileset dir="${dir.base}/htdocs">
-                <include name="images/*" />
-                <include name="js/*" />
-                <include name="styles/*" />
+                <include name="images/**" />
+                <include name="js/**" />
+                <include name="styles/**" />
             </fileset>
         </copy>
 
@@ -89,7 +89,7 @@
         description="Runs PHPUnits tests for dashboard.phar"
     >
         <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
-            <arg line="-c phpunit.xml" />
+            <arg line="-c phpunit.phar.xml" />
             <arg line="--log-junit ${dir.logs}/phpunit/phpunit-phar.xml" />
         </exec>
     </target>
