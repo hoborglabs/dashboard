@@ -1,6 +1,7 @@
 <!doctype html>
 <?php
-$p = ''; // $this->getPublicPrefix();
+$p = $this->kernel->getConfig();
+$p = empty($p['public']) ? '' : $p['public'];
 ?>
 <html class="dashboard">
 	<head>
@@ -25,7 +26,7 @@ $p = ''; // $this->getPublicPrefix();
 			var hoborg_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
 
 			$('.dashboard .container').widgetManager({
-				url: '/index.php',
+				url: '',
 				conf: 'demo',
 				callback: function(widget) { $('.dashboard .container').masonry('reload'); },
 				template: hoborg_tpl
