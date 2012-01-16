@@ -7,6 +7,7 @@
     <property name="dir.base" location="." />
     <property name="dir.build" value="${dir.base}/build" />
     <property name="dir.logs" value="${dir.base}/logs" />
+    <property name="dir.src" value="${dir.base}/src" />
     <property name="cmd.phpunit" value="phpunit" />
     <property name="cmd.phpmd" value="phpmd" />
     <property name="cmd.phpcpd" value="phpcpd" />
