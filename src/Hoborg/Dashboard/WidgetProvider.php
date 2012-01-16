@@ -129,7 +129,7 @@ class WidgetProvider implements IWidgetProvider {
 			$meta = $this->getFileMeta($path);
 			$widgetData = $widget->getData();
 
-			include $path;
+			include_once $path;
 			$w = new $meta['class']($this->kernel, $widgetData);
 			$w->bootstrap();
 
