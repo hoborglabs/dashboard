@@ -5,17 +5,17 @@ class WidgetProvider implements IWidgetProvider {
 
 	protected $kernel = null;
 
-	public function createWidget(Kernel $kernel, array $widget) {
+	public function createWidget(Kernel $kernel, array $widgetJson) {
 		$this->kernel = $kernel;
-		$w = new Widget($kernel, $widget);
-		$sources = $this->getWidgetSources($w);
-		$wData = $w->getData();
+		$widget = new Widget($kernel, $widgetJson);
+		$sources = $this->getWidgetSources($widget);
+		$wData = $widget->getData();
 
 		foreach ($sources as $source) {
 			switch ($source['type']) {
 				case 'cgi':
 				case 'php':
-					$tmp = $this->loadWidget($w, $source['type'], $source['sources']);
+					$tmp = $this->loadWidget($widget, $source['type'], $source['sources']);
 					if (!empty($tmp)) {
 						$wData = array_merge($wData, $tmp);
 					}
@@ -23,14 +23,14 @@ class WidgetProvider implements IWidgetProvider {
 
 				case 'static':
 				case 'url':
-					$body = $this->loadBody($w, $source['type'], $source['sources']);
+					$body = $this->loadBody($source['type'], $source['sources']);
 					$wData['body'] = $body;
 					break;
 			}
 		}
 
-		$w->setData($wData);
-		return $w;
+		$widget->setData($wData);
+		return $widget;
 	}
 
 	/**
@@ -41,7 +41,7 @@ class WidgetProvider implements IWidgetProvider {
 	 *
 	 * @return string
 	 */
-	protected function loadBody(Widget $widget, $type, array $sources) {
+	protected function loadBody($type, array $sources) {
 		$body = '';
 		if (empty($sources)) {
 			return $body;
@@ -130,10 +130,10 @@ class WidgetProvider implements IWidgetProvider {
 			$widgetData = $widget->getData();
 
 			include_once $path;
-			$w = new $meta['class']($this->kernel, $widgetData);
-			$w->bootstrap();
+			$extWidget = new $meta['class']($this->kernel, $widgetData);
+			$extWidget->bootstrap();
 
-			return $w->getData();
+			return $extWidget->getData();
 		}
 
 		return array();
