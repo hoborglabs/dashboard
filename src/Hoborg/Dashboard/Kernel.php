@@ -41,10 +41,9 @@ class Kernel {
 				// render selected widget
 				$widget = null;
 				if (null == $widgetProvider) {
-					$widget = new Widget($this, $this->getParam('widget'));
-				} else {
-					$widget = $widgetProvider->createWidget($this, $this->getParam('widget'));
+					$widgetProvider = new WidgetProvider();
 				}
+				$widget = $widgetProvider->createWidget($this, $this->getParam('widget'));
 				$widget->bootstrap();
 				$this->send($widget->getJson());
 			} else {
