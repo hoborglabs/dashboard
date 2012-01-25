@@ -69,7 +69,6 @@ class Widget {
 	}
 
 	public function bootstrap() {
-		// first load static content (body only
 		return $this;
 	}
 
@@ -101,6 +100,6 @@ class Widget {
 	}
 
 	private function applyDefaults() {
-		$this->data = $this->arrayMergeRecursive($this->data, $this->defaults);
+		$this->data = $this->arrayMergeRecursive($this->defaults, $this->data);
 	}
 }

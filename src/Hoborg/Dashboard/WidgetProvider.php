@@ -14,6 +14,9 @@ class WidgetProvider implements IWidgetProvider {
 		foreach ($sources as $source) {
 			switch ($source['type']) {
 				case 'cgi':
+					$wData = $this->loadWidget($widget, $source['type'], $source['sources']);
+					break;
+
 				case 'php':
 					$tmp = $this->loadWidget($widget, $source['type'], $source['sources']);
 					if (!empty($tmp)) {
@@ -82,7 +85,7 @@ class WidgetProvider implements IWidgetProvider {
 
 		if ('cgi' == $type) {
 			foreach ($sources as $src) {
-				$widgetData = $this->loadWidgetFromCgi($src);
+				$widgetData = $this->loadWidgetFromCgi($widget, $src);
 				if (!empty($widgetData)) {
 					return $widgetData;
 				}
@@ -139,9 +142,10 @@ class WidgetProvider implements IWidgetProvider {
 		return array();
 	}
 
-	protected function loadWidgetFromCgi($src) {
-		$json = file_get_contents($src);
+	protected function loadWidgetFromCgi($widget, $src) {
+		$src .= '?widget=' . urlencode(json_encode($widget->getData()));
 
+		$json = file_get_contents($src);
 		$json = json_decode($json, true);
 		return $json;
 	}
