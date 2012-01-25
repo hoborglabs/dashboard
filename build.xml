@@ -12,6 +12,7 @@
 	<property name="cmd.phpmd" value="phpmd" />
 	<property name="cmd.phpcpd" value="phpcpd" />
 	<property name="cmd.phpcs" value="phpcs" />
+	<property name="cmd.pdepend" value="pdepend" />
 
 	<target name="prepare" description="Prepare folder structure">
 		<mkdir dir="${dir.build}" />
@@ -127,8 +128,8 @@
 	</target>
 
 	<target name="phpdepend">
-		<exec dir="${dir.base}" executable="pdepend" failonerror="false">
-			<arg line="--jdepend-chart=${dir.logs}/phpdepend/jdepend.png" />
+		<exec dir="${dir.base}" executable="${cmd.pdepend}" failonerror="false">
+			<arg line="--jdepend-chart=${dir.logs}/phpdepend/jdepend.svg" />
 			<arg line="--jdepend-xml=${dir.logs}/phpdepend/jdepend.xml" />
 			<arg line="--overview-pyramid=${dir.logs}/phpdepend/pyramid.svg" />
 			<arg line="${dir.src}/Hoborg" />
