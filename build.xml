@@ -8,11 +8,13 @@
 	<property name="dir.build" value="${dir.base}/build" />
 	<property name="dir.logs" value="${dir.base}/logs" />
 	<property name="dir.src" value="${dir.base}/src" />
+
 	<property name="cmd.phpunit" value="phpunit" />
 	<property name="cmd.phpmd" value="phpmd" />
 	<property name="cmd.phpcpd" value="phpcpd" />
 	<property name="cmd.phpcs" value="phpcs" />
 	<property name="cmd.pdepend" value="pdepend" />
+	<property name="cmd.phar" value="phar" />
 
 	<target name="prepare" description="Prepare folder structure">
 		<mkdir dir="${dir.build}" />
@@ -30,7 +32,13 @@
 	<target name="build" depends="prepare, build-phar, build-assets"
 		description="Builds dashboard packages." />
 
-	<target name="build-phar" depends="prepare" description="Builds phar file">
+	<target name="build-phar"
+		depends="prepare"
+		description="Builds phar file"
+	>
+		<echo file="${dir.build}/phar-stub">&lt;?php Phar::mapPhar('dashboard.phar'); include 'phar://dashboard.phar/autoload.php'; __HALT_COMPILER();</echo>
+		<echo file="${dir.build}/phpmini.sh">php -w $1 > $2</echo>
+
 		<echo message="Copy source files to build folder `${dir.build}/phar`." />
 		<copy todir="${dir.build}/phar">
 			<fileset dir="${dir.base}">
@@ -44,20 +52,27 @@
 		</copy>
 
 		<echo message="Minifying php files." />
-		<apply executable="php" dir="${dir.build}/phar" force="true">
-			<arg value="${dir.base}/bin/phpmini.php" />
+		<apply executable="bash" dir="${dir.build}" dest="${dir.build}/phar" force="true">
+			<arg value="phpmini.sh" />
 			<srcfile />
-			<fileset dir="${dir.build}/phar">
-				<patternset>
-					<include name="**/*.php" />
-				</patternset>
+			<targetfile />
+			<fileset dir="${dir.base}">
+				<include name="autoload.php" />
+				<include name="conf/**/*.php" />
+				<include name="src/**/*.php" />
+				<include name="widgets/**/*.php" />
 			</fileset>
+			<mapper type="glob" from="*.php" to="*.php"/>
 		</apply>
 
 		<echo message="Building PHAR file." />
-		<exec executable="php" dir="${dir.build}">
-			<arg line="${dir.base}/bin/build.php" />
-			<arg line="${dir.build}/phar" />
+		<exec executable="${cmd.phar}" dir="${dir.build}">
+			<arg value="pack" />
+			<arg line="-f ${dir.build}/dashboard.phar" />
+			<arg line="-a dashboard.phar" />
+			<arg line="-c gz" />
+			<arg line="-s ${dir.build}/phar-stub" />
+			<arg value="${dir.build}/phar" />
 		</exec>
 	</target>
 
@@ -71,13 +86,18 @@
 			</fileset>
 		</copy>
 
-		<tar destfile="${dir.build}/dashboard-assets.tgz" basedir="${dir.build}/assets"
-			compression="gzip" />
+		<tar destfile="${dir.build}/dashboard-assets.tgz" 
+			basedir="${dir.build}/assets"
+			compression="gzip" 
+		/>
 	</target>
 
 	<target name="deploy">
-		<ftp server="s2.rootnode.net" userid="${ftp.user}" password="${ftp.passwd}"
+		<ftp server="s2.rootnode.net"
+			userid="${ftp.user}"
+			password="${ftp.passwd}"
 			remotedir="dashboard"
+			passive="yes"
 		>
 			<fileset dir="${dir.build}">
 				<include name="dashboard.phar" />
