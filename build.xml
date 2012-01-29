@@ -16,6 +16,16 @@
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
 
+	<target name="test"
+		description="Run project tests"
+		depends="clean, prepare, phpunit, build-phar, phpunit-phar"
+	/>
+
+	<target name="code-analysis"
+		description="Run static code analysis tools"
+		depends="clean, prepare, phpmd, phpcpd, phpdepend"
+	/>
+
 	<target name="prepare" description="Prepare folder structure">
 		<mkdir dir="${dir.build}" />
 		<mkdir dir="${dir.build}/phar" />
