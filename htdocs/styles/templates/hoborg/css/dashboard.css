@@ -177,3 +177,33 @@ html.dashboard, body.dashboard, #dashboard {
 .widget.short .footer {
 	display: none;
 }
+
+.widget .card {
+	background: none repeat scroll 0 0 #FFFFDD;
+	border-bottom: 1px solid #A7A7A7;
+	color: #000000;
+	margin: 2px 5px 10px 5px;
+	padding: 6px;
+}
+.widget .card * {
+	color: #000000;
+}
+
+.widget .card h4 {
+	font-size: 18px;
+    line-height: 22px;
+}
+.widget .card h4 span {
+    font-size: 13px;
+}
+
+.widget.done .card {
+	width: 43%;
+	float: left;
+}
+.widget.done .card h4 {
+    font-size: 12px;
+}
+.widget.done img.assignee {
+	display: none;
+}
