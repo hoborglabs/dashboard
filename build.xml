@@ -1,146 +1,172 @@
 <project name="Hoborg Commons" default="help" basedir=".">
 
-    <!-- optional environmental settings -->
-    <property file="build.properties" />
+	<!-- optional environmental settings -->
+	<property file="build.properties" />
 
-    <!-- set default values if not already set in build.properties -->
-    <property name="dir.base" location="." />
-    <property name="dir.build" value="${dir.base}/build" />
-    <property name="dir.logs" value="${dir.base}/logs" />
-    <property name="dir.src" value="${dir.base}/src" />
-    <property name="cmd.phpunit" value="phpunit" />
-    <property name="cmd.phpmd" value="phpmd" />
-    <property name="cmd.phpcpd" value="phpcpd" />
-    <property name="cmd.phpcs" value="phpcs" />
+	<!-- set default values if not already set in build.properties -->
+	<property name="dir.base" location="." />
+	<property name="dir.build" value="${dir.base}/build" />
+	<property name="dir.logs" value="${dir.base}/logs" />
+	<property name="dir.src" value="${dir.base}/src" />
 
-    <target name="prepare" description="Prepare folder structure">
-        <mkdir dir="${dir.build}" />
-        <mkdir dir="${dir.build}/phar" />
-        <mkdir dir="${dir.build}/assets" />
+	<property name="cmd.phpunit" value="phpunit" />
+	<property name="cmd.phpmd" value="phpmd" />
+	<property name="cmd.phpcpd" value="phpcpd" />
+	<property name="cmd.phpcs" value="phpcs" />
+	<property name="cmd.pdepend" value="pdepend" />
+	<property name="cmd.phar" value="phar" />
 
-        <mkdir dir="${dir.logs}" />
-        <mkdir dir="${dir.logs}/phpmd" />
-        <mkdir dir="${dir.logs}/phpcs" />
-        <mkdir dir="${dir.logs}/phpcpd" />
-        <mkdir dir="${dir.logs}/phpdepend" />
-        <mkdir dir="${dir.logs}/phpunit" />
-    </target>
+	<target name="prepare" description="Prepare folder structure">
+		<mkdir dir="${dir.build}" />
+		<mkdir dir="${dir.build}/phar" />
+		<mkdir dir="${dir.build}/assets" />
 
-    <target name="build" 
-        depends="prepare, build-phar, build-assets"
-        description="Builds dashboard packages." 
-    />
+		<mkdir dir="${dir.logs}" />
+		<mkdir dir="${dir.logs}/phpmd" />
+		<mkdir dir="${dir.logs}/phpcs" />
+		<mkdir dir="${dir.logs}/phpcpd" />
+		<mkdir dir="${dir.logs}/phpdepend" />
+		<mkdir dir="${dir.logs}/phpunit" />
+	</target>
 
-    <target name="build-phar" depends="prepare" description="Builds phar file">
-        <echo message="Copy source files to build folder `${dir.build}/phar`." />
-        <copy todir="${dir.build}/phar">
-            <fileset dir="${dir.base}">
-                <include name="autoload.php"/>
-                <include name="conf/*" />
-                <include name="src/**" />
-                <include name="templates/*" />
-                <include name="widgets/**" />
-                <include name="data/hoborg/*" />
-            </fileset>
-        </copy>
+	<target name="build" depends="prepare, build-phar, build-assets"
+		description="Builds dashboard packages." />
 
-        <echo message="Minifying php files." />
-        <apply executable="php" dir="${dir.build}/phar" force="true">
-            <arg value="${dir.base}/bin/phpmini.php" />
-            <srcfile />
-            <fileset dir="${dir.build}/phar">
-                <patternset>
-                    <include name="**/*.php"/>
-                </patternset>
-            </fileset>
-        </apply>
+	<target name="build-phar"
+		depends="prepare"
+		description="Builds phar file"
+	>
+		<echo file="${dir.build}/phar-stub">&lt;?php Phar::mapPhar('dashboard.phar'); include 'phar://dashboard.phar/autoload.php'; __HALT_COMPILER();</echo>
+		<echo file="${dir.build}/phpmini.sh">php -w $1 > $2</echo>
 
-        <echo message="Building PHAR file." />
-        <exec executable="php" dir="${dir.build}">
-            <arg line="${dir.base}/bin/build.php" />
-            <arg line="${dir.build}/phar" />
-        </exec>
-    </target>
+		<echo message="Copy source files to build folder `${dir.build}/phar`." />
+		<copy todir="${dir.build}/phar">
+			<fileset dir="${dir.base}">
+				<include name="autoload.php" />
+				<include name="conf/*" />
+				<include name="src/**" />
+				<include name="templates/*" />
+				<include name="widgets/**" />
+				<include name="data/hoborg/*" />
+			</fileset>
+		</copy>
 
-    <target name="build-assets" depends="prepare" description="Build assets tgz file">
-        <echo message="Copy assets to build folder `${dir.build}/assets`." />
-        <copy todir="${dir.build}/assets">
-            <fileset dir="${dir.base}/htdocs">
-                <include name="images/**" />
-                <include name="js/**" />
-                <include name="styles/**" />
-            </fileset>
-        </copy>
+		<echo message="Minifying php files." />
+		<apply executable="bash" dir="${dir.build}" dest="${dir.build}/phar" force="true">
+			<arg value="phpmini.sh" />
+			<srcfile />
+			<targetfile />
+			<fileset dir="${dir.base}">
+				<include name="autoload.php" />
+				<include name="conf/**/*.php" />
+				<include name="src/**/*.php" />
+				<include name="widgets/**/*.php" />
+			</fileset>
+			<mapper type="glob" from="*.php" to="*.php"/>
+		</apply>
 
-        <tar destfile="${dir.build}/dashboard-assets.tgz" 
-            basedir="${dir.build}/assets" 
-            compression="gzip" 
-        />
-    </target>
+		<echo message="Building PHAR file." />
+		<exec executable="${cmd.phar}" dir="${dir.build}">
+			<arg value="pack" />
+			<arg line="-f ${dir.build}/dashboard.phar" />
+			<arg line="-a dashboard.phar" />
+			<arg line="-c gz" />
+			<arg line="-s ${dir.build}/phar-stub" />
+			<arg value="${dir.build}/phar" />
+		</exec>
+	</target>
 
-    <target name="phpunit" description="Runs PHPUnit tests.">
-        <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
-            <arg line="-c phpunit.xml" />
-            <arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
-        </exec>
-    </target>
-    
-    <target name="phpunit-phar" 
-        depends="build-phar"
-        description="Runs PHPUnits tests for dashboard.phar"
-    >
-        <exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
-            <arg line="-c phpunit.phar.xml" />
-            <arg line="--log-junit ${dir.logs}/phpunit/phpunit-phar.xml" />
-        </exec>
-    </target>
+	<target name="build-assets" depends="prepare" description="Build assets tgz file">
+		<echo message="Copy assets to build folder `${dir.build}/assets`." />
+		<copy todir="${dir.build}/assets">
+			<fileset dir="${dir.base}/htdocs">
+				<include name="images/**" />
+				<include name="js/**" />
+				<include name="styles/**" />
+			</fileset>
+		</copy>
 
-    <target name="phpmd" description="PHP Mess Detector">
-        <exec dir="${dir.base}" executable="${cmd.phpmd}" failonerror="false">
-            <arg line="${dir.src}/Hoborg" />
-            <arg line="xml" />
-            <arg line="codesize,unusedcode,naming" />
-            <arg line="--reportfile ${dir.logs}/phpmd/phpmd.xml" />
-        </exec>
-    </target>
+		<tar destfile="${dir.build}/dashboard-assets.tgz" 
+			basedir="${dir.build}/assets"
+			compression="gzip" 
+		/>
+	</target>
 
-    <target name="phpcpd" description="PHP Copy &amp; Paste sniffer">
-        <exec dir="${dir.base}" executable="${cmd.phpcpd}" failonerror="false">
-            <arg line="--log-pmd ${dir.logs}/phpcpd/phpcpd.xml" />
-            <arg value="${dir.src}/Hoborg" />
-        </exec>
-    </target>
+	<target name="deploy">
+		<ftp server="s2.rootnode.net"
+			userid="${ftp.user}"
+			password="${ftp.passwd}"
+			remotedir="dashboard"
+			passive="yes"
+		>
+			<fileset dir="${dir.build}">
+				<include name="dashboard.phar" />
+				<include name="dashboard-assets.tgz" />
+			</fileset>
+		</ftp>
+	</target>
 
-    <target name="phpcs" description="PHP Code Sniffer">
-        <exec dir="${dir.base}" executable="${cmd.phpcs}" failonerror="false">
-            <arg value="--standard=${dir.base}/misc/code_sniffer/Hoborg/" />
-            <arg value="--report=checkstyle" />
-            <arg value="--report-file=${dir.logs}/phpcs/sniffs.xml" />
-            <arg value="-p" />
-            <arg value="${dir.src}/Hoborg" />
-        </exec>
-    </target>
+	<target name="phpunit" description="Runs PHPUnit tests.">
+		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
+			<arg line="-c phpunit.xml" />
+			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
+		</exec>
+	</target>
 
-    <target name="phpdepend">
-        <exec dir="${dir.base}" executable="pdepend" failonerror="false">
-            <arg line="--jdepend-chart=${dir.logs}/phpdepend/jdepend.png" />
-            <arg line="--jdepend-xml=${dir.logs}/phpdepend/jdepend.xml" />
-            <arg line="--overview-pyramid=${dir.logs}/phpdepend/pyramid.svg" />
-            <arg line="${dir.src}/Hoborg" />
-        </exec>
-    </target>
+	<target name="phpunit-phar" depends="build-phar"
+		description="Runs PHPUnits tests for dashboard.phar">
+		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
+			<arg line="-c phpunit.phar.xml" />
+			<arg line="--log-junit ${dir.logs}/phpunit/phpunit-phar.xml" />
+		</exec>
+	</target>
 
-    <!-- Clean up -->
-    <target name="clean" description="Clean up workspace">
-        <delete dir="${dir.build}" />
-        <delete dir="${dir.logs}" />
-    </target>
+	<target name="phpmd" description="PHP Mess Detector">
+		<exec dir="${dir.base}" executable="${cmd.phpmd}" failonerror="false">
+			<arg line="${dir.src}/Hoborg" />
+			<arg line="xml" />
+			<arg line="codesize,unusedcode,naming" />
+			<arg line="--reportfile ${dir.logs}/phpmd/phpmd.xml" />
+		</exec>
+	</target>
 
-    <!-- Help Message -->
-    <target name="help" description="Prints this help">
-        <exec executable="ant">
-            <arg value="-p" />
-        </exec>
-    </target>
+	<target name="phpcpd" description="PHP Copy &amp; Paste sniffer">
+		<exec dir="${dir.base}" executable="${cmd.phpcpd}" failonerror="false">
+			<arg line="--log-pmd ${dir.logs}/phpcpd/phpcpd.xml" />
+			<arg value="${dir.src}/Hoborg" />
+		</exec>
+	</target>
+
+	<target name="phpcs" description="PHP Code Sniffer">
+		<exec dir="${dir.base}" executable="${cmd.phpcs}" failonerror="false">
+			<arg value="--standard=${dir.base}/misc/code_sniffer/Hoborg/" />
+			<arg value="--report=checkstyle" />
+			<arg value="--report-file=${dir.logs}/phpcs/sniffs.xml" />
+			<arg value="-p" />
+			<arg value="${dir.src}/Hoborg" />
+		</exec>
+	</target>
+
+	<target name="phpdepend">
+		<exec dir="${dir.base}" executable="${cmd.pdepend}" failonerror="false">
+			<arg line="--jdepend-chart=${dir.logs}/phpdepend/jdepend.svg" />
+			<arg line="--jdepend-xml=${dir.logs}/phpdepend/jdepend.xml" />
+			<arg line="--overview-pyramid=${dir.logs}/phpdepend/pyramid.svg" />
+			<arg line="${dir.src}/Hoborg" />
+		</exec>
+	</target>
+
+	<!-- Clean up -->
+	<target name="clean" description="Clean up workspace">
+		<delete dir="${dir.build}" />
+		<delete dir="${dir.logs}" />
+	</target>
+
+	<!-- Help Message -->
+	<target name="help" description="Prints this help">
+		<exec executable="ant">
+			<arg value="-p" />
+		</exec>
+	</target>
 </project>
 
