@@ -3,4 +3,4 @@
 require_once __DIR__ . '/../autoload.php';
 $kernel = new \Hoborg\Dashboard\Kernel('dev');
 $kernel->setDefaultParam('conf', 'demo');
-$kernel->handle($_GET);
+$kernel->handle(array_merge($_GET, $_POST));

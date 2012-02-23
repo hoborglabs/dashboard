@@ -143,9 +143,31 @@ class WidgetProvider implements IWidgetProvider {
 	}
 
 	protected function loadWidgetFromCgi($widget, $src) {
-		$src .= '?widget=' . urlencode(json_encode($widget->getData()));
+		$data = $widget->getData();
+		$json = null;
 
-		$json = file_get_contents($src);
+		if (isset($data['method']) && 'get' == strtolower($data['method'])) {
+			$src .= '?widget=' . urlencode(json_encode($widget->getData()));
+			$json = @file_get_contents($src);
+		} else {
+			$curl = curl_init();
+			$fields = array(
+				'widget' => urlencode(json_encode($data))
+			);
+			$fieldsString = '';
+			foreach ($fields as $key => $value) {
+				$fieldsString .= $key . '=' . $value . '&';
+			}
+			rtrim($fieldsString, '&');
+
+			curl_setopt($curl, CURLOPT_URL, $src);
+			curl_setopt($curl, CURLOPT_POST, count($fields));
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldsString);
+
+			$json = curl_exec($curl);
+			curl_close($curl);
+		}
+		$json = empty($json) ? '{}' : $json;
 		$json = json_decode($json, true);
 		return $json;
 	}

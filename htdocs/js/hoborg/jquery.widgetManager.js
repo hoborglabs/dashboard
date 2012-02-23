@@ -100,7 +100,7 @@
 			url: options.url,
 			processData: true,
 			data: {conf: options.conf, widget: widgetConfig},
-			type: 'GET',
+			type: 'POST',
 			dataType: 'json',
 			context: widget,
 			success: function(body) { 

@@ -76,7 +76,7 @@ class Kernel {
 	}
 
 	public function setParams(array $params) {
-		$params = $this->defaultParams + $params;
+		$params = $params + $this->defaultParams;
 
 		if (empty($params['conf'])) {
 			throw new Exception('Missing `conf` parameter', 500);
