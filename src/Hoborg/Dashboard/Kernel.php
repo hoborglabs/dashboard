@@ -15,6 +15,7 @@ class Kernel {
 		'templates' => array(),
 		'widgets' => array(),
 		'data' => array(),
+		'config' => array(),
 	);
 
 	public function __construct($env = 'prod') {
@@ -23,6 +24,7 @@ class Kernel {
 		$this->paths['templates'][] = H_D_ROOT . '/templates';
 		$this->paths['widgets'][] = H_D_ROOT . '/widgets';
 		$this->paths['data'][] = H_D_ROOT . '/data';
+		$this->paths['config'][] = H_D_ROOT . '/conf';
 	}
 
 	/**
@@ -76,7 +78,7 @@ class Kernel {
 	}
 
 	public function setParams(array $params) {
-		$params = $this->defaultParams + $params;
+		$params = $params + $this->defaultParams;
 
 		if (empty($params['conf'])) {
 			throw new Exception('Missing `conf` parameter', 500);
@@ -96,6 +98,10 @@ class Kernel {
 	public function setTemplatesPath(array $paths) {
 		$this->paths['templates'] = $paths;
 		return $this;
+	}
+
+	public function getConfigPath() {
+		return $this->paths['config'];
 	}
 
 	public function setPath($key, array $paths) {
@@ -126,15 +132,15 @@ class Kernel {
 		}
 
 		$configName = $this->params['conf'];
+		$configFile = $this->findFileOnPath($configName . '.js', $this->getConfigPath());
 
-		$configFile = CONFIG_DIR .'/' . $configName . '.js';
 		if (!is_file($configFile)) {
-			$configFile = CONFIG_DIR .'/' . $configName . '.json';
+			$configFile = $this->findFileOnPath($configName . '.json', $this->getConfigPath());
 			if (!is_file($configFile)) {
 				$error = "configuration file not found";
 				$code = '404';
 				include TEMPLATE_DIR . '/error.phtml';
-				die(1);
+				$this->shutDown(1);
 			}
 		}
 
@@ -145,7 +151,7 @@ class Kernel {
 			$error = "You have an error in your configuration";
 			$code = '500';
 			include TEMPLATE_DIR . '/error.phtml';
-			die(1);
+			$this->shutDown(1);
 		}
 
 		return $config;
@@ -164,6 +170,10 @@ class Kernel {
 		}
 
 		return false;
+	}
+
+	public function shutDown($exitCode = 0) {
+		exit($exitCode);
 	}
 
 	protected function send($content) {
