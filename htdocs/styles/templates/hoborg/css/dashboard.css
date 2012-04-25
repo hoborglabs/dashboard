@@ -268,3 +268,26 @@ html.dashboard, body.dashboard, #dashboard {
 .widget.done img.assignee {
 	display: none;
 }
+
+table.simple {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+table.simple,
+table.simple tr,
+table.simple th,
+table.simple td {
+	border: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+table td.right,
+table th.right {
+	text-align: right;
+	padding-right: 6px;
+}
+
+col.t30 { width: 30% }
+col.t20 { width: 20% }
