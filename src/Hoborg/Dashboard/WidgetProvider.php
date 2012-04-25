@@ -28,6 +28,7 @@ class WidgetProvider implements IWidgetProvider {
 				case 'url':
 					$body = $this->loadBody($source['type'], $source['sources']);
 					$wData['body'] = $body;
+					$widget->setData($wData);
 					break;
 			}
 		}
@@ -93,9 +94,7 @@ class WidgetProvider implements IWidgetProvider {
 		} else if ('php' == $type) {
 			foreach ($sources as $src) {
 				$widgetData = $this->loadWidgetFromPhp($widget, $src);
-				if (!empty($widgetData)) {
-					return $widgetData;
-				}
+				$widget->setData($widgetData);
 			}
 		}
 
