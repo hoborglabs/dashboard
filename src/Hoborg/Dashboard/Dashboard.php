@@ -22,8 +22,16 @@ class Dashboard {
 	public function render() {
 		$config = $this->kernel->getConfig();
 		$this->widgets = array();
+		$widgetDefaults = array (
+			'enabled' => 1
+		);
 
 		foreach ($config['widgets'] as $index => & $widget) {
+			$widget += $widgetDefaults;
+			if (0 == $widget['enabled']) {
+				continue;
+			}
+
 			$w = $this->widgetProvider->createWidget($this->kernel, $widget)
 					->bootstrap();
 			$this->widgets[$index] = $w;
