@@ -3,20 +3,26 @@ namespace Hoborg\Dashboard;
 
 class Dashboard {
 
+	/**
+	 * @var \Hoborg\Dashboard\Kernel
+	 */
 	protected $kernel = null;
 
+	/**
+	* @var \Hoborg\Dashboard\IWidgetProvider
+	*/
 	protected $widgetProvider = null;
 
 	protected $widgets = array();
 
 	public function __construct(Kernel $kernel, WidgetProvider $widgetProvider = null) {
-		$this->kernel = $kernel;
 
 		if (null == $widgetProvider) {
-			$this->widgetProvider = new WidgetProvider();
-		} else {
-			$this->widgetProvider = $widgetProvider;
+			$widgetProvider = new WidgetProvider();
 		}
+
+		$this->widgetProvider = $widgetProvider;
+		$this->kernel = $kernel;
 	}
 
 	public function render() {
@@ -32,8 +38,8 @@ class Dashboard {
 				continue;
 			}
 
-			$w = $this->widgetProvider->createWidget($this->kernel, $widget)
-					->bootstrap();
+			$w = $this->widgetProvider->createRowWidget($this->kernel, $widget);
+					//->bootstrap();
 			$this->widgets[$index] = $w;
 		}
 

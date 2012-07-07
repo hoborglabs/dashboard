@@ -30,12 +30,6 @@ class DashboardTest extends \PHPUnit_Framework_TestCase {
 				->will($this->returnValue(__DIR__ . '/../../templates/empty.phtml'));
 
 		$widgetMock = $this->getWidgetMock($kernelMock);
-		$widgetMock->expects($this->once())
-				->method('bootstrap')
-				->will($this->returnValue($widgetMock));
-		$widgetMock->expects($this->once())
-				->method('hasHead')
-				->will($this->returnValue(false));
 
 		$widgetProviderMock = $this->getWidgetMockProvider();
 		$widgetProviderMock->injectMock($widgetMock);

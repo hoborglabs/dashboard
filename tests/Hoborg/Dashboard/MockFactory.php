@@ -29,7 +29,8 @@ class MockFactory {
 
 	public function getKernelMock() {
 		$mock = $this->testCase->getMock('\Hoborg\Dashboard\Kernel',
-			array('getParam', 'getConfig', 'findFileOnPath')
+			array('getParam', 'getConfig', 'findFileOnPath'),
+			array(TST_ROORT)
 		);
 
 		return $mock;
