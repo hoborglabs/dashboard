@@ -185,20 +185,20 @@ html.dashboard, body.dashboard, #dashboard {
 	padding-left: 36px;
 }
 .widget .text-L.icon.positive {
-	background: url(../gfx/icons/up_l.png) no-repeat 0 8px transparent;
+	background: url(/?static=/templates/hoborg/gfx/icons/up_l.png) no-repeat 0 8px transparent;
 }
 .widget .text-L.icon.negative {
-    background: url(../gfx/icons/down_l.png) no-repeat 0 8px transparent;
+    background: url(/?static=/templates/hoborg/gfx/icons/down_l.png) no-repeat 0 8px transparent;
 }
 
 .widget .text-S.icon {
     padding-left: 14px;
 }
 .widget .text-S.icon.positive {
-    background: url(../gfx/icons/up_l.png) no-repeat -7px 5px transparent;
+    background: url(/?static=/templates/hoborg/gfx/icons/up_l.png) no-repeat -7px 5px transparent;
 }
 .widget .text-S.icon.negative {
-    background: url(../gfx/icons/down_l.png) no-repeat -7px -12px transparent;
+    background: url(/?static=/templates/hoborg/gfx/icons/down_l.png) no-repeat -7px -12px transparent;
 }
 
 .widget .text-M {
