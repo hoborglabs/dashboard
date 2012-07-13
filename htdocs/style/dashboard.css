@@ -3,6 +3,27 @@ html.dashboard, body.dashboard, #dashboard {
     color: #585858;
 }
 
+.container {
+	margin-left: auto;
+	margin-right: auto;
+	zoom: 1;
+}
+
+dl.side-by-side {
+	
+}
+
+dl.side-by-side dt {
+	width: 40%;
+	float: left;
+	display: block;
+}
+dl.side-by-side dd {
+	width: 56%;
+	float: left;
+	display: block;
+}
+
 .label-group {
 	display: inline-block;
 	float: right;
@@ -52,16 +73,6 @@ html.dashboard, body.dashboard, #dashboard {
 	padding: 2px;
 }
 
-.span4 {
-    width: 220px;
-}
-.span8 {
-    width: 450px;
-}
-.span16 {
-    width: 910px;
-}
-
 .widget.autoHeight,
 .widget.autoHeight .body {
     height: auto;
@@ -103,9 +114,10 @@ html.dashboard, body.dashboard, #dashboard {
     background-color: #373737;
     color: #FFFFFF;
     float: left;
-    margin: 5px 0px 10px 10px;
+    margin-bottom: 10px;
+    Xmargin: 5px 0px 10px 0px;
 }
-.widget * {
+.widget {
     color: #FFFFFF;
 }
 
@@ -131,6 +143,13 @@ html.dashboard, body.dashboard, #dashboard {
 }
 .widget .body:last-child {
     height: 162px;
+}
+
+.widget.height2 {
+	height: 410px;
+}
+.widget.height2 .body {
+	height: 340px;
 }
 
 .widget.expandable,

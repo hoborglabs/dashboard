@@ -17,7 +17,7 @@ class DashboardTest extends \PHPUnit_Framework_TestCase {
 
 	public function testRenderWithOneWidget() {
 		$kernelMock = $this->mockFactory->getKernelMock();
-		$kernelMock->expects($this->once())
+		$kernelMock->expects($this->any())
 				->method('getConfig')
 				->will($this->returnValue( array(
 					'widgets'=> array( array(

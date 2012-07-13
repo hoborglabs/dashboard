@@ -1,11 +1,13 @@
 <project name="Hoborg Commons" default="help" basedir=".">
 
-	<!-- optional environmental settings -->
+	<!-- optional environmental settings/overrides -->
 	<property file="build.properties" />
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
 	<property name="dir.build" value="${dir.base}/build" />
+	<property name="dir.build.dist" value="${dir.build}/dist" />
+	<property name="dir.build.phar" value="${dir.build}/phar" />
 	<property name="dir.logs" value="${dir.base}/logs" />
 	<property name="dir.src" value="${dir.base}/src" />
 
@@ -16,65 +18,195 @@
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
 
+	<property name="dir.deploy.local" value="false" />
+
+	<!--
+	Main targets:
+		* test
+		* build
+		* code-analysis
+		* clean
+		* help
+	-->
 	<target name="test"
 		description="Run project tests"
-		depends="clean, prepare, phpunit, build-phar, phpunit-phar"
+		depends="prepare, phpunit, build-phar, phpunit-phar"
 	/>
+
+	<target name="build" depends="prepare, build-phar"
+		description="Builds dashboard package." />
 
 	<target name="code-analysis"
 		description="Run static code analysis tools"
-		depends="clean, prepare, phpmd, phpcpd, phpdepend"
+		depends="prepare, phpmd, phpcpd, phpdepend"
 	/>
 
-	<target name="prepare" description="Prepare folder structure">
-		<mkdir dir="${dir.build}" />
-		<mkdir dir="${dir.build}/phar" />
-		<mkdir dir="${dir.build}/assets" />
+	<target name="prepare"
+		description="Prepare folder structure"
+		depends="-prepare.folders, build.css, prepare.js"
+	>
+		<echo file="${dir.build}/phpmini.sh"><![CDATA[
+php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
-		<mkdir dir="${dir.logs}" />
-		<mkdir dir="${dir.logs}/phpmd" />
-		<mkdir dir="${dir.logs}/phpcs" />
-		<mkdir dir="${dir.logs}/phpcpd" />
-		<mkdir dir="${dir.logs}/phpdepend" />
-		<mkdir dir="${dir.logs}/phpunit" />
+		<copy todir="${dir.build.dist}">
+			<fileset dir="${dir.base}">
+				<include name="autoload.php" />
+				<include name="src/**" />
+				<include name="templates/**" />
+				<include name="widgets/**" />
+				<include name="conf/demo.js" />
+				<include name="data/hoborg/*" />
+				<include name="htdocs/dashboard.min.*" />
+				<include name="htdocs/index.php" />
+				<include name="htdocs/images/**" />
+				<include name="htdocs/widgets/**" />
+				<include name="htdocs/templates/**" />
+			</fileset>
+		</copy>
 	</target>
 
-	<target name="build" depends="prepare, build-phar, build-assets"
-		description="Builds dashboard packages." />
-
-	<target name="build-phar"
-		depends="prepare"
-		description="Builds phar file"
+	<target name="build.css"
+		description="Builds dashboard CSS file(s) and copy widgets and templates css files to htdocs."
 	>
-		<echo file="${dir.build}/phar-stub">&lt;?php Phar::mapPhar('dashboard.phar'); include 'phar://dashboard.phar/autoload.php'; __HALT_COMPILER();</echo>
-		<echo file="${dir.build}/phpmini.sh">php -w $1 > $2</echo>
+		<copy todir="${dir.base}/htdocs">
+			<fileset dir="${dir.base}">
+				<include name="templates/**/*.css" />
+				<include name="widgets/**/*.css" />
+			</fileset>
+		</copy>
 		
-		<copy file="${dir.base}/bin/install.php" tofile="${dir.build}/install" />
+		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
+		<concat destfile="${dir.base}/htdocs/dashboard.css">
+			<fileset dir="${dir.base}/htdocs/style/"
+				includes="bootstrap.css"
+			/>
+			<fileset dir="${dir.base}/htdocs/style/"
+				includes="dashboard.css"
+			/>
+		</concat>
+
+		<apply executable="java"
+			parallel="false"
+			verbose="true"
+			dest="${dir.base}/htdocs"
+		>
+			<fileset dir="${dir.base}/htdocs"
+				includes="*.css"
+				excludes="*.min.css"
+			/>
+			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
+			<arg line="--type css" />
+			<arg value="-o" />
+			<targetfile />
+			<mapper type="glob"
+				from="*.css"
+				to="*.min.css" 
+			/>
+		</apply>
+	</target>
+
+	<target name="prepare.js">
+		<copy todir="${dir.base}/htdocs">
+			<fileset dir="${dir.base}">
+				<include name="templates/**/*.js" />
+				<include name="widgets/**/*.js" />
+			</fileset>
+		</copy>
+
+		<echo>Building ${dir.base}/htdocs/dashboard.js</echo>
+		<copy file="${dir.base}/htdocs/js/jquery/jquery.js"
+			tofile="${dir.base}/htdocs/dashboard.js"
+		/>
+		<concat destfile="${dir.base}/htdocs/dashboard.js"
+			append="yes"
+		>
+			<fileset dir="${dir.base}/htdocs/js/">
+				<include name="jquery/*.js"/>
+				<include name="hoborg/*.js"/>
+				<exclude name="jquery/jquery.js" />
+			</fileset>
+		</concat>
+
+		<apply executable="java"
+			parallel="false"
+			verbose="true"
+			dest="${dir.base}/htdocs"
+		>
+			<fileset dir="${dir.base}/htdocs/"
+				includes="*.js"
+				excludes="*.min.js"
+			/>
+			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
+			<arg line="--type js" />
+			<arg value="-o" />
+			<targetfile />
+			<mapper type="glob"
+				from="*.js"
+				to="*.min.js" 
+			/>
+		</apply>
+	</target>
+
+	<target name="prepare-code-phar"
+		depends="prepare"
+		description="Prepare Web phar files"
+	>
+		<echo file="${dir.build}/phar-stub">&lt;?php
+Phar::mapPhar('dashboard.phar');
+include 'phar://dashboard.phar/autoload.php';
+__HALT_COMPILER();</echo>
 
 		<echo message="Copy source files to build folder `${dir.build}/phar`." />
+		<delete>
+			<fileset dir="${dir.build}/phar" includes="**"/>
+		</delete>
 		<copy todir="${dir.build}/phar">
 			<fileset dir="${dir.base}">
 				<include name="autoload.php" />
-				<include name="conf/*" />
+				<include name="conf/demo.js" />
 				<include name="src/**" />
 				<include name="templates/*" />
 				<include name="widgets/**" />
 				<include name="data/hoborg/*" />
 			</fileset>
 		</copy>
+		
+		<antcall target="minify-phar-files" />
+	</target>
+
+	<target name="build-phar"
+		depends="prepare"
+		description="Build PHAR dashboard file."
+	>
+		<echo file="${dir.build}/phar-stub">&lt;?php
+function rewrites() {
+  $r = $_SERVER['REQUEST_URI'];
+  if (file_exists("phar://dashboard.phar/htdocs{$r}")) return "/htdocs{$r}";
+  else return 'htdocs/index-phar.php';
+}
+Phar::webPhar('dashboard.phar', 'index-phar.php', '404.php', array(), 'rewrites');
+__HALT_COMPILER();</echo>
+
+		<echo message="Copy source files to build folder `${dir.build}/phar`." />
+		<delete>
+			<fileset dir="${dir.build}/phar" includes="**"/>
+		</delete>
+		<copy todir="${dir.build}/phar">
+			<fileset dir="${dir.build}/dist">
+				<include name="autoload.php" />
+				<include name="**" />
+			</fileset>
+		</copy>
 
 		<echo message="Minifying php files." />
 		<apply executable="bash" dir="${dir.build}" dest="${dir.build}/phar" force="true">
+			<fileset dir="${dir.build}/phar">
+				<include name="autoload.php" />
+				<include name="**/*.php" />
+			</fileset>
 			<arg value="phpmini.sh" />
 			<srcfile />
-			<targetfile />
-			<fileset dir="${dir.base}">
-				<include name="autoload.php" />
-				<include name="conf/**/*.php" />
-				<include name="src/**/*.php" />
-				<include name="widgets/**/*.php" />
-			</fileset>
-			<mapper type="glob" from="*.php" to="*.php"/>
+			<mapper type="glob" from="*.php" to="*.php" />
 		</apply>
 
 		<echo message="Building PHAR file." />
@@ -88,27 +220,27 @@
 		</exec>
 	</target>
 
-	<target name="build-assets" depends="prepare" description="Build assets tgz file">
-		<echo message="Copy assets to build folder `${dir.build}/assets`." />
-		<copy todir="${dir.build}/assets">
-			<fileset dir="${dir.base}/htdocs">
-				<include name="images/**" />
-				<include name="js/**" />
-				<include name="styles/**" />
+	<target name="build.assets" depends="prepare">
+		<exec executable="java" dir="${dir.base}">
+			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
+			<arg line="--type js" />
+			<arg line="-o ${dir.build}/scripts.js" />
+			<arg line="${dir.base}/htdocs/js/jquery/*" />
+			<!-- 
+			<fileset dir="${dir.base}/htdocs/js/">
+				<patternset>
+					<include name="jquery/*.js"/>
+					<include name="hoborg/*.js"/>
+				</patternset>
 			</fileset>
-		</copy>
-
-		<tar destfile="${dir.build}/dashboard-assets.tgz" 
-			basedir="${dir.build}/assets"
-			compression="gzip" 
-		/>
+			 -->
+		</exec>
 	</target>
 
 	<target name="deploy">
 		<scp todir="${deploy.scp.user}:${deploy.scp.passwd}@s2.rootnode.net:~/fastweb/get.hoborglabs.com/htdocs/dashboard/">
 			<fileset dir="${dir.build}">
 				<include name="dashboard.phar" />
-				<include name="dashboard-assets.tgz" />
 				<include name="install" />
 			</fileset>
 		</scp>
@@ -121,6 +253,17 @@
 		>
 		</ftp>
 		 -->
+	</target>
+	
+	<target name="deploy.local"
+		depends="prepare"
+		if="dir.deploy.local"
+	>
+		<copy todir="${dir.deploy.local}">
+			<fileset dir="${dir.build}/dist">
+				<include name="**" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="phpunit" description="Runs PHPUnit tests.">
@@ -177,6 +320,16 @@
 	<target name="clean" description="Clean up workspace">
 		<delete dir="${dir.build}" />
 		<delete dir="${dir.logs}" />
+		<delete dir="${dir.base}/htdocs/widgets" />
+		<delete dir="${dir.base}/htdocs/templates" />
+		<delete>
+			<fileset dir="${dir.base}/htdocs/">
+				<include name="**/*.min.js" />
+				<include name="**/*.min.css" />
+				<include name="dashboard*.js" />
+				<include name="dashboard*.css" />
+			</fileset>
+		</delete>
 	</target>
 
 	<!-- Help Message -->
@@ -184,6 +337,19 @@
 		<exec executable="ant">
 			<arg value="-p" />
 		</exec>
+	</target>
+
+	<target name="-prepare.folders" description="Prepare folder structure">
+		<mkdir dir="${dir.build}" />
+		<mkdir dir="${dir.build.phar}" />
+		<mkdir dir="${dir.build.dist}" />
+
+		<mkdir dir="${dir.logs}" />
+		<mkdir dir="${dir.logs}/phpmd" />
+		<mkdir dir="${dir.logs}/phpcs" />
+		<mkdir dir="${dir.logs}/phpcpd" />
+		<mkdir dir="${dir.logs}/phpdepend" />
+		<mkdir dir="${dir.logs}/phpunit" />
 	</target>
 </project>
 
