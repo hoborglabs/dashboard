@@ -85,6 +85,16 @@ class Kernel {
 
 	public function setDefaultParam($key, $value) {
 		$this->defaultParams[$key] = $value;
+
+		return $this;
+	}
+
+	public function addDefaultParams(array $defaults) {
+		foreach ($defaults as $key => $value) {
+			$this->defaultParams[$key] = $value;
+		}
+
+		return $this;
 	}
 
 	public function setParams(array $params) {

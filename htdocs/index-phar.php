@@ -1,12 +1,21 @@
 <?php
 include 'phar://dashboard.phar/autoload.php';
-$root = 'phar://dashboard.phar';
+$pharRoot = 'phar://dashboard.phar';
+
+$conf = array();
+if (is_readable(realpath(PHAR_ROOT . '/init.php'))) {
+	$conf = require PHAR_ROOT . '/init.php';
+}
 
 // set-up dashboard and run
-$kernel = new \Hoborg\Dashboard\Kernel($root);
+$kernel = new \Hoborg\Dashboard\Kernel($pharRoot);
+
 $kernel->setDefaultParam('conf', 'demo');
 $kernel->setDefaultParam('public', '/dashboard.phar');
-$kernel->addPath('config', array($root . '/conf'));
-$kernel->addPath('templates', array($root . '/templates'));
-$kernel->addPath('widgets', array($root . '/widgets'));
+$kernel->addDefaultParams($conf);
+
+$kernel->addPath('config', array($pharRoot . '/conf', PHAR_ROOT . '/conf'));
+$kernel->addPath('templates', array($pharRoot . '/templates', PHAR_ROOT . '/templates'));
+$kernel->addPath('widgets', array($pharRoot . '/widgets', PHAR_ROOT . '/widgets'));
+
 $kernel->handle(array_merge($_GET, $_POST));

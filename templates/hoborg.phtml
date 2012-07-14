@@ -1,18 +1,14 @@
 <!DOCTYPE html>
-<?php
-$p = $this->kernel->getConfig();
-$p = empty($p['public']) ? '' : $p['public'];
-?>
 <html class="dashboard">
 	<head>
-		<link href="<?php echo $p; ?>/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="<?php echo $p; ?>/dashboard.min.js"></script>
+		<link href="<?php echo $HD_PUBLIC; ?>/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/dashboard.min.js"></script>
 
-		<link href="/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $HD_PUBLIC; ?>/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<?php foreach($this->widgets as $widget) : ?>
 			<?php if ($widget->hasJS()) : ?>
 				<?php foreach ($widget->getJS() as $js) : ?>
-					<script type="text/javascript" src="/widgets/<?php echo $js; ?>"></script>
+					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/widgets/<?php echo $js; ?>"></script>
 				<?php endforeach; ?>
 			<?php endif; ?>
 		<?php endforeach; ?>
