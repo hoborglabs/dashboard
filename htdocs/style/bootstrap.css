@@ -569,7 +569,8 @@ ol.unstyled {
   list-style: none;
 }
 dl {
-  margin-bottom: 18px;
+  padding: 0px;
+  margin: 0px 0px 18px 0px;
 }
 dt,
 dd {

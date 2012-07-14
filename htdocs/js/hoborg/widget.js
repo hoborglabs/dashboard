@@ -53,6 +53,7 @@
 	};
 
 	Widget.prototype.reload = function() {
+		
 		var widgetConfig = $.extend({}, this.data);
 		delete widgetConfig.body;
 
@@ -64,7 +65,7 @@
 			dataType: 'json',
 			context: this,
 			success: function(body) {
-				$.extend(this.data, body);
+				this.data = $.extend({}, this.data, body);
 				this.render();
 			},
 			error: function() { widgetConfig.body =  'JSON Error'; renderWidgetJson(this, widgetConfig); activateWidget(this);}

@@ -106,6 +106,13 @@ class Kernel {
 		return $this;
 	}
 
+	public function addPath($key, array $paths) {
+		if (is_array($this->paths[$key])) {
+			$this->paths[$key] = array_merge($this->paths[$key], $paths);
+		}
+		return $this;
+	}
+
 	public function getTemplatesPath() {
 		return $this->paths['templates'];
 	}
