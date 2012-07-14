@@ -9,11 +9,15 @@ class StaticAssetsProxy {
 	protected $kernel = null;
 
 	protected $headers = array(
+		'ico' => 'image/x-ico',
+		'jpe' => 'image/jpeg',
 		'jpg' => 'image/jpeg',
+		'jpeg' => 'image/jpeg',
 		'png' => 'image/png',
 		'gif' => 'image/gif',
-		'css' => '',
-		'js' => '',
+		'txt' => 'text/plain',
+		'css' => 'text/css',
+		'js' => 'application/x-javascript',
 		'xml' => 'text/xml',
 	);
 

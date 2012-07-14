@@ -57,7 +57,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="conf/demo.js" />
 				<include name="data/hoborg/*" />
 				<include name="htdocs/dashboard.min.*" />
-				<include name="htdocs/index.php" />
+				<include name="htdocs/index*" />
 				<include name="htdocs/images/**" />
 				<include name="htdocs/widgets/**" />
 				<include name="htdocs/templates/**" />
