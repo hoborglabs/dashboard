@@ -179,10 +179,14 @@ __HALT_COMPILER();</echo>
 		description="Build PHAR dashboard file."
 	>
 		<echo file="${dir.build}/phar-stub">&lt;?php
+define('PHAR_ROOT', __DIR__);
 function rewrites() {
-  $r = $_SERVER['REQUEST_URI'];
-  if (file_exists("phar://dashboard.phar/htdocs{$r}")) return "/htdocs{$r}";
-  else return 'htdocs/index-phar.php';
+  $r = ltrim($_SERVER['PATH_INFO'], '/');
+  if (empty($r)) {
+    $r = 'index-phar.php';
+  }
+  if (is_file("phar://dashboard.phar/htdocs/{$r}")) return "htdocs/{$r}";
+  else return 'htdocs/404.html';
 }
 Phar::webPhar('dashboard.phar', 'index-phar.php', '404.php', array(), 'rewrites');
 __HALT_COMPILER();</echo>
