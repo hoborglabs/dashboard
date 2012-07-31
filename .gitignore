@@ -23,6 +23,8 @@ build.properties
 /htdocs/widgets
 /htdocs/dashboard.css
 /htdocs/dashboard.js
+/composer.*
+!/composer.json
 
 ##
 # Logs and data
