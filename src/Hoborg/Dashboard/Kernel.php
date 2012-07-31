@@ -85,6 +85,16 @@ class Kernel {
 
 	public function setDefaultParam($key, $value) {
 		$this->defaultParams[$key] = $value;
+
+		return $this;
+	}
+
+	public function addDefaultParams(array $defaults) {
+		foreach ($defaults as $key => $value) {
+			$this->defaultParams[$key] = $value;
+		}
+
+		return $this;
 	}
 
 	public function setParams(array $params) {
@@ -103,6 +113,13 @@ class Kernel {
 
 	public function setPath($key, array $paths) {
 		$this->paths[$key] = $paths;
+		return $this;
+	}
+
+	public function addPath($key, array $paths) {
+		if (is_array($this->paths[$key])) {
+			$this->paths[$key] = array_merge($this->paths[$key], $paths);
+		}
 		return $this;
 	}
 
@@ -147,10 +164,9 @@ class Kernel {
 		if (!is_file($configFile)) {
 			$configFile = $this->findFileOnPath($configName . '.json', $this->getConfigPath());
 			if (!is_file($configFile)) {
-				$error = "configuration file not found";
+				$error = "configuration file not found" . $this->params['conf'];
 				$code = '404';
-				include TEMPLATE_DIR . '/error.phtml';
-				$this->shutDown(1);
+				$this->handleError($error, $code);
 			}
 		}
 
@@ -160,8 +176,7 @@ class Kernel {
 		if (empty($config)) {
 			$error = "You have an error in your configuration";
 			$code = '500';
-			include TEMPLATE_DIR . '/error.phtml';
-			$this->shutDown(1);
+			$this->handleError($error, $code);
 		}
 
 		return $config;
@@ -193,4 +208,11 @@ class Kernel {
 	protected function handleException(Exception $e) {
 		return "Application Error :( <br /> {$e->getMessage()}";
 	}
+
+	protected function handleError($error, $code) {
+		$errorTpl = $this->findFileOnPath('error.phtml', $this->getTemplatesPath());
+		include $errorTpl;
+		$this->shutDown(1);
+	}
+
 }

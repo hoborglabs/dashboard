@@ -63,6 +63,7 @@ class Dashboard {
 			throw new Exception("Template `{$templateName}` not found");
 		}
 
+		$HD_PUBLIC = $this->kernel->getParam('public', '');
 		ob_start();
 		include $tpl;
 		return ob_get_clean();

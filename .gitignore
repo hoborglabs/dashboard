@@ -12,8 +12,19 @@
 /conf/*.php
 !/conf/*.dist.php
 
+##
+# Build assets
+#
 /build
 build.properties
+*.min.js
+*.min.css
+/htdocs/templates
+/htdocs/widgets
+/htdocs/dashboard.css
+/htdocs/dashboard.js
+/composer.*
+!/composer.json
 
 ##
 # Logs and data

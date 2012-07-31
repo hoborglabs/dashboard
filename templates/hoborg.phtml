@@ -1,23 +1,14 @@
-<!doctype html>
-<?php
-$p = $this->kernel->getConfig();
-$p = empty($p['public']) ? '' : $p['public'];
-?>
+<!DOCTYPE html>
 <html class="dashboard">
 	<head>
-		<link href="/?static=/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="/?static=/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="/?static=/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.mustache.js"></script>
-		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.masonry.min.js"></script>
-		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/bus.js"></script>
-		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/jquery.widgetManager.js"></script>
-		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/widget.js"></script>
+		<link href="<?php echo $HD_PUBLIC; ?>/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/dashboard.min.js"></script>
+
+		<link href="<?php echo $HD_PUBLIC; ?>/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
 		<?php foreach($this->widgets as $widget) : ?>
 			<?php if ($widget->hasJS()) : ?>
 				<?php foreach ($widget->getJS() as $js) : ?>
-					<script type="text/javascript" src="/?static=/widgets/<?php echo $js; ?>"></script>
+					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/widgets/<?php echo $js; ?>"></script>
 				<?php endforeach; ?>
 			<?php endif; ?>
 		<?php endforeach; ?>

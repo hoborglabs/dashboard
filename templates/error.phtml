@@ -1,19 +1,18 @@
 <html class="dashboard">
         <head>
-                <link href="<?php echo HD_PUBLIC; ?>/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
-                <link href="<?php echo HD_PUBLIC; ?>/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+                <link href="/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
         </head>
         <body>
                 <div class="container error">
                         <div class="row">
                                 <div class="span4">
-                                        <img src="<?php echo HD_PUBLIC ?>/images/error.png">
+                                        <img src="/images/error.png">
                                 </div>
                                 <div class="span12">
                                         <h1 style="margin-top: 65px; color: #F53D00">
                                         <span class="code">{<?php echo empty($code) ? '404':$code ; ?>} </span>
                                         something went wrong</h1>
-                                        <h2>Sorry, but the page you want to see caused some problems. Try checking the URL for errors. 
+                                        <h2>Sorry, but the page you want to see caused some problems. Try checking the URL for errors.
                                         And if you really want to know, the geeke explanation is: <em><?php echo $error; ?></em></h2>
                                 </div>
                         </div>

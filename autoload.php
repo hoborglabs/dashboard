@@ -6,14 +6,7 @@
  * Autoload all required files and defines.
  */
 
-define('H_D_ROOT', __DIR__);
-
-$confDir = H_D_ROOT . '/conf';
-if (is_file($confDir . '/init.php')) {
-    include_once $confDir . '/init.php';
-} else {
-    include_once $confDir . '/init.dist.php';
-}
+define('SRC_DIR', __DIR__ . '/src');
 
 include_once SRC_DIR . '/Hoborg/Dashboard/IWidgetProvider.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Cli.php';

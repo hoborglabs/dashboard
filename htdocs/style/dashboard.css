@@ -3,6 +3,27 @@ html.dashboard, body.dashboard, #dashboard {
     color: #585858;
 }
 
+.container {
+	margin-left: auto;
+	margin-right: auto;
+	zoom: 1;
+}
+
+dl.side-by-side {
+	
+}
+
+dl.side-by-side dt {
+	width: 40%;
+	float: left;
+	display: block;
+}
+dl.side-by-side dd {
+	width: 56%;
+	float: left;
+	display: block;
+}
+
 .label-group {
 	display: inline-block;
 	float: right;
@@ -81,7 +102,8 @@ html.dashboard, body.dashboard, #dashboard {
     background-color: #282828;
     padding: 6px 15px;
     border-bottom: 1px solid #121212;
-    margin: 0px 0px 2px 0px;
+    border-top: 1px solid #343434;
+    margin: 0px 0px 4px 0px;
 }
 
 .widget .content {
@@ -106,10 +128,19 @@ html.dashboard, body.dashboard, #dashboard {
     background-color: #373737;
     color: #FFFFFF;
     float: left;
-    margin: 5px 0px 10px 10px;
-}
-.widget * {
-    color: #FFFFFF;
+    margin-bottom: 10px;
+	/* IE10 Consumer Preview */ 
+	background-image: -ms-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Mozilla Firefox */ 
+	background-image: -moz-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Opera */ 
+	background-image: -o-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(radial, right bottom, 0, right bottom, 994, color-stop(0, #373737), color-stop(1, #272727));
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* W3C Markup, IE10 Release Preview */ 
+	background-image: radial-gradient(circle farthest-corner at right bottom, #373737 0%, #272727 100%);
 }
 
 .widget.hidden {
@@ -124,6 +155,7 @@ html.dashboard, body.dashboard, #dashboard {
     border-top: 1px solid #414141;
     height: 15px;
     padding: 8px 15px 10px;
+    background-color: #373737;
 }
 
 .widget .body {
@@ -134,6 +166,13 @@ html.dashboard, body.dashboard, #dashboard {
 }
 .widget .body:last-child {
     height: 162px;
+}
+
+.widget.height2 {
+	height: 410px;
+}
+.widget.height2 .body {
+	height: 340px;
 }
 
 .widget.expandable,
