@@ -72,6 +72,20 @@ class Widget {
 		return $this;
 	}
 
+	public function getAssetFiles($type) {
+
+		if (empty($this->data['assets'][$type])) {
+			return array();
+		}
+
+		$assets = $this->data['assets'][$type];
+		if (!is_array($assets)) {
+			$assets = array($assets);
+		}
+
+		return $assets;
+	}
+
 	public function hasHead() {
 		return !empty($this->data['head']);
 	}
