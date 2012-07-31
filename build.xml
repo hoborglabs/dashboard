@@ -48,6 +48,8 @@
 	>
 		<echo file="${dir.build}/phar-stub">&lt;?php Phar::mapPhar('dashboard.phar'); include 'phar://dashboard.phar/autoload.php'; __HALT_COMPILER();</echo>
 		<echo file="${dir.build}/phpmini.sh">php -w $1 > $2</echo>
+		
+		<copy file="${dir.base}/bin/install.php" tofile="${dir.build}/install" />
 
 		<echo message="Copy source files to build folder `${dir.build}/phar`." />
 		<copy todir="${dir.build}/phar">
@@ -80,7 +82,7 @@
 			<arg value="pack" />
 			<arg line="-f ${dir.build}/dashboard.phar" />
 			<arg line="-a dashboard.phar" />
-			<arg line="-c gz" />
+			<arg line="-c 0" />
 			<arg line="-s ${dir.build}/phar-stub" />
 			<arg value="${dir.build}/phar" />
 		</exec>
@@ -103,17 +105,22 @@
 	</target>
 
 	<target name="deploy">
+		<scp todir="${deploy.scp.user}:${deploy.scp.passwd}@s2.rootnode.net:~/fastweb/get.hoborglabs.com/htdocs/dashboard/">
+			<fileset dir="${dir.build}">
+				<include name="dashboard.phar" />
+				<include name="dashboard-assets.tgz" />
+				<include name="install" />
+			</fileset>
+		</scp>
+		<!-- 
 		<ftp server="s2.rootnode.net"
 			userid="${ftp.user}"
 			password="${ftp.passwd}"
 			remotedir="dashboard"
 			passive="yes"
 		>
-			<fileset dir="${dir.build}">
-				<include name="dashboard.phar" />
-				<include name="dashboard-assets.tgz" />
-			</fileset>
 		</ftp>
+		 -->
 	</target>
 
 	<target name="phpunit" description="Runs PHPUnit tests.">

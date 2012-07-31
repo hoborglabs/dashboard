@@ -21,5 +21,6 @@ include_once SRC_DIR . '/Hoborg/Dashboard/Dashboard.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Exception.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Kernel.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Proxy.php';
+include_once SRC_DIR . '/Hoborg/Dashboard/StaticAssetsProxy.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/Widget.php';
 include_once SRC_DIR . '/Hoborg/Dashboard/WidgetProvider.php';

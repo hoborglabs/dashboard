@@ -16,7 +16,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testDefaultEnv() {
-		$kernel = new Kernel();
+		$kernel = new Kernel(TST_ROORT);
 		$this->assertEquals('prod', $kernel->getEnvironment());
 	}
 
@@ -25,14 +25,14 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 	 * @expectedExceptionCode 500
 	 */
 	public function testSetParamsThrowException() {
-		$kernel = new Kernel();
+		$kernel = new Kernel(TST_ROORT);
 
 		// there is no required 'conf' param.
 		$kernel->setParams(array());
 	}
 
 	public function testSetParamsWithDefaults() {
-		$kernel = new Kernel();
+		$kernel = new Kernel(TST_ROORT);
 		$kernel->setDefaultParam('conf', 'test');
 
 		$kernel->setParams(array());
@@ -61,7 +61,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function getKernel() {
-		$kernel = new Kernel();
+		$kernel = new Kernel(TST_ROORT);
 		$kernel->setDefaultParam('conf', 'test');
 
 		return $kernel;

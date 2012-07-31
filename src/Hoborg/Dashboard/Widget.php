@@ -86,6 +86,27 @@ class Widget {
 		return $assets;
 	}
 
+	public function hasJS() {
+		return !empty($this->data['js']);
+	}
+
+	public function getJS() {
+		$js = $this->getData('js', array());
+		if (!is_array($js)) {
+			$js = array($js);
+		}
+
+		return $js;
+	}
+
+	public function getJsClassName() {
+		if (empty($this->data['class'])) {
+			return 'HoborgWidget';
+		}
+
+		return $this->data['class'];
+	}
+
 	public function hasHead() {
 		return !empty($this->data['head']);
 	}

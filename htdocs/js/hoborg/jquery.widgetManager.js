@@ -40,6 +40,7 @@
 
 	function init(opt) {
 		$.extend(options, opt);
+		$.sub('widget:render', onWidgetRender);
 	}
 
 	function start() {
@@ -49,18 +50,18 @@
 
 	function stop() {
 		isActive = false;
+		$.each(widgets, function() { this.stop(); });
+	}
+	
+	function onWidgetRender(widget) {
+		options.callback(widget);
 	}
 
 	function addWidget(widget) {
-		// create 
-		widgetDiv = createWidget(widget);
 
-		widgets.push(widgetDiv);
-		this.append(widgetDiv);
-
-		renderWidgetJson(widgetDiv, widget);
-		activateWidget(widgetDiv);
-		options.callback(widgetDiv);
+		widgets.push(widget);
+		this.append(widget.el);
+		activateWidget(widget);
 	}
 
 	function addWidgets(newWidgets) {
@@ -81,11 +82,7 @@
 
 	function activateWidget(widget) {
 		if (isActive) {
-			widgetConfig = $.extend(defaultWidgetConfig, widget.data('config'));
-			var t = setTimeout(
-				function() { reloadWidget(widget); }, 
-				widgetConfig.tick * 1000
-			);
+			widget.start();
 		}
 	}
 
@@ -95,6 +92,8 @@
 		}
 
 		var widgetConfig = widget.data('config');
+		delete widgetConfig.body;
+		delete widgetConfig.template;
 
 		$.ajax({
 			url: options.url,

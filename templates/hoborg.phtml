@@ -5,14 +5,23 @@ $p = empty($p['public']) ? '' : $p['public'];
 ?>
 <html class="dashboard">
 	<head>
-		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="<?php echo $p; ?>/styles/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="/?static=/templates/hoborg/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="/?static=/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="/?static=/templates/hoborg/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.mustache.js"></script>
 		<script type="text/javascript" src="<?php echo $p; ?>/js/jquery/jquery.masonry.min.js"></script>
 		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/bus.js"></script>
 		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/jquery.widgetManager.js"></script>
+		<script type="text/javascript" src="<?php echo $p; ?>/js/hoborg/widget.js"></script>
+		<?php foreach($this->widgets as $widget) : ?>
+			<?php if ($widget->hasJS()) : ?>
+				<?php foreach ($widget->getJS() as $js) : ?>
+					<script type="text/javascript" src="/?static=/widgets/<?php echo $js; ?>"></script>
+				<?php endforeach; ?>
+			<?php endif; ?>
+		<?php endforeach; ?>
+
 		<script type="text/javascript">
 		$(document).ready(function() {
 			// distribute widgets on the screen.
@@ -22,26 +31,25 @@ $p = empty($p['public']) ? '' : $p['public'];
 				isFitWidth: true,
 				isAnimated: true
 			});
-
-			var hoborg_tpl = <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>;
-
 			$('.dashboard .container').widgetManager({
-				url: '',
-				conf: 'demo',
 				callback: function(widget) { $('.dashboard .container').masonry('reload'); },
-				template: hoborg_tpl
 			});
 
-			var widgets = [
-			<?php $coma = '' ?>
+			var widgets = [];
+			var widgetOptions = {
+				url: '',
+				conf: 'demo',
+				defaults: {
+					template: <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>
+				}
+			};
 			<?php foreach ($this->widgets as $index => & $widget) : ?>
-				<?php echo $coma . $widget->getJson() . "\n"; $coma = ','; ?>
+				widgets.push(new <?php echo $widget->getJsClassName(); ?>(<?php echo $widget->getJson(); ?>,
+						widgetOptions));
 			<?php endforeach; unset($widget); ?>
-			];
 
 			$('.dashboard .container').widgetManager('addWidgets', widgets);
 			$('.dashboard .container').widgetManager('start');
-
 		});
 		</script>
 

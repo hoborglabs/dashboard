@@ -37,6 +37,13 @@ class WidgetProvider implements IWidgetProvider {
 		return $widget;
 	}
 
+	public function createRowWidget(Kernel $kernel, array $widgetJson) {
+
+		$this->kernel = $kernel;
+		$widget = new Widget($kernel, $widgetJson);
+		return $widget;
+	}
+
 	/**
 	 * Loads first available source.
 	 *

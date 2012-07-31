@@ -18,13 +18,13 @@ class Kernel {
 		'config' => array(),
 	);
 
-	public function __construct($env = 'prod') {
+	public function __construct($rootFolder, $env = 'prod') {
 		$this->environment = $env;
 
-		$this->paths['templates'][] = H_D_ROOT . '/templates';
-		$this->paths['widgets'][] = H_D_ROOT . '/widgets';
-		$this->paths['data'][] = H_D_ROOT . '/data';
-		$this->paths['config'][] = H_D_ROOT . '/conf';
+		$this->paths['templates'][] = $rootFolder . '/templates';
+		$this->paths['widgets'][] = $rootFolder . '/widgets';
+		$this->paths['data'][] = $rootFolder . '/data';
+		$this->paths['config'][] = $rootFolder . '/conf';
 	}
 
 	/**
@@ -38,6 +38,12 @@ class Kernel {
 	public function handle(array $params, Dashboard $dashboard = null, WidgetProvider $widgetProvider = null) {
 		try {
 			$this->setParams($params);
+
+			if ($this->hasStaticParam()) {
+				$proxy = new StaticAssetsProxy($this);
+				$proxy->output($this->getParam('static', ''));
+				return;
+			}
 
 			if ($this->hasWidgetParam()) {
 				// render selected widget
@@ -69,6 +75,10 @@ class Kernel {
 		return array_key_exists('widget', $this->params);
 	}
 
+	public function hasStaticParam() {
+		return array_key_exists('static', $this->params);
+	}
+
 	public function getEnvironment() {
 		return $this->environment;
 	}
@@ -91,6 +101,11 @@ class Kernel {
 		return isset($this->params[$key]) ? $this->params[$key] : $default;
 	}
 
+	public function setPath($key, array $paths) {
+		$this->paths[$key] = $paths;
+		return $this;
+	}
+
 	public function getTemplatesPath() {
 		return $this->paths['templates'];
 	}
@@ -102,11 +117,6 @@ class Kernel {
 
 	public function getConfigPath() {
 		return $this->paths['config'];
-	}
-
-	public function setPath($key, array $paths) {
-		$this->paths[$key] = $paths;
-		return $this;
 	}
 
 	public function getWidgetsPath() {
