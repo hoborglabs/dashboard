@@ -6,8 +6,8 @@ class Widget {
 	protected $kernel = null;
 
 	private $defaults = array(
-			'name' => '',
-			'body' => '',
+		'name' => '',
+		'body' => '',
 	);
 
 	protected $data = array();
@@ -43,7 +43,7 @@ class Widget {
 	public function getData($key = null, $default = null) {
 		if (null !== $key) {
 			return isset($this->data[$key]) ?
-			$this->data[$key] : $default;
+					$this->data[$key] : $default;
 		}
 
 		return $this->data;
@@ -70,6 +70,20 @@ class Widget {
 
 	public function bootstrap() {
 		return $this;
+	}
+
+	public function getAssetFiles($type) {
+
+		if (empty($this->data['assets'][$type])) {
+			return array();
+		}
+
+		$assets = $this->data['assets'][$type];
+		if (!is_array($assets)) {
+			$assets = array($assets);
+		}
+
+		return $assets;
 	}
 
 	public function hasJS() {
