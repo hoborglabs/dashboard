@@ -11,6 +11,12 @@
 					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/widgets/<?php echo $js; ?>"></script>
 				<?php endforeach; ?>
 			<?php endif; ?>
+
+			<?php if ($widget->hasCSS()) : ?>
+				<?php foreach ($widget->getCSS() as $css) : ?>
+					<link href="/widgets/<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
+				<?php endforeach; ?>
+			<?php endif; ?>
 		<?php endforeach; ?>
 
 		<script type="text/javascript">
