@@ -6,8 +6,8 @@ class Widget {
 	protected $kernel = null;
 
 	private $defaults = array(
-		'name' => '',
-		'body' => '',
+			'name' => '',
+			'body' => '',
 	);
 
 	protected $data = array();
@@ -43,7 +43,7 @@ class Widget {
 	public function getData($key = null, $default = null) {
 		if (null !== $key) {
 			return isset($this->data[$key]) ?
-					$this->data[$key] : $default;
+			$this->data[$key] : $default;
 		}
 
 		return $this->data;
@@ -83,6 +83,19 @@ class Widget {
 		}
 
 		return $js;
+	}
+
+	public function hasCSS() {
+		return !empty($this->data['css']);
+	}
+
+	public function getCSS() {
+		$css = $this->getData('css', array());
+		if (!is_array($css)) {
+			$css = array($css);
+		}
+
+		return $css;
 	}
 
 	public function getJsClassName() {
