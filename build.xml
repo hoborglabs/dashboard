@@ -83,6 +83,9 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 			<fileset dir="${dir.base}/htdocs/style/"
 				includes="dashboard.css"
 			/>
+			<fileset dir="${dir.base}/htdocs/style/"
+				includes="chart.css"
+			/>
 		</concat>
 
 		<apply executable="java"
