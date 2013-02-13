@@ -1,5 +1,5 @@
 html.dashboard, body.dashboard, #dashboard {
-    background-color: #232323;
+    background-color: #1C1C1C;
     color: #585858;
 }
 
@@ -73,6 +73,9 @@ dl.side-by-side dd {
 	padding: 2px;
 }
 
+.span27 {
+    width: 1340px;
+}
 .widget.autoHeight,
 .widget.autoHeight .body {
     height: auto;
@@ -116,6 +119,8 @@ dl.side-by-side dd {
     color: #FFFFFF;
     float: left;
     margin-bottom: 10px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 5px #000000;
 	/* IE10 Consumer Preview */ 
 	background-image: -ms-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
 	/* Mozilla Firefox */ 
@@ -139,10 +144,10 @@ dl.side-by-side dd {
 
 .widget .header {
     border-bottom: 1px solid #131313;
-    border-top: 1px solid #414141;
     height: 15px;
     padding: 8px 15px 10px;
     background-color: #373737;
+    border-radius: 3px 3px 0px 0px;
 }
 
 .widget .body {
@@ -153,6 +158,16 @@ dl.side-by-side dd {
 }
 .widget .body:last-child {
     height: 162px;
+    border-radius: 0px 0px 3px 3px;
+}
+
+.widget .header:last-child {
+    border-radius: 3px;
+}
+.widget.autoHeight,
+.widget.autoHeight .body,
+.autoHeight .body:last-child {
+    height:auto
 }
 
 .widget.height2 {
@@ -185,11 +200,11 @@ dl.side-by-side dd {
 }
 .widget .footer {
     background-color: #272727;
-    border-bottom: 1px solid #131313;
     border-top: 1px solid #414141;
     color: #666666;
     height: 20px;
     padding: 5px 15px;
+    border-radius: 0px 0px 3px 3px;
 }
 .widget .text-XXL {
     font-size: 56px;
@@ -320,3 +335,43 @@ table th.right {
 
 col.t30 { width: 30% }
 col.t20 { width: 20% }
+
+.widget .twtr-hd {
+	display: none;
+}
+
+.media {}
+.media-body {overflow:hidden; _overflow:visible; zoom:1;}
+.media-img {float:left; margin-right: 10px;}
+.media-img img{display:block;}
+.media-imgExt {float:right; margin-left: 10px;}
+
+.matrix{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+    .matrix > li{
+        float:left;
+        -webkit-box-sizing:border-box;
+           -moz-box-sizing:border-box;
+                box-sizing:border-box;
+    }
+    .one-col > li{
+        width:100%;
+    }
+    .two-col > li{
+        width:50%;
+    }
+    .three-col > li{
+        width:33.333%;
+    }
+    .four-col > li{
+        width:25%;
+    }
+    .five-col > li{
+        width:20%;
+    }
+    .matrix .full{
+        width:100%;
+    }
