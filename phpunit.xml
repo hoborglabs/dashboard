@@ -15,6 +15,10 @@
 		<testsuite name="Hoborg_Dashboard">
 			<directory>./tests/Hoborg/Dashboard</directory>
 		</testsuite>
+
+		<testsuite name="Hoborg_DashboardCache">
+			<directory>./tests/Hoborg/DashboardCache</directory>
+		</testsuite>
 	</testsuites>
 
 </phpunit>

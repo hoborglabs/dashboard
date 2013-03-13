@@ -20,6 +20,20 @@ Visit http://dashboard.hoborglabs.com/ for more details.
 
 For more technical info visit: http://dashboard.hoborglabs.com/doc
 
+## Dashboard Cache
+
+Cache:
+timestamp, widget id, json
+
+widget:
+id, name, api_key
+
+example api call
+
+~~~~~
+PUT /api/1/widget/1/data?key=WIDGET_SECREAT_KEY
+{"my": "example data"}
+~~~~~
 
 ## History
 

@@ -17,17 +17,34 @@
 	<property name="cmd.phpcs" value="phpcs" />
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
+	<property name="cmd.composer" value="${dir.base}/composer.phar" />
 
 	<property name="dir.deploy.local" value="false" />
 
+	<available file="${dir.base}/composer.phar" property="composer.present" />
+
 	<!--
 	Main targets:
+		* validate
 		* test
 		* build
 		* code-analysis
 		* clean
 		* help
 	-->
+
+	<target name="validate" 
+		description="Validates project."
+		depends="prepare, -install-composer"
+	>
+		<!-- get dependencies -->
+		<exec executable="php" failonerror="true">
+			<arg line="${cmd.composer}" />
+			<arg line="update" />
+			<arg line="--dev" />
+		</exec>
+	</target>
+	
 	<target name="test"
 		description="Run project tests"
 		depends="prepare, phpunit, build-phar, phpunit-phar"
@@ -357,6 +374,13 @@ __HALT_COMPILER();</echo>
 		<mkdir dir="${dir.logs}/phpcpd" />
 		<mkdir dir="${dir.logs}/phpdepend" />
 		<mkdir dir="${dir.logs}/phpunit" />
+	</target>
+	
+	<target name="-install-composer" unless="composer.present">
+		<exec executable="bash">
+			<arg value="-c" />
+			<arg value="curl -s http://getcomposer.org/installer | php" />
+		</exec>
 	</target>
 </project>
 
