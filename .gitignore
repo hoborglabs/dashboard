@@ -4,6 +4,12 @@
 *.swp
 
 ##
+# Composer
+/vendor
+/composer.lock
+/composer.phar
+
+##
 # Configuration
 #
 /conf/*.js
@@ -11,12 +17,12 @@
 !/conf/demo.js
 /conf/*.php
 !/conf/*.dist.php
+*.properties
 
 ##
 # Build assets
 #
 /build
-build.properties
 *.min.js
 *.min.css
 /htdocs/templates
