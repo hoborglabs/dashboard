@@ -99,6 +99,19 @@ class Widget {
 		return $js;
 	}
 
+	public function hasCSS() {
+		return !empty($this->data['css']);
+	}
+
+	public function getCSS() {
+		$css = $this->getData('css', array());
+		if (!is_array($css)) {
+			$css = array($css);
+		}
+
+		return $css;
+	}
+
 	public function getJsClassName() {
 		if (empty($this->data['class'])) {
 			return 'HoborgWidget';
