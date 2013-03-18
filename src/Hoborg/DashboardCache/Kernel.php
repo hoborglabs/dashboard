@@ -4,6 +4,7 @@ namespace Hoborg\DashboardCache;
 use Hoborg\DashboardCache\Adapter\Mysqli;
 
 use Hoborg\DashboardCache\Mapper\Widget;
+use Hoborg\DashboardCache\Mapper\Data;
 
 use Hoborg\DashboardCache\Router\ApiWidget;
 
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 class Kernel {
 
 	protected $widgetMapper = null;
+
+	protected $dataMapper = null;
 
 	protected $dbAdapter = null;
 
@@ -72,6 +75,15 @@ class Kernel {
 
 		$this->widgetMapper = new Widget($this->getDbAdapter());
 		return $this->widgetMapper;
+	}
+
+	public function getDataMapper() {
+		if (null != $this->dataMapper) {
+			return $this->dataMapper;
+		}
+
+		$this->dataMapper = new Data($this->getDbAdapter());
+		return $this->dataMapper;
 	}
 
 	protected function getDbAdapter() {

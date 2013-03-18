@@ -8,9 +8,11 @@ use Hoborg\DashboardCache\iHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-class WidgetGet extends Api implements iHandler {
+class DataGet extends Api implements iHandler {
 
 	protected $container = null;
+
+	protected $widgetId = null;
 
 	public function __construct($id) {
 		$this->widgetId = $id;
@@ -21,21 +23,24 @@ class WidgetGet extends Api implements iHandler {
 	}
 
 	public function process(Request $request, Response $response) {
-		$mapper = $this->container->getWidgetMapper();
-		$widget = $mapper->getById($this->widgetId);
+		$mapper = $this->container->getDataMapper();
+		$data = $mapper->getByWidgetId($this->widgetId, $request->query->get('from', '-30min'));
 
-		if (empty($widget)) {
-			$this->jsonError('Widget not found', $response);
-		} else {
-			$this->jsonSuccess($widget, $response);
-		}
+		$this->jsonSuccess($data, $response);
 
 		return $response;
 	}
 
 	protected function jsonSuccess(array $data, Response $response) {
-		$data['data_url'] = "/api/1/widget/{$data['id']}/data";
+		foreach ($data as &$row) {
+			unset($row['widget_id']);
+			$row['data'] = json_decode($row['json']);
+			unset($row['json']);
+		}
 
-		parent::jsonSuccess($data, $response);
+		parent::jsonSuccess(array(
+			'widget_url' => '/api/1/widget/' . $this->widgetId,
+			'datapoints' => $data
+		), $response);
 	}
 }

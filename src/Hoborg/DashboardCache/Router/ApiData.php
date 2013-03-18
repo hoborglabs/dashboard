@@ -2,7 +2,6 @@
 namespace Hoborg\DashboardCache\Router;
 
 
-use Hoborg\DashboardCache\Api\DataGet;
 use Hoborg\DashboardCache\Api\WidgetGet;
 
 class ApiWidget {
@@ -15,15 +14,8 @@ class ApiWidget {
 		}
 		$widgetid = $urlParts[0];
 
-		if (1 == count($urlParts)) {
-			if ('GET' == strtoupper($method)) {
-				return new WidgetGet($widgetid);
-			}
-		} else if (2 == count($urlParts)) {
-			if ('data' == $urlParts[1]) {
-				return new DataGet($widgetid);
-			}
+		if ('GET' == strtoupper($method)) {
+			return new DataGet($widgetid);
 		}
-
 	}
 }

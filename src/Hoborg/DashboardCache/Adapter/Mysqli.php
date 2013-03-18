@@ -17,7 +17,13 @@ class Mysqli implements iAdapter {
 	}
 
 	public function quote($input) {
-		return $this->connection->real_escape_string($input);
+		$escaped = $this->connection->real_escape_string($input);
+
+		if (is_numeric($escaped)) {
+			return $escaped;
+		} else {
+			return "\"{$escaped}\"";
+		}
 	}
 
 	public function query($sql) {
@@ -29,13 +35,13 @@ class Mysqli implements iAdapter {
 	public function fetchRow($sql) {
 		$result = $this->connection->query($sql);
 
-		return $result->fetch_row();
+		return $result->fetch_assoc();
 	}
 
 	public function fetchAll($sql) {
 		$result = $this->connection->query($sql);
 
-		return $result->fetch_assoc();
+		return $result->fetch_all(MYSQLI_ASSOC);
 	}
 
 	public function getConnection() {

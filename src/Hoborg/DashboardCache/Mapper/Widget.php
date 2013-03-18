@@ -19,6 +19,7 @@ class Widget {
 	}
 
 	public function getById($id) {
-		return $this->adapter->fetchRow('SELECT * FROM ');
+		$sql = 'SELECT * FROM widget WHERE id = ' . $this->adapter->quote($id);
+		return $this->adapter->fetchRow($sql);
 	}
 }
