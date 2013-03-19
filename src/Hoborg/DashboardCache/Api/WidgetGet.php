@@ -22,7 +22,9 @@ class WidgetGet extends Api implements iHandler {
 
 	public function process(Request $request, Response $response) {
 		$mapper = $this->container->getWidgetMapper();
-		$widget = $mapper->getById($this->widgetId);
+		$key = $request->query->get('key', null);
+
+		$widget = $mapper->getById($this->widgetId, $key);
 
 		if (empty($widget)) {
 			$this->jsonError('Widget not found', $response);

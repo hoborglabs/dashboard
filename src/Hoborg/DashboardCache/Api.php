@@ -12,6 +12,8 @@ abstract class Api {
 	}
 
 	protected function jsonError($msg, Response $response) {
+		$response->setStatusCode(404);
+		$response->headers->set('Content-Type', 'application/json');
 		$response->setContent(json_encode(array(
 					't' => time(),
 					'data' => null,
