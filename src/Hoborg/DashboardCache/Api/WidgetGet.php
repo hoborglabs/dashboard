@@ -27,7 +27,7 @@ class WidgetGet extends Api implements iHandler {
 		$widget = $mapper->getById($this->widgetId, $key);
 
 		if (empty($widget)) {
-			$this->jsonError('Widget not found', $response);
+			$this->jsonError('Widget not found', 404, $response);
 		} else {
 			$this->jsonSuccess($widget, $response);
 		}

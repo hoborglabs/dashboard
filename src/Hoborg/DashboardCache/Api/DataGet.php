@@ -23,8 +23,19 @@ class DataGet extends Api implements iHandler {
 	}
 
 	public function process(Request $request, Response $response) {
-		$mapper = $this->container->getDataMapper();
-		$data = $mapper->getByWidgetId($this->widgetId, $request->query->get('from', '-30min'));
+		$dataMapper = $this->container->getDataMapper();
+		$widgetMapper = $this->container->getWidgetMapper();
+		$key = $request->query->get('key', null);
+
+		$widget = $widgetMapper->getById($this->widgetId, $key);
+		if (empty($widget)) {
+			$this->jsonError('Widget not found', 404, $response);
+			return $response;
+		}
+		$data = array(
+			$widget,
+			$dataMapper->getByWidget($widget, $request->query->get('from', '-30min')),
+		);
 
 		$this->jsonSuccess($data, $response);
 
@@ -32,7 +43,7 @@ class DataGet extends Api implements iHandler {
 	}
 
 	protected function jsonSuccess(array $data, Response $response) {
-		foreach ($data as &$row) {
+		foreach ($data[1] as &$row) {
 			unset($row['widget_id']);
 			$row['data'] = json_decode($row['json']);
 			unset($row['json']);
@@ -40,7 +51,8 @@ class DataGet extends Api implements iHandler {
 
 		parent::jsonSuccess(array(
 			'widget_url' => '/api/1/widget/' . $this->widgetId,
-			'datapoints' => $data
+			'datapoints' => $data[1],
+			'widget' => $data[0],
 		), $response);
 	}
 }

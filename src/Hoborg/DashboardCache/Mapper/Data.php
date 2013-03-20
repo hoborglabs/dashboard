@@ -18,12 +18,12 @@ class Data {
 		$this->adapter = $adapter;
 	}
 
-	public function getByWidgetId($widgetId, $from = '30min', $until = 'now') {
+	public function getByWidget(array $widget, $from = '30min', $until = 'now') {
 		$fromDate = new \DateTime();
 		$fromDate->modify($from);
 
 		$sql = 'SELECT json, `numeric`, unix_timestamp(timestamp) AS timestamp FROM data_hot '
-				.'WHERE widget_id = ' . $this->adapter->quote($widgetId)
+				.'WHERE widget_id = ' . $this->adapter->quote($widget['id'])
 				. ' AND timestamp > ' . $this->adapter->quote($fromDate->format('Y-m-d H:i:s'));
 
 		return $this->adapter->fetchAll($sql);
