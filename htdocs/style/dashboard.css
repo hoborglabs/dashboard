@@ -76,6 +76,12 @@ dl.side-by-side dd {
 .span-full-size {
     width: 100%;
 }
+.span25 {
+    width: 1240px;
+}
+.span26 {
+    width: 1290px;
+}
 .span27 {
     width: 1340px;
 }
