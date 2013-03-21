@@ -164,7 +164,7 @@ class Kernel {
 		if (!is_file($configFile)) {
 			$configFile = $this->findFileOnPath($configName . '.json', $this->getConfigPath());
 			if (!is_file($configFile)) {
-				$error = "configuration file not found" . $this->params['conf'];
+				$error = "Configuration file `{$this->params['conf']}` not found.";
 				$code = '404';
 				$this->handleError($error, $code);
 			}
