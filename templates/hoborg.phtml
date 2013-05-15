@@ -13,9 +13,9 @@
 			<?php endif; ?>
 			<?php if ($widget->hasCSS()) : ?>
 				<?php foreach ($widget->getCSS() as $css) : ?>
-                                        <link href="static/widgets/<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
-                                <?php endforeach; ?>
-                        <?php endif; ?>
+					<link href="static/widgets/<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
+				<?php endforeach; ?>
+			<?php endif; ?>
 		<?php endforeach; ?>
 
 		<script type="text/javascript">
@@ -48,8 +48,6 @@
 			$('.dashboard .container').widgetManager('start');
 		});
 		</script>
-
-		<?php echo ''; //$head; ?>
 	</head>
 	<body class="dashboard">
 		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
