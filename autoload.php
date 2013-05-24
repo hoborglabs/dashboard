@@ -8,6 +8,6 @@
 
 define('SRC_DIR', __DIR__ . '/src');
 
-$loader = include_once __DIR__ . '/vendor/autoload.php';
+$loader = include __DIR__ . '/vendor/autoload.php';
 $loader->add('Hoborg\\Dashboard\\', SRC_DIR);
 $loader->add('Hoborg\\DashboardCache\\', SRC_DIR);

@@ -8,31 +8,40 @@ use Hoborg\DashboardCache\iHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-class WidgetGet extends Api implements iHandler {
+class WidgetPut extends Api implements iHandler {
 
 	protected $container = null;
+
+	protected $widgetId = null;
 
 	public function __construct($id) {
 		$this->widgetId = $id;
 	}
 
+	/**
+	 * @see Hoborg\DashboardCache.iHandler::setContainer()
+	 */
 	public function setContainer(Kernel $kernel) {
 		$this->container = $kernel;
 	}
 
+	/**
+	 * @see Hoborg\DashboardCache.iHandler::processHttp()
+	 */
 	public function processHttp(Request $request, Response $response) {
-		$mapper = $this->container->getWidgetMapper();
+		$widgetMapper = $this->container->getWidgetMapper();
 		$configJson = $request->query->get('config', '{}');
 		$config = json_decode($configJson, true);
 
-		$widget = $mapper->getById($this->widgetId, $config);
-
-		if (empty($widget)) {
-			$this->jsonError("Widget `{$this->widgetId}` not found", 404, $response);
-		} else {
-			$this->jsonSuccess($widget, $response);
+		$data = json_decode($request->getContent(), true);
+		if (empty($data)) {
+			$this->jsonError('Invalid JSON', 500, $response);
+			return $response;
 		}
 
+		$widget = $widgetMapper->updateOrInstertById($this->widgetId, $config, $data);
+
+		$this->jsonSuccess($widget, $response);
 		return $response;
 	}
 

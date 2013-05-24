@@ -18,16 +18,29 @@ class Widget {
 		$this->adapter = $adapter;
 	}
 
-	public function getById($id, $key = null) {
+	public function getById($id, $config = array()) {
 
-		$sql = 'SELECT * FROM widget '
-				. 'WHERE id = ' . $this->adapter->quote($id);
+		$configHash = md5(json_encode($config));
+		$widget = $this->adapter->from('widget')
+			->by('id', $id)
+			->by('configHash', $configHash)
+			->fetch();
 
-		if (null == $key) {
-			$sql .= ' AND api_key IS NULL';
-		} else {
-			$sql .= ' AND api_key = ' . $this->adapter->quote($key);
+		if (!empty($widget['data'])) {
+			$widget['data'] = json_decode($widget['data']);
 		}
-		return $this->adapter->fetchRow($sql);
+
+		return $widget;
+	}
+
+	public function updateOrInstertById($id, array $config = array(), $data) {
+		$configHash = md5(json_encode($config));
+		$widget = $this->adapter->from('widget')
+			->by('id', $id)
+			->by('configHash', $configHash)
+			->update(array('data' => json_encode($data), 'timestamp' => time()));
+		$widget['data'] = json_decode($widget['data']);
+
+		return $widget;
 	}
 }

@@ -46,13 +46,13 @@ class Kernel {
 			}
 
 			if ($this->hasWidgetParam()) {
-				// render selected widget
+				// return selected widget data in JSONP format
 				$widget = null;
 				if (null == $widgetProvider) {
-					$widgetProvider = new WidgetProvider();
+					$widgetProvider = new WidgetProvider($this);
 				}
-				$widget = $widgetProvider->createWidget($this, $this->getParam('widget'));
-				$widget->bootstrap();
+				$widget = $widgetProvider->createWidget($this->getParam('widget'));
+				$widget->getData();
 				$this->send($widget->getJson());
 			} else {
 				// render whole dashboard

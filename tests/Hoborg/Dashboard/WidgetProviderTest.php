@@ -16,17 +16,19 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 
 	private $spec = null;
 
+	private $kernel = null;
+
 	public function setup() {
 		$this->mockFactory = new MockFactory($this);
-		$this->widgetProviderTestCase = new WidgetProviderTestCase();
+		$this->kernel = $this->mockFactory->getKernelMock();
+		$this->widgetProviderTestCase = new WidgetProviderTestCase($this->kernel);
 	}
 
 	/**
 	 * @dataProvider widgetSourcesProvider
 	 */
 	public function testgetWidgetSources($widgetData, $expectedSources) {
-		$kernel = $this->mockFactory->getKernelMock();
-		$widget = $this->mockFactory->getWidgetMock($kernel);
+		$widget = $this->mockFactory->getWidgetMock($this->kernel);
 		$widget->expects($this->once())
 				->method('getData')
 				->will($this->returnValue($widgetData));

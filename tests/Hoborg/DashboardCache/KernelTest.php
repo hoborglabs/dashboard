@@ -10,7 +10,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider url404provider
 	 */
 	public function test404Response($url) {
-		$kernel = new Kernel();
+		$kernel = new Kernel(null);
 		$request = new Request();
 		$request->server->set('REQUEST_URI', $url);
 		$response = new Response();

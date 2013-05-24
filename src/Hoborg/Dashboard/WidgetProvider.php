@@ -5,11 +5,14 @@ class WidgetProvider implements IWidgetProvider {
 
 	protected $kernel = null;
 
-	public function createWidget(Kernel $kernel, array $widgetJson) {
+	public function __construct(Kernel $kernel) {
 		$this->kernel = $kernel;
-		$widget = new Widget($kernel, $widgetJson);
+	}
+
+	public function createWidget(array $widgetJson) {
+		$widget = new Widget($this->kernel, $widgetJson);
 		$sources = $this->getWidgetSources($widget);
-		$wData = $widget->getData();
+		$wData = $widget->get();
 
 		foreach ($sources as $source) {
 			switch ($source['type']) {
@@ -25,22 +28,34 @@ class WidgetProvider implements IWidgetProvider {
 					break;
 
 				case 'static':
+					foreach ($source['sources'] as $src) {
+						$path = $this->kernel->findFileOnPath(
+								$src, $this->kernel->getDataPath());
+
+						if (!empty($path)) {
+							$widgetJson = json_decode(file_get_contents($path), true);
+							if (!empty($widgetJson)) {
+								$widget->extendData($widgetJson);
+							}
+						}
+					}
+					break;
+
 				case 'url':
 					$body = $this->loadBody($source['type'], $source['sources']);
 					$wData['body'] = $body;
-					$widget->setData($wData);
+					$widget->extendData($wData);
 					break;
 			}
 		}
 
-		$widget->setData($wData);
+		//$widget->extendData($wData);
 		return $widget;
 	}
 
-	public function createRowWidget(Kernel $kernel, array $widgetJson) {
+	public function createRowWidget(array $widgetJson) {
 
-		$this->kernel = $kernel;
-		$widget = new Widget($kernel, $widgetJson);
+		$widget = new Widget($this->kernel, $widgetJson);
 		return $widget;
 	}
 
@@ -101,7 +116,7 @@ class WidgetProvider implements IWidgetProvider {
 		} else if ('php' == $type) {
 			foreach ($sources as $src) {
 				$widgetData = $this->loadWidgetFromPhp($widget, $src);
-				$widget->setData($widgetData);
+				$widget->extendData($widgetData);
 			}
 		}
 
@@ -110,7 +125,7 @@ class WidgetProvider implements IWidgetProvider {
 
 	protected function getWidgetSources(Widget $widget) {
 		$sources = array();
-		$widgetData = $widget->getData();
+		$widgetData = $widget->get();
 		$sourceKeys = array('php', 'cgi', 'url', 'static');
 
 		foreach ($widgetData as $key => $value) {
@@ -136,24 +151,24 @@ class WidgetProvider implements IWidgetProvider {
 
 		if ($path) {
 			$meta = $this->getFileMeta($path);
-			$widgetData = $widget->getData();
+			$widgetData = $widget->get();
 
 			include_once $path;
 			$extWidget = new $meta['class']($this->kernel, $widgetData);
 			$extWidget->bootstrap();
 
-			return $extWidget->getData();
+			return $extWidget->get();
 		}
 
 		return array();
 	}
 
 	protected function loadWidgetFromCgi($widget, $src) {
-		$data = $widget->getData();
+		$data = $widget->get();
 		$json = null;
 
 		if (isset($data['method']) && 'get' == strtolower($data['method'])) {
-			$src .= '?widget=' . urlencode(json_encode($widget->getData()));
+			$src .= '?widget=' . urlencode(json_encode($widget->get()));
 			$json = @file_get_contents($src);
 		} else {
 			$curl = curl_init();
