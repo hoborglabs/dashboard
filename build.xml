@@ -125,7 +125,29 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		</apply>
 	</target>
 
+	<target name="build.js" depends="prepare.js">
+		<apply executable="java"
+			parallel="false"
+			verbose="true"
+			dest="${dir.base}/htdocs"
+		>
+			<fileset dir="${dir.base}/htdocs/"
+				includes="*.js"
+				excludes="*.min.js"
+			/>
+			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
+			<arg line="--type js" />
+			<arg value="-o" />
+			<targetfile />
+			<mapper type="glob"
+				from="*.js"
+				to="*.min.js" 
+			/>
+		</apply>
+	</target>
+
 	<target name="prepare.js">
+		<delete file="${dir.base}/htdocs/dashboard.js" />
 		<copy todir="${dir.base}/htdocs">
 			<fileset dir="${dir.base}">
 				<include name="templates/**/*.js" />
@@ -147,24 +169,6 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 			</fileset>
 		</concat>
 
-		<apply executable="java"
-			parallel="false"
-			verbose="true"
-			dest="${dir.base}/htdocs"
-		>
-			<fileset dir="${dir.base}/htdocs/"
-				includes="*.js"
-				excludes="*.min.js"
-			/>
-			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
-			<arg line="--type js" />
-			<arg value="-o" />
-			<targetfile />
-			<mapper type="glob"
-				from="*.js"
-				to="*.min.js" 
-			/>
-		</apply>
 	</target>
 
 	<target name="prepare-code-phar"

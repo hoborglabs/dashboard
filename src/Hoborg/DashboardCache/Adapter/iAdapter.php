@@ -1,15 +1,21 @@
 <?php
 namespace Hoborg\DashboardCache\Adapter;
 
+/**
+ * SQL and NO-SQL adaptor for dashboard widget cache.
+ *
+ */
 interface iAdapter {
 
-	public function query($sql);
+	public function from($table);
 
-	public function fetchRow($sql);
+	public function by($field, $value);
 
-	public function fetchAll($sql);
+	public function fetch();
+
+	public function update(array $data);
 
 	public function quote($input);
 
-	public function getConnection();
+// 	public function getConnection();
 }
