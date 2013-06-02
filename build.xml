@@ -11,6 +11,7 @@
 	<property name="dir.logs" value="${dir.base}/logs" />
 	<property name="dir.src" value="${dir.base}/src" />
 
+	<!-- Commands defaults -->
 	<property name="cmd.phpunit" value="phpunit" />
 	<property name="cmd.phpmd" value="phpmd" />
 	<property name="cmd.phpcpd" value="phpcpd" />
@@ -18,7 +19,10 @@
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
 	<property name="cmd.composer" value="${dir.base}/composer.phar" />
+	<property name="cmd.recess" value="recess" />
+	<property name="cmd.node" value="node" />
 
+	<!-- Deploy configs -->
 	<property name="dir.deploy.local" value="false" />
 
 	<available file="${dir.base}/composer.phar" property="composer.present" />
@@ -47,10 +51,11 @@
 	
 	<target name="test"
 		description="Run project tests"
-		depends="prepare, phpunit, build-phar, phpunit-phar"
+		depends="prepare, phpunit"
 	/>
 
-	<target name="build" depends="prepare, build-phar"
+	<target name="build" 
+		depends="prepare, build.css, build.js, build-phar"
 		description="Builds dashboard package." />
 
 	<target name="code-analysis"
@@ -60,7 +65,7 @@
 
 	<target name="prepare"
 		description="Prepare folder structure"
-		depends="-prepare.folders, build.css, prepare.js"
+		depends="-prepare.folders"
 	>
 		<echo file="${dir.build}/phpmini.sh"><![CDATA[
 php -w $1 > $1.mini && mv $1.mini $1]]></echo>
@@ -125,6 +130,13 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		</apply>
 	</target>
 
+	<target name="build.css.watch"
+		description="Prints command to run for watching CSS changes."
+	>
+		<echo>To watch CSS run the following command</echo>
+		<echo>${cmd.recess} ${dir.base}/styles/less/dashboard.less:${dir.deploy.local}/htdocs/static/styles/css/dashboard.css --watch ${dir.base}/styles/less/</echo>
+	</target>
+
 	<target name="build.js" depends="prepare.js">
 		<apply executable="java"
 			parallel="false"
@@ -144,6 +156,19 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				to="*.min.js" 
 			/>
 		</apply>
+
+		<!-- require.js style -->
+		<echo>Building ${dir.src}/scripts/hoborglabs/app.build.js</echo>
+		<copy todir="${dir.build.dist}/htdocs/static">
+			<fileset dir="${dir.base}/scripts">
+				<include name="require.js" />
+			</fileset>
+		</copy>
+		<exec executable="${cmd.node}">
+			<arg line="scripts/r.js" />
+			<arg line="-o" />
+			<arg line="${dir.build.dist}/htdocs/static/scripts/hoborglabs/app.build.js" />
+		</exec>
 	</target>
 
 	<target name="prepare.js">
@@ -284,7 +309,7 @@ __HALT_COMPILER();</echo>
 	</target>
 	
 	<target name="deploy.local"
-		depends="prepare"
+		depends="prepare, build.css, build.js"
 		if="dir.deploy.local"
 	>
 		<copy todir="${dir.deploy.local}">

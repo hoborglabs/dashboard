@@ -1,0 +1,88 @@
+/**
+ * Widgets CSS
+ */
+html.dashboard,
+body.dashboard,
+#dashboard {
+	background-color: @background;
+	color: #585858;
+}
+
+/**
+ * overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
+ * http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+ */
+.widget {
+	overflow: hidden;
+	background-color: #373737;
+	color: #FFFFFF;
+	border-radius: 3px;
+	box-shadow: 0px 0px 5px #000000;
+	/* IE10 Consumer Preview */
+	background-image: -ms-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Mozilla Firefox */
+	background-image: -moz-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Opera */
+	background-image: -o-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* Webkit (Safari/Chrome 10) */
+	background-image: -webkit-gradient(radial, right bottom, 0, right bottom, 994, color-stop(0, #373737), color-stop(1, #272727) );
+	/* Webkit (Chrome 11+) */
+	background-image: -webkit-radial-gradient(right bottom, circle farthest-corner, #373737 0%, #272727 100%);
+	/* W3C Markup, IE10 Release Preview */
+	background-image: radial-gradient(circle farthest-corner at right bottom, #373737 0%, #272727 100%);
+}
+
+	.widget-header {
+		font-size: 14px;
+		background-color: #373737;
+		padding: 10px;
+		margin: 0;
+		border-bottom: 1px solid #131313;
+	}
+	
+	.widget-body {
+		
+	}
+
+.stop .widget {
+	opacity: 0.5;
+	background-image: none;
+}
+
+.panel {
+	background-color: #282828;
+	padding: 6px 15px;
+	border-bottom: 1px solid #121212;
+	border-top: 1px solid #343434;
+	margin: 0px 0px 4px 0px;
+}
+
+.matrix {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.matrix>li {
+	float: left;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.one-col>li {
+	width: 100%;
+}
+.two-col>li {
+	width: 50%;
+}
+.three-col>li {
+	width: 33.333%;
+}
+.four-col>li {
+	width: 25%;
+}
+.five-col>li {
+	width: 20%;
+}
+.matrix .full {
+	width: 100%;
+}
