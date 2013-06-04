@@ -1,10 +1,16 @@
 ;
-define([], function() {
+define([
+	'lib/lodash',
+	'lib/bonzo',
+	'lib/promise',
+	'lib/mustache'
+], function(_, bonzo, promise, mustache) {
+
 	var WIDGET_OPTIONS = {
 		url : '',
 		widgetGridWrapper : '<div class="grid-item"></div>',
 		widgetWrapper : '<div class="widget"></div></div>',
-		widgetLoading: '<div class="header">{{name}}</div><div class="body"><h3 class="loading">Loading Widget...</h3></div>',
+		widgetLoading: '<div class="widget-header">{{name}}</div><div class="widget-body"><h3 class="loading">Loading Widget...</h3></div>',
 		defaults : {
 			dataUrl: null,
 			tick : 60,
@@ -14,6 +20,9 @@ define([], function() {
 		}
 	};
 
+	var win = window,
+		doc = win.document;
+
 	/**
 	 * Main Widget class.
 	 * 
@@ -22,30 +31,37 @@ define([], function() {
 	 */
 	function Widget(data, options) {
 
-		this.options = $.extend(true, {}, WIDGET_OPTIONS, options);
-		this.data = $.extend(true, {}, this.options.defaults, data);
+		this.options = _.extend({}, WIDGET_OPTIONS, options);
+		this.data = _.extend({}, this.options.defaults, data);
 		this.timer = null;
+
+		// widget element
+		this.widget = null;
+		// and the widget's grid wrapper element
+		this.el = null;
 
 		this.init();
 	};
 
 	Widget.prototype.init = function() {
 
-		// create widget element
-		this.el = $(this.options.widgetGridWrapper);
-		var widget = $(this.options.widgetWrapper)
-		widget.addClass(this.data.size);
-		widget.html($.mustache(this.options.widgetLoading, this.data));
-		
-		this.el.append(widget);
+		// create widget
+		this.widget = bonzo(bonzo.create(this.options.widgetWrapper));
+		this.widget.html(mustache.to_html(this.options.widgetLoading, this.data));
+
+		// create widget wrapper
+		this.el = bonzo(bonzo.create(this.options.widgetGridWrapper));
+		this.el.addClass(this.data.size);
+		this.el.addClass('stop');
+		this.el.append(this.widget);
 	};
-	
+
 	Widget.prototype.start = function() {
+
+		this.startData();
 
 		this.el.removeClass('stop');
 		this.el.addClass('start');
-
-		this.startData();
 	};
 
 	Widget.prototype.startData = function() {
@@ -54,7 +70,6 @@ define([], function() {
 			this.timer = setInterval(function() {
 				widget.reload();
 			}, this.data.tick * 1000);
-
 			this.reload();
 		} else {
 			this.reload();
@@ -70,11 +85,12 @@ define([], function() {
 
 	Widget.prototype.reload = function() {
 
-		var widgetConfig = $.extend({}, this.data);
+		var widgetConfig = _.extend({}, this.data);
 
 		if (this.data.dataUrl) {
 			return this.loadData(widgetConfig);
 		}
+		return;
 
 		// no need to send body
 		delete widgetConfig.body;
@@ -90,7 +106,7 @@ define([], function() {
 			dataType : 'json',
 			context : this,
 			success : function(body) {
-				this.data = $.extend({}, this.data, body);
+				this.data = _.extend({}, this.data, body);
 				this.render();
 			},
 			error : function() {
@@ -110,19 +126,21 @@ define([], function() {
 			return this.render('oh snap, no data Url :(');
 		}
 
-		$.ajax({
-			url: this.data.dataUrl,
-			type: 'GET',
-			context : this,
-			dataType: 'jsonp',
-			success : function(response) {
-				console.log(response);
-				if (response.data) {
-					this.data.data = response.data;
-					this.render();
-				}
+		var widget = this;
+		promise.get(this.data.dataUrl).then(function(err, result) {
+			if (err) {
+				console.log('Error', err);
+				return;
+			}
+
+			wData = JSON.parse(result);
+			if (wData) {
+				widget.data.data = wData.data;
+				widget.render();
 			}
 		});
+		
+		return;
 	};
 
 	Widget.prototype.render = function(overrideBody) {
@@ -131,16 +149,16 @@ define([], function() {
 			body = overrideBody;
 		} else {
 			var tpl = this.data.template;
-			var body = $.mustache(tpl, this.data);
+			var body = mustache.to_html(tpl, this.data);
 		}
 		if (!body) {
-			this.el.addClass('hidden');
+			this.widget.addClass('hidden');
 		} else {
-			this.el.removeClass('hidden');
-			this.el.html(body);
+			this.widget.removeClass('hidden');
+			this.widget.html(body);
 		}
 
-		$.pub('widget:render', this);
+		//$.pub('widget:render', this);
 	};
 
 	// register class to widget store 

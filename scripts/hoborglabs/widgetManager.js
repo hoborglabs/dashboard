@@ -4,7 +4,10 @@
  * 
  * 
  */
-define([], function() {
+define([
+	'lib/lodash',
+	'lib/bonzo',
+], function(_, bonzo) {
 	
 	function WidgetManager(config) {
 		/**
@@ -23,17 +26,27 @@ define([], function() {
 	WidgetManager.prototype.init = function() {
 		// create widget objects from config
 		for (i in this.config.widgets) {
-			this.widgets.push(new (this.config.widgets[i]));
+			// create instance of widget using class name (first element in array) and config (second element in array)
+			this.widgets.push(new this.config.widgetClasses[this.config.widgets[i][0]](this.config.widgets[i][1]));
+		}
+		var b = bonzo(window.document.getElementById('dashboard'));
+		for (i in this.widgets) {
+			b.append(this.widgets[i].el);
 		}
 	};
 
 	WidgetManager.prototype.start = function() {
 		this.isActive = true;
-//		$.each(widgets, function() {
-//			activateWidget(this);
-//		});
+		_.each(this.widgets, function(widget) {
+			this.activateWidget(widget)
+		}, this);
 	}
 
+	WidgetManager.prototype.activateWidget = function(widget) {
+		if (this.isActive) {
+			widget.start();
+		}
+	}
 
 	/**
 	 * @var object Default options.
@@ -91,11 +104,7 @@ define([], function() {
 		});
 	}
 
-	function activateWidget(widget) {
-		if (isActive) {
-			widget.start();
-		}
-	}
+	
 
 	function reloadWidget(widget) {
 		if (!isActive) {
