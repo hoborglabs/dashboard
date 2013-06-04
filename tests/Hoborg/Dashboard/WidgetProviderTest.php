@@ -25,12 +25,21 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Simple test to make sure that one can access data from created widget.
+	 */
+	public function testCreateRowWidget() {
+		$actualWidget = $this->widgetProviderTestCase->createRowWidget(array('testKey' => 'test value'));
+
+		$this->assertEquals('test value', $actualWidget->get('testKey'));
+	}
+
+	/**
 	 * @dataProvider widgetSourcesProvider
 	 */
 	public function testgetWidgetSources($widgetData, $expectedSources) {
 		$widget = $this->mockFactory->getWidgetMock($this->kernel);
 		$widget->expects($this->once())
-				->method('getData')
+				->method('get')
 				->will($this->returnValue($widgetData));
 
 		$sources = $this->widgetProviderTestCase->testGetWidgetSources($widget);
