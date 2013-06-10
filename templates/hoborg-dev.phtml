@@ -4,7 +4,7 @@
 
 		<!-- Development ONLY -->
 		<!--  LESS -->
-		<link rel="stylesheet/less" type="text/css" href="styles/less/dashboard.less" />
+		<link rel="stylesheet/less" type="text/css" href="/styles/less/dashboard.less" />
 		<script type="text/javascript">
 	    less = {
 	        env: "development", // or "production"
@@ -21,10 +21,7 @@
 	                            //resource
 		};
 		</script>
-		<script src="/less.min.js" type="text/javascript"></script>
-
-		<!-- AMD -->
-
+		<script src="/scripts/less.min.js" type="text/javascript"></script>
 		<!-- END: Development ONLY -->
 
 <!--
@@ -91,6 +88,11 @@
 		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
 		<div class="container grid" id="dashboard"></div>
 
-		<script src="/scripts/require.js" type="text/javascript" data-main="/scripts/app.js"></script>
+		<script>
+			var require = {
+				'baseUrl': '/scripts'
+			};
+		</script>
+		<script src="/scripts/require.js" type="text/javascript" data-main="app.js"></script>
 	</body>
 </html>
