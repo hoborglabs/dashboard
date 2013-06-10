@@ -96,18 +96,14 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="widgets/**/*.css" />
 			</fileset>
 		</copy>
-		
+
 		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
 		<concat destfile="${dir.base}/htdocs/dashboard.css">
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="bootstrap.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="dashboard.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="chart.css"
-			/>
+			<fileset dir="${dir.base}/htdocs/style/">
+				<include name="bootstrap.css" />
+				<include name="dashboard.css" />
+				<include name="chart.css" />
+			</fileset>
 		</concat>
 
 		<apply executable="java"
@@ -128,6 +124,52 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				to="*.min.css" 
 			/>
 		</apply>
+	</target>
+
+	<!--
+	CSS targets
+	 - build.css.compress
+	 - build.css.compile (todo)
+	 - build.css.gfx
+	 - build.css.watch
+	-->
+
+	<!-- Compressed, production ready CSS -->
+	<target name="build.css.compress"
+		depends="build.css.gfx"
+		description="Builds CSS file(s) and copy assets."
+	>
+		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
+		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
+		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
+			<arg line="--compress" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec>
+	</target>
+	
+	<target name="build.css.compile"
+		depends="build.css.gfx"
+		description="Builds CSS file(s) and copy assets."
+	>
+		<echo level="info">COmpiling ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
+		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
+		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
+			<arg line="--compress" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec>
+	</target>
+
+	<target name="build.css.gfx"
+		description="Copy css assets to build folder"
+	>
+		<echo level="info">Copying CSS images assets to build folder.</echo>
+		<mkdir dir="${dir.build}/static/styles/gfx/" />
+		<copy todir="${dir.build}/static/styles/gfx/">
+			<fileset dir="${dir.base}/styles/gfx/">
+				<include name="**.png" />
+				<include name="**.gif" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="build.css.watch"
