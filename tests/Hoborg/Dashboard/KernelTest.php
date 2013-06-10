@@ -54,7 +54,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		$widgetMock->expects($this->once())
 				->method('getJson');
 
-		$widgetProvider = $this->getWidgetMockProvider();
+		$widgetProvider = $this->getWidgetMockProvider($kernel);
 		$widgetProvider->injectMock($widgetMock);
 
 		$kernel->handle(array('widget' => array()), null, $widgetProvider);
@@ -67,7 +67,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		return $kernel;
 	}
 
-	protected function getWidgetMockProvider() {
-		return new WidgetMockProvider();
+	protected function getWidgetMockProvider($kernel) {
+		return new WidgetMockProvider($kernel);
 	}
 }

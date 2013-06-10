@@ -23,7 +23,7 @@ class Dashboard {
 	public function __construct(Kernel $kernel, WidgetProvider $widgetProvider = null) {
 
 		if (null == $widgetProvider) {
-			$widgetProvider = new WidgetProvider();
+			$widgetProvider = new WidgetProvider($kernel);
 		}
 
 		$this->widgetProvider = $widgetProvider;
@@ -43,8 +43,8 @@ class Dashboard {
 				continue;
 			}
 
-			$w = $this->widgetProvider->createRowWidget($this->kernel, $widget);
-					//->bootstrap();
+			$w = $this->widgetProvider->createWidget($widget)
+					->bootstrap();
 			$this->widgets[$index] = $w;
 		}
 

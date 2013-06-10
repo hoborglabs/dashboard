@@ -21,6 +21,44 @@ Visit http://dashboard.hoborglabs.com/ for more details.
 For more technical info visit: http://dashboard.hoborglabs.com/doc
 
 
+
+## Dashboard Cache
+
+Dashboard Cache is a small storage application that allows you to store
+your widget data. It's particuraly useful when your want to store data
+from remote servers. You can for instance run a simple cron jab to send
+10min average cpu/disk usage.
+
+Project itself is small enough to be a part of Dashbaord project, there
+is however separate Kernel class for handling DashboardCache requests.
+
+
+Cache:
+timestamp, widget id, numeric, json
+
+widget:
+id, name, api_key
+
+example api call
+
+~~~~~
+PUT /api/1/widget/1/data?key=WIDGET_SECREAT_KEY
+GET /api/1/widget/1/data?key=WIDGET_SECREAT_KEY
+GET /api/1/widget/1/data?from=-10min&to=now&key=WIDGET_SECREAT_KEY
+~~~~~
+
+time format: `-?\d+(min|h|d|w|m|y)`
+  accept more complicated formats like `midnight-1d`, `today`
+
+
+Data split:
+
+Hot data - in memory  
+Warm data - normal storage  
+Cold data - archived
+
+
+
 ## History
 
 Simple Dashboard was started to bring into live a crazy vision of 

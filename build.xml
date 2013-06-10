@@ -11,29 +11,51 @@
 	<property name="dir.logs" value="${dir.base}/logs" />
 	<property name="dir.src" value="${dir.base}/src" />
 
+	<!-- Commands defaults -->
 	<property name="cmd.phpunit" value="phpunit" />
 	<property name="cmd.phpmd" value="phpmd" />
 	<property name="cmd.phpcpd" value="phpcpd" />
 	<property name="cmd.phpcs" value="phpcs" />
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
+	<property name="cmd.composer" value="${dir.base}/composer.phar" />
+	<property name="cmd.recess" value="recess" />
+	<property name="cmd.node" value="node" />
 
+	<!-- Deploy configs -->
 	<property name="dir.deploy.local" value="false" />
+
+	<available file="${dir.base}/composer.phar" property="composer.present" />
 
 	<!--
 	Main targets:
+		* validate
 		* test
 		* build
 		* code-analysis
 		* clean
 		* help
 	-->
+
+	<target name="validate" 
+		description="Validates project."
+		depends="prepare, -install-composer"
+	>
+		<!-- get dependencies -->
+		<exec executable="php" failonerror="true">
+			<arg line="${cmd.composer}" />
+			<arg line="update" />
+			<arg line="--dev" />
+		</exec>
+	</target>
+	
 	<target name="test"
 		description="Run project tests"
-		depends="prepare, phpunit, build-phar, phpunit-phar"
+		depends="prepare, phpunit"
 	/>
 
-	<target name="build" depends="prepare, build-phar"
+	<target name="build" 
+		depends="prepare, build.css, build.js, build-phar"
 		description="Builds dashboard package." />
 
 	<target name="code-analysis"
@@ -43,7 +65,7 @@
 
 	<target name="prepare"
 		description="Prepare folder structure"
-		depends="-prepare.folders, build.css, prepare.js"
+		depends="-prepare.folders"
 	>
 		<echo file="${dir.build}/phpmini.sh"><![CDATA[
 php -w $1 > $1.mini && mv $1.mini $1]]></echo>
@@ -74,18 +96,14 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="widgets/**/*.css" />
 			</fileset>
 		</copy>
-		
+
 		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
 		<concat destfile="${dir.base}/htdocs/dashboard.css">
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="bootstrap.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="dashboard.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="chart.css"
-			/>
+			<fileset dir="${dir.base}/htdocs/style/">
+				<include name="bootstrap.css" />
+				<include name="dashboard.css" />
+				<include name="chart.css" />
+			</fileset>
 		</concat>
 
 		<apply executable="java"
@@ -108,7 +126,95 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		</apply>
 	</target>
 
+	<!--
+	CSS targets
+	 - build.css.compress
+	 - build.css.compile (todo)
+	 - build.css.gfx
+	 - build.css.watch
+	-->
+
+	<!-- Compressed, production ready CSS -->
+	<target name="build.css.compress"
+		depends="build.css.gfx"
+		description="Builds CSS file(s) and copy assets."
+	>
+		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
+		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
+		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
+			<arg line="--compress" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec>
+	</target>
+	
+	<target name="build.css.compile"
+		depends="build.css.gfx"
+		description="Builds CSS file(s) and copy assets."
+	>
+		<echo level="info">COmpiling ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
+		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
+		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
+			<arg line="--compress" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec>
+	</target>
+
+	<target name="build.css.gfx"
+		description="Copy css assets to build folder"
+	>
+		<echo level="info">Copying CSS images assets to build folder.</echo>
+		<mkdir dir="${dir.build}/static/styles/gfx/" />
+		<copy todir="${dir.build}/static/styles/gfx/">
+			<fileset dir="${dir.base}/styles/gfx/">
+				<include name="**.png" />
+				<include name="**.gif" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build.css.watch"
+		description="Prints command to run for watching CSS changes."
+	>
+		<echo>To watch CSS run the following command</echo>
+		<echo>${cmd.recess} ${dir.base}/styles/less/dashboard.less:${dir.deploy.local}/htdocs/static/styles/css/dashboard.css --watch ${dir.base}/styles/less/</echo>
+	</target>
+
+	<target name="build.js" depends="prepare.js">
+		<apply executable="java"
+			parallel="false"
+			verbose="true"
+			dest="${dir.base}/htdocs"
+		>
+			<fileset dir="${dir.base}/htdocs/"
+				includes="*.js"
+				excludes="*.min.js"
+			/>
+			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
+			<arg line="--type js" />
+			<arg value="-o" />
+			<targetfile />
+			<mapper type="glob"
+				from="*.js"
+				to="*.min.js" 
+			/>
+		</apply>
+
+		<!-- require.js style -->
+		<echo>Building ${dir.src}/scripts/hoborglabs/app.build.js</echo>
+		<copy todir="${dir.build.dist}/htdocs/static">
+			<fileset dir="${dir.base}/scripts">
+				<include name="require.js" />
+			</fileset>
+		</copy>
+		<exec executable="${cmd.node}">
+			<arg line="scripts/r.js" />
+			<arg line="-o" />
+			<arg line="${dir.build.dist}/htdocs/static/scripts/hoborglabs/app.build.js" />
+		</exec>
+	</target>
+
 	<target name="prepare.js">
+		<delete file="${dir.base}/htdocs/dashboard.js" />
 		<copy todir="${dir.base}/htdocs">
 			<fileset dir="${dir.base}">
 				<include name="templates/**/*.js" />
@@ -130,24 +236,6 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 			</fileset>
 		</concat>
 
-		<apply executable="java"
-			parallel="false"
-			verbose="true"
-			dest="${dir.base}/htdocs"
-		>
-			<fileset dir="${dir.base}/htdocs/"
-				includes="*.js"
-				excludes="*.min.js"
-			/>
-			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
-			<arg line="--type js" />
-			<arg value="-o" />
-			<targetfile />
-			<mapper type="glob"
-				from="*.js"
-				to="*.min.js" 
-			/>
-		</apply>
 	</target>
 
 	<target name="prepare-code-phar"
@@ -263,7 +351,7 @@ __HALT_COMPILER();</echo>
 	</target>
 	
 	<target name="deploy.local"
-		depends="prepare"
+		depends="prepare, build.css, build.js"
 		if="dir.deploy.local"
 	>
 		<copy todir="${dir.deploy.local}">
@@ -357,6 +445,13 @@ __HALT_COMPILER();</echo>
 		<mkdir dir="${dir.logs}/phpcpd" />
 		<mkdir dir="${dir.logs}/phpdepend" />
 		<mkdir dir="${dir.logs}/phpunit" />
+	</target>
+	
+	<target name="-install-composer" unless="composer.present">
+		<exec executable="bash">
+			<arg value="-c" />
+			<arg value="curl -s http://getcomposer.org/installer | php" />
+		</exec>
 	</target>
 </project>
 

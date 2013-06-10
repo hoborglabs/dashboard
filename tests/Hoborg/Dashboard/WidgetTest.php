@@ -16,48 +16,49 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testConstructor() {
 		$widget = $this->createWidget();
-		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"name":"","body":""}'));
+		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":""}'));
 
 		$widget = $this->createWidget(array('test' => 'field'));
-		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"name":"","body":"","test":"field"}'));
+		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":"","test":"field"}'));
 	}
 
 	public function testSetData() {
 		$widget = $this->createWidget();
-		$widget->setData(array('name' => 'test'));
+		$widget->extendData(array('name' => 'test'));
 		$this->assertEquals(
 			json_decode($widget->getJson()),
-			json_decode('{"name":"test","body":""}')
+			json_decode('{"name": "test", "data": [], "template": ""}')
 		);
 
-		$widget = $this->createWidget(array('body' => 'this will be overriden'));
-		$widget->setData(array('name' => 'test', 'test' => 'value'));
+		$widget = $this->createWidget(array('test' => 'this will be overriden'));
+		$widget->extendData(array('name' => 'test', 'test' => 'value'));
 		$this->assertEquals(
-			json_decode($widget->getJson()),
-			json_decode('{"name":"test","body":"","test":"value"}')
+			json_decode($widget->getJson(), true),
+			array(
+				'template' => '',
+				'data' => array (),
+				'name' => 'test',
+				'test' => 'value',
+			)
 		);
 	}
 
 	public function testDefaultValues() {
 		$widget = $this->createWidget();
-		$widget->setData(array());
+		$widget->extendData(array());
 		$this->assertEquals(
-			json_decode($widget->getJson()),
-			json_decode('{"name":"","body":""}')
-		);
-
-		$widget->setDefaults(array());
-		$widget->setData(array());
-		$this->assertEquals(
-			json_decode($widget->getJson()),
-			json_decode('[]')
+			json_decode($widget->getJson(), true),
+			array(
+				'template' => '',
+				'data' => array (),
+			)
 		);
 	}
 
 	public function testHasHead() {
 		$kernel = $this->mockFactory->getKernelMock();
 		$widget = new Widget($kernel);
-		$widget->setData(array('head' => 'test head'));
+		$widget->extendData(array('head' => 'test head'));
 		$this->assertTrue($widget->hasHead());
 	}
 

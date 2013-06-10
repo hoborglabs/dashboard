@@ -1,13 +1,16 @@
-;(function(context){
+;
+(function(context) {
 
 	WIDGET_OPTIONS = {
-		url: '',
-		widgetWrapper: '<div class="widget"></div>',
-		defaults: {
-			tick: 60,
-			enabled: 1,
-			size: 'span8',
-			template: '{{{body}}}'
+		url : '',
+		widgetWrapper : '<div class="widget"></div>',
+		widgetLoading: '<div class="header">{{name}}</div><div class="body"><h3 class="loading">Loading Widget...</h3></div>',
+		defaults : {
+			dataUrl: null,
+			tick : 60,
+			enabled : 1,
+			size : 'span8',
+			template : '{{{body}}}'
 		}
 	};
 
@@ -25,24 +28,32 @@
 
 	Widget.prototype.init = function() {
 
-		//create widget element
+		// create widget element
 		this.el = $(this.options.widgetWrapper);
 		this.el.addClass(this.data.size);
-	}
+
+		this.el.html($.mustache(this.options.widgetLoading, this.data));
+	};
 
 	Widget.prototype.start = function() {
 
-		var widget = this;
-		if (this.data.tick) {
-			this.timer = setInterval(
-				function() { widget.reload(); },
-				this.data.tick * 1000
-			);
-		}
-
 		this.el.removeClass('stop');
 		this.el.addClass('start');
-		this.reload();
+
+		this.startData();
+	};
+
+	Widget.prototype.startData = function() {
+		if (this.data.tick > 0) {
+			var widget = this;
+			this.timer = setInterval(function() {
+				widget.reload();
+			}, this.data.tick * 1000);
+
+			this.reload();
+		} else {
+			this.reload();
+		}
 	};
 
 	Widget.prototype.stop = function() {
@@ -53,22 +64,59 @@
 	};
 
 	Widget.prototype.reload = function() {
-		
+
 		var widgetConfig = $.extend({}, this.data);
+
+		if (this.data.dataUrl) {
+			return this.loadData(widgetConfig);
+		}
+
+		// no need to send body
 		delete widgetConfig.body;
 
 		$.ajax({
-			url: this.options.url,
-			processData: true,
-			data: {conf: this.options.conf, widget: widgetConfig},
-			type: 'POST',
-			dataType: 'json',
-			context: this,
-			success: function(body) {
+			url : this.options.url,
+			processData : true,
+			data : {
+				conf : this.options.conf,
+				widget : widgetConfig
+			},
+			type : 'POST',
+			dataType : 'json',
+			context : this,
+			success : function(body) {
 				this.data = $.extend({}, this.data, body);
 				this.render();
 			},
-			error: function() { widgetConfig.body =  'JSON Error'; renderWidgetJson(this, widgetConfig); activateWidget(this);}
+			error : function() {
+				widgetConfig.body = 'JSON Error';
+				this.render('JSON Error :(');
+//				activateWidget(this);
+			}
+		});
+	};
+
+	Widget.prototype.loadData = function(widgetConfig) {
+		// no need to send body
+		delete widgetConfig.body;
+
+		if (!this.data.dataUrl) {
+			widgetConfig.body = 'oh snap, no data Url :(';
+			return this.render('oh snap, no data Url :(');
+		}
+
+		$.ajax({
+			url: this.data.dataUrl,
+			type: 'GET',
+			context : this,
+			dataType: 'jsonp',
+			success : function(response) {
+				if (response.data) {
+				this.data.data = response.data;
+				
+				this.render();
+				}
+			}
 		});
 	};
 
