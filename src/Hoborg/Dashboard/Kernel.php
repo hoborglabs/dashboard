@@ -7,6 +7,8 @@ class Kernel {
 
 	protected $config = null;
 
+	protected $properties = array();
+
 	protected $params = array();
 
 	protected $defaultParams = array();
@@ -21,7 +23,13 @@ class Kernel {
 	public function __construct($rootFolder, $env = 'prod') {
 		$this->environment = $env;
 
+		if (is_readable($rootFolder . '/dashboard.properties')) {
+			$this->properties = parse_ini_file($rootFolder . '/dashboard.properties');
+		}
+
+		$this->paths['templates'][] = $rootFolder . '/vendor/hoborglabs/dashboard/templates';
 		$this->paths['templates'][] = $rootFolder . '/templates';
+		$this->paths['widgets'][] = "{$rootFolder}/vendor/hoborglabs/widgets";
 		$this->paths['widgets'][] = $rootFolder . '/widgets';
 		$this->paths['data'][] = $rootFolder . '/data';
 		$this->paths['config'][] = $rootFolder . '/conf';
@@ -46,13 +54,20 @@ class Kernel {
 			}
 
 			if ($this->hasWidgetParam()) {
-				// return selected widget data in JSONP format
+				// return selected widget in JSONP format
 				$widget = null;
 				if (null == $widgetProvider) {
 					$widgetProvider = new WidgetProvider($this);
 				}
+				$widget = $widgetProvider->createWidget(json_decode($this->getParam('widget'), true));
+				$widget->get();
+				$this->send($widget->getJson());
+			} else if ($this->hasWidgetDataParam()) {
+				// return selected widget data in JSONP format
+				if (null == $widgetProvider) {
+					$widgetProvider = new WidgetProvider($this);
+				}
 				$widget = $widgetProvider->createWidget($this->getParam('widget'));
-				$widget->getData();
 				$this->send($widget->getJson());
 			} else {
 				// render whole dashboard
@@ -73,6 +88,10 @@ class Kernel {
 
 	public function hasWidgetParam() {
 		return array_key_exists('widget', $this->params);
+	}
+
+	public function hasWidgetDataParam() {
+		return array_key_exists('data', $this->params);
 	}
 
 	public function hasStaticParam() {
@@ -171,15 +190,15 @@ class Kernel {
 		}
 
 		// get configuration
-		$config = json_decode(file_get_contents($configFile), true);
+		$this->config = json_decode(file_get_contents($configFile), true);
 
-		if (empty($config)) {
+		if (empty($this->config)) {
 			$error = "You have an error in your configuration";
 			$code = '500';
 			$this->handleError($error, $code);
 		}
 
-		return $config;
+		return $this->config;
 	}
 
 	public function findFileOnPath($file, array $paths = array()) {
