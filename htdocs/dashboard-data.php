@@ -1,6 +1,6 @@
 <?php
 $rootPath = __DIR__ . '/..';
-require_once $rootPath . '/autoload.php';
+require_once $rootPath . '/vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request,
 	Symfony\Component\HttpFoundation\Response;

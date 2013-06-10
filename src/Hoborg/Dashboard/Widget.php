@@ -81,7 +81,7 @@ class Widget {
 			return 'HoborgWidget';
 		}
 
-		return $this->data['class'];
+		return $this->data['jsClass'];
 	}
 
 	/**
