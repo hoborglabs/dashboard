@@ -142,6 +142,18 @@ class Kernel {
 		return $this;
 	}
 
+	/**
+	 * Register folder with your widgets, templates, config and data.
+	 *
+	 * @param string $path
+	 */
+	public function addExtensionPath($path) {
+		$this->paths['config'][] = "{$path}/config";
+		$this->paths['templates'][] = "{$path}/templates";
+		$this->paths['widgets'][] = "{$path}/widgets";
+		$this->paths['data'][] = "{$path}/data";
+	}
+
 	public function getTemplatesPath() {
 		return $this->paths['templates'];
 	}
