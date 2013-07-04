@@ -54,9 +54,80 @@
 		depends="prepare, phpunit"
 	/>
 
+	<!--
+	build process:
+	* clean
+	* prepare
+	  o -prepare.folders
+	  * prepare.code (copy or git co)
+	  * build.code   - 
+	  * build.js
+	  * build.css
+	    * build 
+	-->
 	<target name="build" 
-		depends="prepare, build.css, build.js, build-phar"
-		description="Builds dashboard package." />
+		depends="prepare"
+		description="Builds dashboard package."
+	>
+		<parallel failonany="true" >
+			<antcall target="build.css.compress" />
+			<antcall target="build.js" />
+		</parallel>
+	</target>
+
+	<!--
+		Release
+		o  package
+			one tgz package with vendor folder containinig both dashboard and widgets
+			projects together with autoloader. Dashbaord project contains `bin/install`
+			script for finilizing installation process.
+		o	phar
+			Single phar file. Just inlude it in you php.
+		
+		Release is made using composer and 'dev-master' version.
+	-->
+	<target name="release"
+		depends="clean"
+	>
+		<!-- If not set already, assume master branch for both -->
+		<property name="release.dashboard.version" value="master" />
+		<property name="release.widget.version" value="master" />
+
+		<!--
+			copy src to hoborglabs/dashbaord and git clone widgets project
+		-->
+		<!-- vendors.tgz
+			prepare hoborglabs/dashboard and hoborglabs/widgets folders.
+		-->
+		<copy file="${dir.base}/build.composer.json" tofile="${dir.build}/composer.json" />
+		<exec executable="php" failonerror="true" dir="${dir.build}">
+			<arg line="${cmd.composer}" />
+			<arg line="instal" />
+			<arg line="--no-dev" />
+		</exec>
+		<delete>
+			<fileset dir="${dir.build}/vendor">
+				<include name="hoborglabs/*/.git"/>
+			</fileset>
+		</delete>
+
+		<!-- Copy generated assets -->
+		<copy todir="${dir.build}/vendor/hoborglabs/dashboard">
+			<fileset dir="${dir.build.dist}">
+				<include name="src/**" />
+				<include name="bin/**" />
+				<include name="styles/**" />
+				<include name="scripts/**" />
+			</fileset>
+		</copy>
+
+		<tar destfile="${dir.build}/dashboard.tgz"
+			basedir="${dir.build}/"
+			includes="vendor/"
+			compression="gzip"
+			longfile="gnu"
+		/>
+	</target>
 
 	<target name="code-analysis"
 		description="Run static code analysis tools"
@@ -70,15 +141,20 @@
 		<echo file="${dir.build}/phpmini.sh"><![CDATA[
 php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
+		<!-- MOVE TO ANOTHER TARGET with optional git clone/checkout -->
 		<copy todir="${dir.build.dist}">
 			<fileset dir="${dir.base}">
-				<include name="autoload.php" />
+				<!-- src -->
+				<include name="composer.json" />
 				<include name="src/**" />
-				<include name="templates/**" />
-				<include name="widgets/**" />
-				<include name="conf/demo.js" />
+				<include name="bin/**" />
+				<include name="styles/**" />
+				<include name="scripts/**" />
+
+				<!-- assets -->
 				<include name="data/hoborg/*" />
-				<include name="htdocs/dashboard.min.*" />
+				<include name="conf/demo.js" />
+				<include name="templates/**" />
 				<include name="htdocs/index*" />
 				<include name="htdocs/images/**" />
 				<include name="htdocs/widgets/**" />
@@ -86,44 +162,37 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 			</fileset>
 		</copy>
 	</target>
-
-	<target name="build.css"
-		description="Builds dashboard CSS file(s) and copy widgets and templates css files to htdocs."
+	
+	<target name="prepare.code"
+		description="Prepares code in build folder (git clone or local copy)."
 	>
-		<copy todir="${dir.base}/htdocs">
+		<antcall>
+			<target name="-prepare.code.local" if="${build.local_build}" />
+			<target name="-prepare.code.git" unless="${build.local_build}" />
+		</antcall>
+	</target>
+
+	<!-- Copy dashbaord and widfgets projects from local folders -->
+	<target name="-prepare.code.local">
+		<!-- Copy dashboard -->
+		<copy todir="${dir.build}/vendor/hoborglabs/dashboard">
 			<fileset dir="${dir.base}">
-				<include name="templates/**/*.css" />
-				<include name="widgets/**/*.css" />
+				<include name="src/**" />
+				<include name="bin/**" />
+				<include name="scritps/**" />
+				<include name="styles/**" />
 			</fileset>
 		</copy>
 
-		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
-		<concat destfile="${dir.base}/htdocs/dashboard.css">
-			<fileset dir="${dir.base}/htdocs/style/">
-				<include name="bootstrap.css" />
-				<include name="dashboard.css" />
-				<include name="chart.css" />
+		<!-- Copy widgets -->
+		<copy todir="${dir.build}/vendor/hoborglabs/widgets">
+			<fileset dir="${build.widgetsq_dir}">
+				<include name="src/**" />
 			</fileset>
-		</concat>
-
-		<apply executable="java"
-			parallel="false"
-			verbose="true"
-			dest="${dir.base}/htdocs"
-		>
-			<fileset dir="${dir.base}/htdocs"
-				includes="*.css"
-				excludes="*.min.css"
-			/>
-			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
-			<arg line="--type css" />
-			<arg value="-o" />
-			<targetfile />
-			<mapper type="glob"
-				from="*.css"
-				to="*.min.css" 
-			/>
-		</apply>
+		</copy>
+	</target>
+	
+	<target name="-prepare.code.git">
 	</target>
 
 	<!--
@@ -136,25 +205,24 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
 	<!-- Compressed, production ready CSS -->
 	<target name="build.css.compress"
-		depends="build.css.gfx"
 		description="Builds CSS file(s) and copy assets."
 	>
 		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
-		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
-		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
+		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
+		<exec executable="${cmd.recess}" output="${dir.build.dist}/htdocs/static/styles/hoborglabs/css/dashboard.min.css">
 			<arg line="--compress" />
 			<arg line="${dir.base}/styles/less/dashboard.less" />
 		</exec>
 	</target>
-	
+
 	<target name="build.css.compile"
 		depends="build.css.gfx"
 		description="Builds CSS file(s) and copy assets."
 	>
 		<echo level="info">COmpiling ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
-		<mkdir dir="${dir.build.dist}/static/styles/hoborglabs/css" />
+		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
 		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
-			<arg line="--compress" />
+			<arg line="--compile" />
 			<arg line="${dir.base}/styles/less/dashboard.less" />
 		</exec>
 	</target>
@@ -179,37 +247,14 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		<echo>${cmd.recess} ${dir.base}/styles/less/dashboard.less:${dir.deploy.local}/htdocs/static/styles/css/dashboard.css --watch ${dir.base}/styles/less/</echo>
 	</target>
 
-	<target name="build.js" depends="prepare.js">
-		<apply executable="java"
-			parallel="false"
-			verbose="true"
-			dest="${dir.base}/htdocs"
-		>
-			<fileset dir="${dir.base}/htdocs/"
-				includes="*.js"
-				excludes="*.min.js"
-			/>
-			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
-			<arg line="--type js" />
-			<arg value="-o" />
-			<targetfile />
-			<mapper type="glob"
-				from="*.js"
-				to="*.min.js" 
-			/>
-		</apply>
-
-		<!-- require.js style -->
-		<echo>Building ${dir.src}/scripts/hoborglabs/app.build.js</echo>
-		<copy todir="${dir.build.dist}/htdocs/static">
-			<fileset dir="${dir.base}/scripts">
-				<include name="require.js" />
-			</fileset>
-		</copy>
+	<target name="build.js">
+		<!-- AMD require.js style -->
+		<echo>Building ${dir.build.dist}/htdocs/static/scripts/hoborglabs/dashboard.js</echo>
+		<mkdir dir="${dir.build.dist}/htdocs/static/scripts/hoborglabs"/>
 		<exec executable="${cmd.node}">
 			<arg line="scripts/r.js" />
 			<arg line="-o" />
-			<arg line="${dir.build.dist}/htdocs/static/scripts/hoborglabs/app.build.js" />
+			<arg line="${dir.base}/scripts/dashboard.build.js" />
 		</exec>
 	</target>
 
@@ -332,24 +377,18 @@ __HALT_COMPILER();</echo>
 		</exec>
 	</target>
 
-	<target name="deploy">
-		<scp todir="${deploy.scp.user}:${deploy.scp.passwd}@s2.rootnode.net:~/fastweb/get.hoborglabs.com/htdocs/dashboard/">
+	<target name="deploy" if="deploy.do_deploy">
+
+		<scp todir="${deploy.user}@${deploy.host}:${deploy.target}"
+			keyfile="${deploy.keyfile}"
+		>
 			<fileset dir="${dir.build}">
-				<include name="dashboard.phar" />
-				<include name="install" />
+				<include name="dashboard-vendors.tgz" />
+				<include name="dashboard-assets.tgz" />
 			</fileset>
 		</scp>
-		<!-- 
-		<ftp server="s2.rootnode.net"
-			userid="${ftp.user}"
-			password="${ftp.passwd}"
-			remotedir="dashboard"
-			passive="yes"
-		>
-		</ftp>
-		 -->
 	</target>
-	
+
 	<target name="deploy.local"
 		depends="prepare, build.css, build.js"
 		if="dir.deploy.local"
@@ -446,7 +485,10 @@ __HALT_COMPILER();</echo>
 		<mkdir dir="${dir.logs}/phpdepend" />
 		<mkdir dir="${dir.logs}/phpunit" />
 	</target>
-	
+
+	<!--
+		trys to install composer locally using composer's install script
+	-->
 	<target name="-install-composer" unless="composer.present">
 		<exec executable="bash">
 			<arg value="-c" />
@@ -454,4 +496,3 @@ __HALT_COMPILER();</echo>
 		</exec>
 	</target>
 </project>
-

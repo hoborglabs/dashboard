@@ -7,9 +7,8 @@
 define([
 	'lib/ready',
 	'hoborglabs/widget',
-	'examples/testWidget',
 	'hoborglabs/widgetManager'
-], function(ready, Widget, TestWidget, WidgetManager) {
+], function(ready, Widget, WidgetManager) {
 
 	// inject log aspect
 	var logWrapper = function(namespace) {
@@ -26,9 +25,8 @@ define([
 	}
 	var log = logWrapper('app');
 
-	WidgetManager.prototype.log = logWrapper('Hoborg.WidgetManager');
-	Widget.prototype.log = logWrapper('Hoborg.Widget');
-	TestWidget.prototype.log = logWrapper('Examples.TestWidget');
+//	WidgetManager.prototype.log = logWrapper('Hoborg.WidgetManager');
+//	Widget.prototype.log = logWrapper('Hoborg.Widget');
 
 	// on dom ready...
 	ready(function() {
