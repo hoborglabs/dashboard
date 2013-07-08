@@ -25,8 +25,8 @@ define([
 	}
 	var log = logWrapper('app');
 
-//	WidgetManager.prototype.log = logWrapper('Hoborg.WidgetManager');
-//	Widget.prototype.log = logWrapper('Hoborg.Widget');
+	WidgetManager.prototype.log = logWrapper('Hoborg.WidgetManager');
+	Widget.prototype.log = logWrapper('Hoborg.Widget');
 
 	// on dom ready...
 	ready(function() {

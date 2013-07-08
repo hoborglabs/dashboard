@@ -10,7 +10,7 @@ define([
 		url : '',
 		conf: 'ankh-morpork',
 		widgetGridWrapper : '<div class="grid-item"></div>',
-		widgetWrapper : '<div class="widget"></div></div>',
+		widgetWrapper : '<div class="widget"></div>',
 		widgetLoading: '<div class="widget-header">{{name}}</div><div class="widget-body"><h3 class="loading">Loading Widget...</h3></div>',
 		defaults : {
 			dataUrl: null,
