@@ -20,6 +20,7 @@
 	<property name="cmd.phar" value="phar" />
 	<property name="cmd.composer" value="${dir.base}/composer.phar" />
 	<property name="cmd.recess" value="recess" />
+	<property name="cmd.uglifyjs" value="uglifyjs" />
 	<property name="cmd.node" value="node" />
 
 	<!-- Deploy configs -->
@@ -72,6 +73,8 @@
 		<parallel failonany="true" >
 			<antcall target="build.css.compress" />
 			<antcall target="build.js" />
+			<!-- old style jquery code -->
+			<antcall target="build.js.jquery" />
 		</parallel>
 	</target>
 
@@ -257,6 +260,19 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 			<arg line="${dir.base}/scripts/dashboard.build.js" />
 		</exec>
 	</target>
+	<target name="build.js.jquery">
+		<echo>Building jquery addons ${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js</echo>
+		<mkdir dir="${dir.build.dist}/htdocs/static/scripts/hoborglabs"/>
+		<concat append="true" destfile="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js">
+			<fileset dir="${dir.base}/htdocs/js/">
+				<include name="jquery/jquery.js"/>
+				<include name="jquery/jquery.masonry.js"/>
+			</fileset>
+		</concat>
+		<exec executable="${cmd.uglifyjs}" output="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js">
+			<arg line="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js" />
+		</exec>
+	</target>
 
 	<target name="prepare.js">
 		<delete file="${dir.base}/htdocs/dashboard.js" />
@@ -390,7 +406,7 @@ __HALT_COMPILER();</echo>
 	</target>
 
 	<target name="deploy.local"
-		depends="prepare, build.css, build.js"
+		depends="prepare, build.css.compress, build.js"
 		if="dir.deploy.local"
 	>
 		<copy todir="${dir.deploy.local}">
