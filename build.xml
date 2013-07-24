@@ -50,7 +50,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
 		<copy todir="${dir.build.dist}">
 			<fileset dir="${dir.base}">
-				<include name="autoload.php" />
+				<include name="autoloader-phar.php" />
 				<include name="src/**" />
 				<include name="templates/**" />
 				<include name="widgets/**" />
@@ -183,15 +183,9 @@ __HALT_COMPILER();</echo>
 	>
 		<echo file="${dir.build}/phar-stub">&lt;?php
 define('PHAR_ROOT', __DIR__);
-function rewrites() {
-  $r = ltrim($_SERVER['PATH_INFO'], '/');
-  if (empty($r)) {
-    $r = 'index-phar.php';
-  }
-  if (is_file("phar://dashboard.phar/htdocs/{$r}")) return "htdocs/{$r}";
-  else return 'htdocs/404.html';
-}
-Phar::webPhar('dashboard.phar', 'index-phar.php', '404.php', array(), 'rewrites');
+Phar::mapPhar('dashboard.phar');
+require 'phar://dashboard.phar/autoloader-phar.php';
+
 __HALT_COMPILER();</echo>
 
 		<echo message="Copy source files to build folder `${dir.build}/phar`." />
@@ -200,15 +194,17 @@ __HALT_COMPILER();</echo>
 		</delete>
 		<copy todir="${dir.build}/phar">
 			<fileset dir="${dir.build}/dist">
-				<include name="autoload.php" />
-				<include name="**" />
+				<include name="autoloader-phar.php" />
+				<include name="src/**" />
+				<include name="templates/**" />
+				<include name="widgets/**" />
 			</fileset>
 		</copy>
 
 		<echo message="Minifying php files." />
 		<apply executable="bash" dir="${dir.build}" dest="${dir.build}/phar" force="true">
 			<fileset dir="${dir.build}/phar">
-				<include name="autoload.php" />
+				<include name="autoloader-phar.php" />
 				<include name="**/*.php" />
 			</fileset>
 			<arg value="phpmini.sh" />
@@ -359,4 +355,5 @@ __HALT_COMPILER();</echo>
 		<mkdir dir="${dir.logs}/phpunit" />
 	</target>
 </project>
+
 
