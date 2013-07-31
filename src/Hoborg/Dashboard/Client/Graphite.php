@@ -9,6 +9,11 @@ class Graphite {
 			$url .= "&{$optName}={$value}";
 		}
 		$data = $this->getJsonData($url);
+
+		if (empty($data)) {
+			return null;
+		}
+
 		$avg = array();
 
 		foreach ($data[0]['datapoints'] as $p) {
@@ -27,28 +32,30 @@ class Graphite {
 	}
 
 	public function getTargetsData($graphiteUrl, array $targets, $from = '-5min', $to = 'now') {
-		$url = $graphiteUrl . "/render?from={$from}&to={$to}&format=json&target=" . implode('&target=', $targets);
-		$jsonData = file_get_contents($url);
-		$data = json_decode($jsonData, true);
+		$url = $graphiteUrl . "/render?from={$from}&to={$to}&target=" . implode('&target=', $targets);
 
-		if (empty($data)) {
-			return array();
-		}
-
-		return $data;
+		return $this->getJsonData($url);
 	}
 
-	public function getTargetsStatisticalData($graphiteUrl, array $targets, $from = '-15min', $to = 'now') {
+	public function getTargetsStatisticalData($graphiteUrl, array $targets, $from = '-15min', $to = 'now',
+			$avgSpan = 6, $nullAsZero = false) {
 		$data = $this->getTargetsData($graphiteUrl, $targets, $from, $to);
 		$statisticalData = array();
 
 		foreach ($data as $target) {
-			$min = $max = $avg = 0;
-			$avgSize = min(6, count($target['datapoints']));
+			$min = PHP_INT_MAX;
+			$max = -$min;
+			$avg = 0;
+			$avgSize = min($avgSpan, count($target['datapoints']));
 			$avgIndex = count($target['datapoints']) - $avgSize;
 			foreach ($target['datapoints'] as $i => $p) {
 				if (null == $p[0]) {
-					continue;
+					if ($nullAsZero) {
+						$p[0] = 0;
+					} else {
+						$avgSize--;
+						continue;
+					}
 				}
 				$min = min($min, $p[0]);
 				$max = max($max, $p[0]);
@@ -59,10 +66,10 @@ class Graphite {
 			$avg = $avg / $avgSize;
 
 			$statisticalData[] = array(
-					'target' => $target['target'],
-					'min' => $min,
-					'max' => $max,
-					'avg' => $avg,
+				'target' => $target['target'],
+				'min' => $min,
+				'max' => $max,
+				'avg' => $avg,
 			);
 		}
 

@@ -24,14 +24,14 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testSetData() {
 		$widget = $this->createWidget();
-		$widget->extendData(array('name' => 'test'));
+		$widget->extend(array('name' => 'test'));
 		$this->assertEquals(
 			json_decode($widget->getJson()),
 			json_decode('{"name": "test", "data": [], "template": ""}')
 		);
 
 		$widget = $this->createWidget(array('test' => 'this will be overriden'));
-		$widget->extendData(array('name' => 'test', 'test' => 'value'));
+		$widget->extend(array('name' => 'test', 'test' => 'value'));
 		$this->assertEquals(
 			json_decode($widget->getJson(), true),
 			array(
@@ -45,7 +45,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testDefaultValues() {
 		$widget = $this->createWidget();
-		$widget->extendData(array());
+		$widget->extend(array());
 		$this->assertEquals(
 			json_decode($widget->getJson(), true),
 			array(
@@ -53,13 +53,6 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 				'data' => array (),
 			)
 		);
-	}
-
-	public function testHasHead() {
-		$kernel = $this->mockFactory->getKernelMock();
-		$widget = new Widget($kernel);
-		$widget->extendData(array('head' => 'test head'));
-		$this->assertTrue($widget->hasHead());
 	}
 
 	/**

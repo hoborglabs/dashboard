@@ -22,6 +22,9 @@
 	<property name="cmd.recess" value="recess" />
 	<property name="cmd.uglifyjs" value="uglifyjs" />
 	<property name="cmd.node" value="node" />
+	
+	<!-- some default build settings -->
+	<property name="build.local_build" value="true" />
 
 	<!-- Deploy configs -->
 	<property name="dir.deploy.local" value="false" />
@@ -49,11 +52,13 @@
 			<arg line="--dev" />
 		</exec>
 	</target>
-	
+
 	<target name="test"
 		description="Run project tests"
-		depends="prepare, phpunit"
-	/>
+		depends="prepare"
+	>
+		<antcall target="phpunit" />
+	</target>
 
 	<!--
 	build process:
@@ -61,7 +66,7 @@
 	* prepare
 	  o -prepare.folders
 	  * prepare.code (copy or git co)
-	  * build.code   - 
+	  * build.code 
 	  * build.js
 	  * build.css
 	    * build 
@@ -144,39 +149,20 @@
 		<echo file="${dir.build}/phpmini.sh"><![CDATA[
 php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
-		<!-- MOVE TO ANOTHER TARGET with optional git clone/checkout -->
-		<copy todir="${dir.build.dist}">
-			<fileset dir="${dir.base}">
-				<!-- src -->
-				<include name="composer.json" />
-				<include name="src/**" />
-				<include name="bin/**" />
-				<include name="styles/**" />
-				<include name="scripts/**" />
-
-				<!-- assets -->
-				<include name="data/hoborg/*" />
-				<include name="conf/demo.js" />
-				<include name="templates/**" />
-				<include name="htdocs/index*" />
-				<include name="htdocs/images/**" />
-				<include name="htdocs/widgets/**" />
-				<include name="htdocs/templates/**" />
-			</fileset>
-		</copy>
+		<antcall target="prepare.code" />
 	</target>
 	
 	<target name="prepare.code"
 		description="Prepares code in build folder (git clone or local copy)."
 	>
 		<antcall>
-			<target name="-prepare.code.local" if="${build.local_build}" />
-			<target name="-prepare.code.git" unless="${build.local_build}" />
+			<target name="-prepare.code.local" />
+			<target name="-prepare.code.git" />
 		</antcall>
 	</target>
 
 	<!-- Copy dashbaord and widfgets projects from local folders -->
-	<target name="-prepare.code.local">
+	<target name="-prepare.code.local" if="${build.local_build}">
 		<!-- Copy dashboard -->
 		<copy todir="${dir.build}/vendor/hoborglabs/dashboard">
 			<fileset dir="${dir.base}">
@@ -184,18 +170,33 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="bin/**" />
 				<include name="scritps/**" />
 				<include name="styles/**" />
+				<include name="templates/**" />
+			</fileset>
+		</copy>
+
+		<!-- Copy dashboard required projects -->
+		<copy todir="${dir.build}/vendor/">
+			<fileset dir="${dir.base}/vendor/">
+				<include name="symfony/config/**" />
+				<include name="symfony/console/**" />
+				<include name="symfony/process/**" />
+				<include name="symfony/yaml/**" />
+				
+				<include name="composer/**" />
+				<include name="autoload.php" />
 			</fileset>
 		</copy>
 
 		<!-- Copy widgets -->
 		<copy todir="${dir.build}/vendor/hoborglabs/widgets">
-			<fileset dir="${build.widgetsq_dir}">
+			<fileset dir="${build.widgets_dir}">
 				<include name="src/**" />
+				<include name="hoborg/**" />
 			</fileset>
 		</copy>
 	</target>
-	
-	<target name="-prepare.code.git">
+
+	<target name="-prepare.code.git" unless="${build.local_build}">
 	</target>
 
 	<!--
@@ -417,7 +418,7 @@ __HALT_COMPILER();</echo>
 	</target>
 
 	<target name="phpunit" description="Runs PHPUnit tests.">
-		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
+		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="true">
 			<arg line="-c phpunit.xml" />
 			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
 		</exec>

@@ -57,7 +57,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		$widgetProvider = $this->getWidgetMockProvider($kernel);
 		$widgetProvider->injectMock($widgetMock);
 
-		$kernel->handle(array('widget' => array()), null, $widgetProvider);
+		$kernel->handle(array('widget' => '{}'), null, $widgetProvider);
 	}
 
 	protected function getKernel() {
