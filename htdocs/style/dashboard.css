@@ -100,6 +100,7 @@ dl.side-by-side dd {
 .span32 {
     width: 1590px;
 }
+
 .widget.autoHeight,
 .widget.autoHeight .body {
     height: auto;

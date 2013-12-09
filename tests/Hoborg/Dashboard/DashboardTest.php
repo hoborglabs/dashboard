@@ -31,7 +31,7 @@ class DashboardTest extends \PHPUnit_Framework_TestCase {
 
 		$widgetMock = $this->getWidgetMock($kernelMock);
 
-		$widgetProviderMock = $this->getWidgetMockProvider();
+		$widgetProviderMock = $this->getWidgetMockProvider($kernelMock);
 		$widgetProviderMock->injectMock($widgetMock);
 
 		$dashboard = new Dashboard($kernelMock, $widgetProviderMock);
@@ -50,7 +50,7 @@ class DashboardTest extends \PHPUnit_Framework_TestCase {
 		return $mock;
 	}
 
-	protected function getWidgetMockProvider() {
-		return new WidgetMockProvider();
+	protected function getWidgetMockProvider($kernelMock) {
+		return new WidgetMockProvider($kernelMock);
 	}
 }

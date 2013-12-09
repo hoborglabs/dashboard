@@ -6,15 +6,82 @@ class Widget {
 	protected $kernel = null;
 
 	private $defaults = array(
-		'name' => '',
-		'body' => '',
+		'template' => '',
+		'data' => array(),
 	);
 
 	protected $data = array();
 
-	public function __construct(Kernel $kernel, array $data = array()) {
+	public function __construct(Kernel $kernel, array $widgetConfig = array()) {
 		$this->kernel = $kernel;
-		$this->setData($data);
+		$this->init($widgetConfig);
+	}
+
+	/**
+	 * Extends widget data.
+	 *
+	 * @param array $data
+	 */
+	public function extendData(array $data) {
+		$this->data = $this->arrayMergeRecursive($this->data, $data);
+
+		return $this;
+	}
+
+	/**
+	 * Bootstrap widget class
+	 *
+	 */
+	public function bootstrap() {
+		return $this;
+	}
+
+	/**
+	 * Returns data used by JSONP endpoint
+	 * @return array
+	 */
+	public function getData() {
+		return array();
+	}
+
+	/**
+	* Returns widget field(s).
+	* You can specify key and default value. If you don't specify key you will get whole widget array.
+	*
+	* @param string $key
+	* @param mixed $default
+	*
+	* @return mixed
+	*/
+	public function get($key = null, $default = null) {
+		if (null !== $key) {
+			return isset($this->data[$key]) ?
+					$this->data[$key] : $default;
+		}
+
+		return $this->data;
+	}
+
+	/**
+	 * Returns stringify JSON representation of widget.
+	 *
+	 * return string
+	 */
+	public function getJson() {
+		return json_encode($this->data);
+	}
+
+	/**
+	 * Returns JS widget class name defined in `jsClass` or 'HoborgWidget' if it's not present.
+	 *
+	 * @return string
+	 */
+	public function getJsClassName() {
+		if (empty($this->data['jsClass'])) {
+			return 'HoborgWidget';
+		}
+
+		return $this->data['jsClass'];
 	}
 
 	/**
@@ -25,29 +92,16 @@ class Widget {
 	 *
 	 * @return Hoborg\Dashboard\Widget
 	 */
-	public function setData(array $data) {
-		$this->data = $this->arrayMergeRecursive($this->defaults, $data);
+	protected function init(array $widgetConfig) {
+		$this->data = $widgetConfig + $this->defaults;
 
 		return $this;
 	}
 
-	/**
-	 * Returns widget data array.
-	 * You can specify data key and default value.
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 *
-	 * @return mixed
-	 */
-	public function getData($key = null, $default = null) {
-		if (null !== $key) {
-			return isset($this->data[$key]) ?
-					$this->data[$key] : $default;
-		}
 
-		return $this->data;
-	}
+
+
+
 
 	/**
 	 * Sets widget default values.
@@ -64,12 +118,18 @@ class Widget {
 		$this->applyDefaults();
 	}
 
-	public function getJson() {
-		return json_encode($this->data);
-	}
+	public function getAssetFiles($type) {
 
-	public function bootstrap() {
-		return $this;
+		if (empty($this->data['assets'][$type])) {
+			return array();
+		}
+
+		$assets = $this->data['assets'][$type];
+		if (!is_array($assets)) {
+			$assets = array($assets);
+		}
+
+		return $assets;
 	}
 
 	public function getAssetFiles($type) {
@@ -110,14 +170,6 @@ class Widget {
 		}
 
 		return $css;
-	}
-
-	public function getJsClassName() {
-		if (empty($this->data['class'])) {
-			return 'HoborgWidget';
-		}
-
-		return $this->data['class'];
 	}
 
 	public function hasHead() {

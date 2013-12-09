@@ -1,0 +1,252 @@
+/**
+ * Grid system for dashboard.
+ *
+ * Uses:
+ * - @gutter 
+ */
+
+body, div {
+	margin: 0;
+	padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: inherit;
+  font-weight: bold;
+  color: inherit;
+  text-rendering: optimizelegibility;
+}
+
+/**
+ * Main grid container. Full width
+ */
+.grid {
+	width: 100%;
+	margin-left: -@gutter/2;
+	zoom: 1;
+}
+
+/**
+ * Grid Item
+ *
+ * 1. Cause columns to stack side-by-side.
+ * 2. Space columns apart.
+ * 3. Align columns to the tops of each other.
+ * 4. Full-width unless told to behave otherwise.
+ * 5. Required to combine fluid widths and fixed gutters.
+ */
+.grid-item {
+	display: inline-block; /* [1] */
+	padding: 0px 0px @gutter @gutter; /* [2] */
+	margin: 0px;
+	vertical-align: top; /* [3] */
+	width: 100%; /* [4] */
+	/* [5] */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+/**
+ * overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
+ * http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+ */
+.widget {
+	overflow: hidden;
+	// .grid-item;
+}
+
+/**
+ * Grid item sizes
+ *
+ * grid-10, grid-20, ...
+ * grid-1-3 (one third), grid-2-3, ...
+ *
+ * usage:
+ * <div class=grid>
+ *   <div class="grid-item grid-30">
+ *     ...
+ *   </div>
+ * </div>
+ */
+.gridX (@width) when (@width > 0) {
+	(~".grid-@{width}") { .grid-size(@width); }
+	.gridX(@width - 10);
+}
+.gridX (0) {}
+.grid-size(@width) {
+	width: percentage(@width/100);
+}
+.gridX(100);
+.grid-1-2 { .grid-size(100 * 1/2)};
+.grid-1-3 { .grid-size(100 * 1/3)};
+.grid-1-4 { .grid-size(100 * 1/4)};
+
+.grid-2-3 { .grid-size(100 * 2/3)};
+/* 2-6 is the same as 1-3 but let's keep it ... */
+.grid-1-6 { .grid-size(100 * 1/6)};
+.grid-2-6 { .grid-size(100 * 2/6)};
+.grid-3-6 { .grid-size(100 * 3/6)};
+.grid-4-6 { .grid-size(100 * 4/6)};
+.grid-5-6 { .grid-size(100 * 5/6)};
+
+
+@media (max-width: 1023px) {
+	.grid-1-3 { .grid-size(100 * 1/2)};
+	.grid-2-3 { .grid-size(100 * 1/2)};
+}
+
+@media (max-width: 480px) {
+	.grid-1-3 { .grid-size(100)};
+	.grid-2-3 { .grid-size(100)};
+}
+
+
+[class*="span"] {
+  float: left;
+  margin-left: 10px;
+}
+
+.span-full-size {
+    width: 100%;
+}
+.span24 {
+  width: 1190px;
+}
+.span23 {
+  width: 1140px;
+}
+.span22 {
+  width: 1090px;
+}
+.span21 {
+  width: 1040px;
+}
+.span20 {
+  width: 990px;
+}
+.span19 {
+  width: 940px;
+}
+.span18 {
+  width: 890px;
+}
+.span17 {
+  width: 840px;
+}
+.span16 {
+  width: 790px;
+}
+.span15 {
+  width: 740px;
+}
+.span14 {
+  width: 690px;
+}
+.span13 {
+  width: 640px;
+}
+.span12 {
+  width: 590px;
+}
+.span11 {
+  width: 540px;
+}
+.span10 {
+  width: 490px;
+}
+.span9 {
+  width: 440px;
+}
+.span8 {
+  width: 390px;
+}
+.span7 {
+  width: 340px;
+}
+.span6 {
+  width: 290px;
+}
+.span5 {
+  width: 240px;
+}
+.span4 {
+  width: 190px;
+}
+.span3 {
+  width: 140px;
+}
+.span2 {
+  width: 90px;
+}
+.span1 {
+  width: 40px;
+}
+.span25 {
+    width: 1240px;
+}
+.span26 {
+    width: 1290px;
+}
+.span27 {
+    width: 1340px;
+}
+.span28 {
+    width: 1390px;
+}
+.span29 {
+    width: 1440px;
+}
+.span30 {
+    width: 1490px;
+}
+.span31 {
+    width: 1540px;
+}
+.span32 {
+    width: 1590px;
+}
+
+
+
+.media {}
+.media-body {overflow:hidden; _overflow:visible; zoom:1;}
+.media-img {float:left; margin-right: 10px;}
+.media-img img{display:block;}
+.media-imgExt {float:right; margin-left: 10px;}
+
+.matrix{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+    .matrix > li{
+        float:left;
+        -webkit-box-sizing:border-box;
+           -moz-box-sizing:border-box;
+                box-sizing:border-box;
+    }
+    .one-col > li{
+        width:100%;
+    }
+    .two-col > li{
+        width:50%;
+    }
+    .three-col > li{
+        width:33.333%;
+    }
+    .four-col > li{
+        width:25%;
+    }
+    .five-col > li{
+        width:20%;
+    }
+    .matrix .full{
+        width:100%;
+    }
