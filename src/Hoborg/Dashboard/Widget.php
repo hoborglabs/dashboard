@@ -132,20 +132,6 @@ class Widget {
 		return $assets;
 	}
 
-	public function getAssetFiles($type) {
-
-		if (empty($this->data['assets'][$type])) {
-			return array();
-		}
-
-		$assets = $this->data['assets'][$type];
-		if (!is_array($assets)) {
-			$assets = array($assets);
-		}
-
-		return $assets;
-	}
-
 	public function hasJS() {
 		return !empty($this->data['js']);
 	}

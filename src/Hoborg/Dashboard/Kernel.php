@@ -27,12 +27,9 @@ class Kernel {
 			$this->properties = parse_ini_file($rootFolder . '/dashboard.properties');
 		}
 
+		$this->addExtensionPath($rootFolder);
 		$this->paths['templates'][] = $rootFolder . '/vendor/hoborglabs/dashboard/templates';
-		$this->paths['templates'][] = $rootFolder . '/templates';
 		$this->paths['widgets'][] = "{$rootFolder}/vendor/hoborglabs/widgets";
-		$this->paths['widgets'][] = $rootFolder . '/widgets';
-		$this->paths['data'][] = $rootFolder . '/data';
-		$this->paths['config'][] = $rootFolder . '/conf';
 	}
 
 	/**
@@ -119,9 +116,9 @@ class Kernel {
 	public function setParams(array $params) {
 		$params = $params + $this->defaultParams;
 
-		if (empty($params['conf'])) {
-			throw new Exception('Missing `conf` parameter', 500);
-		}
+// 		if (empty($params['conf'])) {
+// 			throw new Exception('Missing `conf` parameter', 500);
+// 		}
 
 		$this->params = $params;
 	}
