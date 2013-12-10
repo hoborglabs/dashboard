@@ -65,7 +65,7 @@ define([
 			this.activateWidget(widget)
 		}, this);
 	}
-	
+
 	WidgetManager.prototype.stop = function() {
 		this.isActive = false;
 		_.each(this.widgets, function(widget) {

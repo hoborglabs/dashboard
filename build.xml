@@ -237,7 +237,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		<echo level="info">Copying CSS images assets to build folder.</echo>
 		<mkdir dir="${dir.build}/static/styles/gfx/" />
 		<copy todir="${dir.build}/static/styles/gfx/">
-			<fileset dir="${dir.base}/styles/gfx/">
+			<fileset dir="${dir.base}/styles/less">
 				<include name="**.png" />
 				<include name="**.gif" />
 			</fileset>

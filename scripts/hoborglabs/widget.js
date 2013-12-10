@@ -112,7 +112,7 @@ define([
 		delete widgetConfig.body;
 
 		var widget = this;
-		promise.get(this.options.url, {
+		promise.post(this.options.url, {
 			widget : JSON.stringify(widgetConfig)
 		}).then(function(err, body) {
 			if (err) {
@@ -141,7 +141,7 @@ define([
 
 		var widget = this;
 		var data = {config: JSON.stringify(this.data.config || {})};
-		promise.get(this.data.dataUrl, data).then(function(err, result) {
+		promise.post(this.data.dataUrl, data).then(function(err, result) {
 			if (err) {
 				widget.log('error', 'loadData `' + this.name + '` GET `'+ this.data.dataUrl + '` error: ' + err);
 				return;

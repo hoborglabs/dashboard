@@ -18,7 +18,7 @@ class Opsview {
 		$this->config = $config;
 	}
 
-	protected function getOpsviewData($endpoint, array $params = array(), $method = 'GET', $type = 'json') {
+	protected function getData($endpoint, array $params = array(), $method = 'GET', $type = 'json') {
 
 		if (empty($this->opsviewUrl)) {
 			// throw error
