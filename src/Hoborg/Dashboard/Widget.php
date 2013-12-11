@@ -137,7 +137,7 @@ class Widget {
 	}
 
 	public function getJS() {
-		$js = $this->getData('js', array());
+		$js = $this->get('js', array());
 		if (!is_array($js)) {
 			$js = array($js);
 		}
@@ -150,7 +150,7 @@ class Widget {
 	}
 
 	public function getCSS() {
-		$css = $this->getData('css', array());
+		$css = $this->get('css', array());
 		if (!is_array($css)) {
 			$css = array($css);
 		}

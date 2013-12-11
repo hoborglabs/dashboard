@@ -26,7 +26,7 @@ define([
 
 	/**
 	 * Main Widget class.
-	 * 
+	 *
 	 * @param object data
 	 * @param object options
 	 */
@@ -153,15 +153,15 @@ define([
 				widget.render();
 			}
 		});
-		
+
 		return;
 	};
 
 	Widget.prototype.render = function(overrideBody) {
 		// debug, debug
 		this.log('debug', 'render ' + this.name);
-		console.log(this.data);
-		
+		var body = '';
+
 		if (overrideBody) {
 			body = overrideBody;
 		} else {
@@ -175,10 +175,18 @@ define([
 			this.widget.html(body);
 		}
 
+		// check if there is a callback to call
+		if (this.data.jscallback) {
+			var fn = window[this.data.jscallback];
+			if (typeof fn === "function") {
+				fn(this.widget);
+			}
+		}
+
 		//$.pub('widget:render', this);
 	};
 
-	// register class to widget store 
+	// register class to widget store
 	if (window.Hoborglabs.Dashboard.widgetClasses) {
 		window.Hoborglabs.Dashboard.widgetClasses.HoborgWidget = Widget;
 	}
