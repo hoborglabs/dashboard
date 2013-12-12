@@ -1,7 +1,7 @@
 ;
 /**
  * Hoborglabs Dahsboard App.
- * 
+ *
  * @author Wojtek Oledzki (github.com/woledzki)
  */
 define([
@@ -19,7 +19,7 @@ define([
 			} else if ('info' == level) {
 				console.info(message);
 			} else {
-				console.log(level + ': ' + message); 
+				console.log(level + ': ' + message);
 			}
 		}
 	}
@@ -40,5 +40,7 @@ define([
 		var widgetManager = new WidgetManager(window.Hoborglabs.Dashboard);
 		widgetManager.init();
 		widgetManager.start();
+		// export to global scope
+		window.Hoborglabs.WidgetManager = widgetManager;
 	});
 });

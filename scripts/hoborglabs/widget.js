@@ -21,6 +21,8 @@ define([
 		}
 	};
 
+	var widgetIndex = 0;
+
 	var win = window,
 		doc = win.document;
 
@@ -38,6 +40,7 @@ define([
 		this.data = _.extend({}, this.options.defaults, data);
 		this.timer = null;
 		this.name = this.data.name || 'no-name';
+		this.id = widgetIndex++;
 
 		// widget element
 		this.widget = null;

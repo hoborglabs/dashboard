@@ -1,14 +1,14 @@
 ;
 /**
  * Widgets Manager
- * 
- * 
+ *
+ *
  */
 define([
 	'lib/lodash',
 	'lib/bonzo',
 ], function(_, bonzo) {
-	
+
 	/**
 	 * @var object Default options.
 	 */
@@ -27,7 +27,7 @@ define([
 		 * @var array List of widgets.
 		 */
 		this.widgets = [];
-		
+
 		/**
 		 * @var boolean On/Off flag.
 		 */
@@ -57,51 +57,49 @@ define([
 	WidgetManager.prototype.appendWidget = function(widget) {
 		var b = bonzo(window.document.getElementById('dashboard'));
 		b.append(widget.el);
-	}
+	};
 
 	WidgetManager.prototype.start = function() {
 		this.isActive = true;
 		_.each(this.widgets, function(widget) {
-			this.activateWidget(widget)
+			this.activateWidget(widget);
 		}, this);
-	}
+	};
 
 	WidgetManager.prototype.stop = function() {
 		this.isActive = false;
 		_.each(this.widgets, function(widget) {
 			widget.stop();
 		}, this);
-	}
+	};
 
 	WidgetManager.prototype.activateWidget = function(widget) {
 		if (this.isActive) {
 			widget.start();
 		}
-	}
-
-	var defaultWidgetConfig = {
-		tick : 60
 	};
 
 
+
+
 	// TODO ...
-	
+
 	WidgetManager.prototype.onWidgetRender = function(widget) {
 		//options.callback(widget);
-	}
+	};
 
 	WidgetManager.prototype.addWidget = function(widget) {
 		this.widgets.push(widget);
 		this.append(widget.el);
 		activateWidget(widget);
-	}
+	};
 
 	WidgetManager.prototype.addWidgets = function(newWidgets) {
 		m = this;
 		$.each(newWidgets, function() {
 			addWidget.apply(m, [ this ]);
 		});
-	}
+	};
 
 	// inject log aspect here
 	WidgetManager.prototype.log = function(level, msg) {};
