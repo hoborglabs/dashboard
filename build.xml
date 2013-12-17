@@ -2,6 +2,7 @@
 
 	<!-- optional environmental settings/overrides -->
 	<property file="build.properties" />
+	<property environment="env"/>
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
@@ -19,9 +20,9 @@
 	<property name="cmd.pdepend" value="pdepend" />
 	<property name="cmd.phar" value="phar" />
 	<property name="cmd.composer" value="${dir.base}/composer.phar" />
-	<property name="cmd.recess" value="recess" />
 	<property name="cmd.uglifyjs" value="uglifyjs" />
 	<property name="cmd.node" value="node" />
+	<property name="cmd.npm" value="npm" />
 	
 	<!-- some default build settings -->
 	<property name="build.local_build" value="true" />
@@ -30,6 +31,9 @@
 	<property name="dir.deploy.local" value="false" />
 
 	<available file="${dir.base}/composer.phar" property="composer.present" />
+	<available file="recess" filepath="${env.PATH}" property="recess.present" />
+	<available file="${cmd.npm}" filepath="${env.PATH}" property="npm.present" />
+	<available file="${cmd.node}" filepath="${env.PATH}" property="node.present" />
 
 	<!--
 	Main targets:
@@ -43,8 +47,11 @@
 
 	<target name="validate" 
 		description="Validates project."
-		depends="prepare, -install-composer"
+		depends="prepare, -install-composer, -install-recess"
 	>
+		<fail unless="node.present" message="`node` not found! Please install - http://nodejs.org/"/>
+		<fail unless="npm.present" message="`npm` not found!?"/>
+		
 		<!-- get dependencies -->
 		<exec executable="php" failonerror="true">
 			<arg line="${cmd.composer}" />
@@ -211,6 +218,8 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 	<target name="build.css.compress"
 		description="Builds CSS file(s) and copy assets."
 	>
+		<property name="cmd.recess" value="recess" />
+		
 		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
 		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
 		<exec executable="${cmd.recess}" output="${dir.build.dist}/htdocs/static/styles/hoborglabs/css/dashboard.min.css">
@@ -223,6 +232,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		depends="build.css.gfx"
 		description="Builds CSS file(s) and copy assets."
 	>
+		<property name="cmd.recess" value="recess" />
 		<echo level="info">COmpiling ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
 		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
 		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
@@ -524,4 +534,12 @@ __HALT_COMPILER();</echo>
 			<arg value="curl -s http://getcomposer.org/installer | php" />
 		</exec>
 	</target>
+	<target name="-install-recess" unless="recess.present">
+		<exec executable="npm">
+			<arg value="install" />
+			<arg value="recess" />
+		</exec>
+		<property name="cmd.recess" value="${dir.base}/node_modules/.bin/recess" />
+	</target>
+
 </project>
