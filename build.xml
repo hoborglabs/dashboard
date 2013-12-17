@@ -47,7 +47,7 @@
 
 	<target name="validate" 
 		description="Validates project."
-		depends="prepare, -install-composer, -install-recess"
+		depends="prepare, -install-composer"
 	>
 		<fail unless="node.present" message="`node` not found! Please install - http://nodejs.org/"/>
 		<fail unless="npm.present" message="`npm` not found!?"/>
@@ -217,6 +217,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 	<!-- Compressed, production ready CSS -->
 	<target name="build.css.compress"
 		description="Builds CSS file(s) and copy assets."
+		depends="-install-recess"
 	>
 		<property name="cmd.recess" value="recess" />
 		
@@ -229,7 +230,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 	</target>
 
 	<target name="build.css.compile"
-		depends="build.css.gfx"
+		depends="build.css.gfx, -install-recess"
 		description="Builds CSS file(s) and copy assets."
 	>
 		<property name="cmd.recess" value="recess" />

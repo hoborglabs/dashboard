@@ -22,6 +22,7 @@
 ##
 # Build assets
 #
+/node_modules
 /build
 *.min.js
 *.min.css
