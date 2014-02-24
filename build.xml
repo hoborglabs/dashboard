@@ -57,6 +57,7 @@
 			<arg line="${cmd.composer}" />
 			<arg line="update" />
 			<arg line="--no-dev" />
+			<arg line="--no-interaction" />
 		</exec>
 
 		<!-- Copy dashboard required projects -->
@@ -132,6 +133,7 @@
 			<arg line="${cmd.composer}" />
 			<arg line="instal" />
 			<arg line="--no-dev" />
+			<arg line="--no-interaction" />
 		</exec>
 		<delete>
 			<fileset dir="${dir.build}/vendor">
