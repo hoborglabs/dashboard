@@ -10,6 +10,7 @@ class WidgetProvider implements IWidgetProvider {
 	}
 
 	public function createWidget(array $widgetJson) {
+		$widgetJson['data'] = array();
 		$widget = new Widget($this->kernel, $widgetJson);
 		$sources = $this->getWidgetSources($widget);
 		$wData = $widget->get();
