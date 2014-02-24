@@ -56,8 +56,21 @@
 		<exec executable="php" failonerror="true">
 			<arg line="${cmd.composer}" />
 			<arg line="update" />
-			<arg line="--dev" />
+			<arg line="--no-dev" />
 		</exec>
+
+		<!-- Copy dashboard required projects -->
+		<copy todir="${dir.build}/vendor/">
+			<fileset dir="${dir.base}/vendor/">
+				<include name="symfony/config/**" />
+				<include name="symfony/console/**" />
+				<include name="symfony/process/**" />
+				<include name="symfony/yaml/**" />
+				
+				<include name="composer/**" />
+				<include name="autoload.php" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="test"
