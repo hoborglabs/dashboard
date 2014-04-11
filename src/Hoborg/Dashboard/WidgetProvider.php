@@ -110,9 +110,7 @@ class WidgetProvider implements IWidgetProvider {
 		if ('cgi' == $type) {
 			foreach ($sources as $src) {
 				$widgetData = $this->loadWidgetFromCgi($widget, $src);
-				if (!empty($widgetData)) {
-					return $widgetData;
-				}
+				$widget->extendData($widgetData);
 			}
 		} else if ('php' == $type) {
 			foreach ($sources as $src) {
@@ -185,6 +183,7 @@ class WidgetProvider implements IWidgetProvider {
 			curl_setopt($curl, CURLOPT_URL, $src);
 			curl_setopt($curl, CURLOPT_POST, count($fields));
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $fieldsString);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 			$json = curl_exec($curl);
 			curl_close($curl);
