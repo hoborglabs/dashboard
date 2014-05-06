@@ -4,7 +4,7 @@
  *
  * @author Wojtek Oledzki (github.com/woledzki)
  */
-define([
+require([
 	'lib/ready',
 	'hoborglabs/widget',
 	'hoborglabs/widgetManager'
