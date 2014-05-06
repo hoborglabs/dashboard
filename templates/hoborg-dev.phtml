@@ -1,76 +1,29 @@
 <!DOCTYPE html>
 <html class="dashboard">
 	<head>
-
-		<!-- Development ONLY -->
-		<!--  LESS -->
-		<link rel="stylesheet/less" type="text/css" href="/styles/less/dashboard.less" />
-		<script type="text/javascript">
-	    less = {
-	        env: "development", // or "production"
-	        async: false,       // load imports async
-	        fileAsync: false,   // load imports async when in a page under
-	                            // a file protocol
-	        poll: 1000,         // when in watch mode, time in ms between polls
-	        functions: {},      // user functions, keyed by name
-	        dumpLineNumbers: "comments", // or "mediaQuery" or "all"
-	        relativeUrls: false,// whether to adjust url's to be relative
-	                            // if false, url's are already relative to the
-	                            // entry less file
-			rootpath: ""// a path to add on to the start of every url
-	                            //resource
-		};
-		</script>
-		<script src="/scripts/less.min.js" type="text/javascript"></script>
-		<!-- END: Development ONLY -->
-
-<!--
-		<link href="<?php echo $HD_PUBLIC; ?>/static/styles/css/dashboard.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="<?php echo $HD_PUBLIC; ?>/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/dashboard.min.js"></script>
- -->
-
+		<link href="<?php echo $HD_PUBLIC; ?>/static/styles/hoborglabs/css/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
 		<?php foreach($this->widgets as $widget) : ?>
-			<?php if ($widget->hasJS()) : ?>
-				<?php foreach ($widget->getJS() as $js) : ?>
-					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/widgets/<?php echo $js; ?>"></script>
-				<?php endforeach; ?>
-			<?php endif; ?>
 			<?php if ($widget->hasCSS()) : ?>
 				<?php foreach ($widget->getCSS() as $css) : ?>
-					<link href="static/widgets/<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
+					<link href="/proxy.php?file=<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
 				<?php endforeach; ?>
 			<?php endif; ?>
 		<?php endforeach; ?>
 
 		<script type="text/javascript">
-		/*
-		$(document).ready(function() {
-			// distribute widgets on the screen.
-			$('.dashboard .container').masonry({
-				itemSelector: '.widget',
-				columnWidth: 10,
-				isFitWidth: true,
-				isAnimated: true
-			});*/
-			/*
-			$('.dashboard .container').widgetManager({
-				callback: function(widget) { $('.dashboard .container').masonry('reload'); },
-			});
-		});
-		*/
-
-
+		// setup configuration for dashboard
 		var widgets = [];
 		var widgetOptions = {
 			url: '',
 			conf: 'demo',
 			defaults: {
-				template: <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>
+				template: <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg.jhtml')); ?>
 			}
 		};
+
+		// prepare all widget - push configs
 		<?php foreach ($this->widgets as $index => & $widget) : ?>
-			widgets.push(['<?php echo $widget->getJsClassName(); ?>', <?php echo $widget->getJson(); ?>]);
+		widgets.push(['<?php echo $widget->getJsClassName(); ?>', <?php echo $widget->getJson(); ?>]);
 		<?php endforeach; unset($widget); ?>
 
 		window.Hoborglabs = { Dashboard: {
@@ -79,20 +32,37 @@
 			widgetOptions: widgetOptions,
 			selector: '#dashboard'
 		}};
-
 		</script>
 
-		<?php echo ''; //$head; ?>
+		<style>
+		.widget--hidden { display: none; }
+		</style>
 	</head>
 	<body class="dashboard">
-		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
-		<div class="container grid" id="dashboard"></div>
+		<div id="dashboard" class="container" style="padding-top: 10px; margin-right: 10px"></div>
 
-		<script>
-			var require = {
-				'baseUrl': '/scripts'
-			};
+		<!-- JAVASCRIPTS
+		include individual widgets JS and main dashboard js.
+		-->
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+
+		<script type="text/javascript">
+		var require = {
+			'baseUrl': '/static/scripts/hoborglabs-dev'
+		};
 		</script>
-		<script src="/scripts/require.js" type="text/javascript" data-main="app.js"></script>
+		<script src="/static/scripts/hoborglabs-dev/require.js" type="text/javascript"></script>
+		<?php foreach($this->widgets as $widget) : ?>
+			<?php if ($widget->hasJS()) : ?>
+				<?php foreach ($widget->getJS() as $js) : ?>
+					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/proxy.php?file=<?php echo $js; ?>"></script>
+				<?php endforeach; ?>
+			<?php endif; ?>
+		<?php endforeach; ?>
+
+		<script src="/dashboard.js" type="text/javascript"></script>
+		<!--
+		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/static/scripts/hoborglabs/dashboard.js"></script>
+		-->
 	</body>
 </html>
