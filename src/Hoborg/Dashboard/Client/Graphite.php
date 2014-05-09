@@ -1,7 +1,23 @@
 <?php
 namespace Hoborg\Dashboard\Client;
 
+use Hoborg\Dashboard\Client\Graphite\Target;
+
 class Graphite {
+
+	protected $graphiteUrl = null;
+
+	protected $options = array();
+
+	public function __construct($graphiteUrl, array $options = array()) {
+		$this->graphiteUrl = $graphiteUrl;
+		$this->options = $options;
+	}
+
+	public function target($target, array $options) {
+		$target = new Target($this, $target, array(), $options);
+		return $target;
+	}
 
 	public function getAvgTargetValue($target, $graphiteUrl, array $options, $nullAsZero = false) {
 		$url = $graphiteUrl . "/render?target={$target}";
@@ -85,6 +101,44 @@ class Graphite {
 		}
 
 		return $data;
+	}
+
+	public function getData($target, array $functions, array $options) {
+		$parts = array(
+			'target' => $this->applyFunctionstoTarget($target, $functions),
+		) + $options;
+
+
+		array_walk($parts, function(&$val, $key) {
+			$val = "{$key}=" . urlencode($val);
+		});
+		$url = $this->graphiteUrl . "/render?" . implode('&', $parts);
+
+		return $this->getJsonData($url);
+	}
+
+	protected function applyFunctionstoTarget($target, array $functions) {
+		$origTarget = $target;
+
+		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'dashed', 'derivative');
+		$singleStringParamFunctions = array();
+		$singleNumberParamFunctions = array();
+
+		foreach ($functions as $function => $param) {
+			if (in_array($function, $noParamFunctions)) {
+				$target = "{$function}({$target})";
+			}
+
+			if (in_array($function, $singleStringParamFunctions)) {
+				$target = "{$function}({$target},'{$param}')";
+			}
+
+			if (in_array($function, $singleNumberParamFunctions)) {
+				$target = "{$function}({$target},{$param})";
+			}
+		}
+
+		return $target;
 	}
 
 }
