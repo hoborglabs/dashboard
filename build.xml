@@ -23,7 +23,7 @@
 	<property name="cmd.uglifyjs" value="uglifyjs" />
 	<property name="cmd.node" value="node" />
 	<property name="cmd.npm" value="npm" />
-	
+
 	<!-- some default build settings -->
 	<property name="build.local_build" value="true" />
 
@@ -31,7 +31,7 @@
 	<property name="dir.deploy.local" value="false" />
 
 	<available file="${dir.base}/composer.phar" property="composer.present" />
-	<available file="recess" filepath="${env.PATH}" property="recess.present" />
+	<available file="${cmd.recess}" filepath="${env.PATH}:${dir.base}" property="recess.present" />
 	<available file="${cmd.npm}" filepath="${env.PATH}" property="npm.present" />
 	<available file="${cmd.node}" filepath="${env.PATH}" property="node.present" />
 
@@ -45,13 +45,13 @@
 		* help
 	-->
 
-	<target name="validate" 
+	<target name="validate"
 		description="Validates project."
 		depends="prepare, -install-composer"
 	>
 		<fail unless="node.present" message="`node` not found! Please install - http://nodejs.org/"/>
 		<fail unless="npm.present" message="`npm` not found!?"/>
-		
+
 		<!-- get dependencies -->
 		<exec executable="php" failonerror="true">
 			<arg line="${cmd.composer}" />
@@ -67,7 +67,7 @@
 				<include name="symfony/console/**" />
 				<include name="symfony/process/**" />
 				<include name="symfony/yaml/**" />
-				
+
 				<include name="composer/**" />
 				<include name="autoload.php" />
 			</fileset>
@@ -87,12 +87,12 @@
 	* prepare
 	  o -prepare.folders
 	  * prepare.code (copy or git co)
-	  * build.code 
+	  * build.code
 	  * build.js
 	  * build.css
-	    * build 
+	    * build
 	-->
-	<target name="build" 
+	<target name="build"
 		depends="prepare"
 		description="Builds dashboard package."
 	>
@@ -112,7 +112,7 @@
 			script for finilizing installation process.
 		o	phar
 			Single phar file. Just inlude it in you php.
-		
+
 		Release is made using composer and 'dev-master' version.
 	-->
 	<target name="release"
@@ -173,7 +173,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 
 		<antcall target="prepare.code" />
 	</target>
-	
+
 	<target name="prepare.code"
 		description="Prepares code in build folder (git clone or local copy)."
 	>
@@ -203,7 +203,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="symfony/console/**" />
 				<include name="symfony/process/**" />
 				<include name="symfony/yaml/**" />
-				
+
 				<include name="composer/**" />
 				<include name="autoload.php" />
 			</fileset>
@@ -235,7 +235,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 		depends="-install-recess"
 	>
 		<property name="cmd.recess" value="recess" />
-		
+
 		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
 		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
 		<exec executable="${cmd.recess}" output="${dir.build.dist}/htdocs/static/styles/hoborglabs/css/dashboard.min.css">
@@ -268,7 +268,7 @@ php -w $1 > $1.mini && mv $1.mini $1]]></echo>
 				<include name="**.gif" />
 			</fileset>
 		</copy>
-		
+
 		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
 		<concat destfile="${dir.base}/htdocs/dashboard.css">
 			<fileset dir="${dir.base}/htdocs/style/"
@@ -362,7 +362,7 @@ __HALT_COMPILER();</echo>
 				<include name="data/hoborg/*" />
 			</fileset>
 		</copy>
-		
+
 		<antcall target="minify-phar-files" />
 	</target>
 
@@ -418,7 +418,7 @@ __HALT_COMPILER();</echo>
 			<arg line="--type js" />
 			<arg line="-o ${dir.build}/scripts.js" />
 			<arg line="${dir.base}/htdocs/js/jquery/*" />
-			<!-- 
+			<!--
 			<fileset dir="${dir.base}/htdocs/js/">
 				<patternset>
 					<include name="jquery/*.js"/>
