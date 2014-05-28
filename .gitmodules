@@ -1,3 +1,0 @@
-[submodule "widgets"]
-	path = widgets
-	url = git@github.com:hoborglabs/widgets.git
