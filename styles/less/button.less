@@ -1,0 +1,41 @@
+/** Buttons */
+
+.btn {
+	display: inline-block;
+	padding: 1px 6px;
+	-webkit-border-radius: 3px;
+	   -moz-border-radius: 3px;
+	        border-radius: 3px;
+	cursor: pointer;
+}
+
+.btn--lrg {
+	font-size: 32px;
+	padding: 10px;
+}
+.btn--sml {
+	font-size: 12px;
+	padding: 0px 6px;
+}
+
+/** due to `.widget .a` selector overiding text color */
+.widget {
+
+	.btn--primary {
+		background-color: #428bca;
+		color: black;
+	}
+	.btn--success {
+		background-color: #5cb85c;
+		color: black;
+	}
+	.btn--info {
+		background-color: #5bc0de;
+	}
+	.btn--warning {
+		background-color: #f0ad4e;
+	}
+	.btn--danger {
+		background-color: #d9534f;
+	}
+}

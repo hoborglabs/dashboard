@@ -1,6 +1,6 @@
 /**
- * Widgets CSS
- */
+* Widgets CSS
+*/
 html.dashboard,
 body.dashboard,
 #dashboard {
@@ -85,14 +85,6 @@ body.dashboard,
 	background-image: none;
 }
 
-.panel {
-	background-color: #282828;
-	padding: 6px 14px;
-	border-bottom: 1px solid #121212;
-	border-top: 1px solid #343434;
-	margin: 0px 0px 4px 0px;
-}
-
 .matrix {
 	margin: 0;
 	padding: 0;
@@ -131,6 +123,7 @@ body.dashboard,
     color: #BB3118;
 }
 
+.widget__panel,
 .widget .panel {
     background-color: #282828;
     padding: 6px 14px;
@@ -139,6 +132,7 @@ body.dashboard,
     margin: 0px 0px 4px 0px;
 }
 
+.widget__content,
 .widget .content {
     padding: 8px 14px;
 }
@@ -158,48 +152,6 @@ body.dashboard,
     font-weight: bold;
 }
 
-.widget {
-	.text-primary {
-		color: #428bca;
-		text-decoration: none;
-	}
-	.text-success {
-		color: #5cb85c;
-		text-decoration: none;
-	}
-	.text-info {
-		color: #5bc0de;
-		text-decoration: none;
-	}
-	.text-warning {
-		color: #f0ad4e;
-		text-decoration: none;
-	}
-	.text-danger {
-		color: #d9534f;
-		text-decoration: none;
-	}
-}
-
-.widget .text-XXL {
-    font-size: 56px;
-    font-weight: normal;
-    letter-spacing: -4px;
-    line-height: 56px;
-    text-shadow: 0 0 8px black;
-}
-.widget .text-XL {
-    font-size: 44px;
-    font-weight: bold;
-    letter-spacing: -2px;
-    line-height: 48px;
-    text-shadow: 0 0 6px black;
-}
-.widget .text-L {
-    font-size: 32px;
-    line-height: 34px;
-    font-weight: bold;
-}
 .widget .text-L.icon {
 	padding-left: 36px;
 }
@@ -216,11 +168,60 @@ body.dashboard,
 .widget .text-S.icon.positive {
     background: url(/?static=/templates/hoborg/gfx/icons/up_l.png) no-repeat -7px 5px transparent;
 }
-.widget .text-S.icon.negative {
+.text-S.icon.negative {
     background: url(/?static=/templates/hoborg/gfx/icons/down_l.png) no-repeat -7px -12px transparent;
 }
 
-.widget .text-M {
-    font-size: 18px;
+/**
+ * TEXT sizes and colours
+ */
+.text-S {
+    font-size: 12px;
+    line-height: 16px;
     font-weight: bold;
+}
+.text-M {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: bold;
+}
+.text-L {
+    font-size: 32px;
+    line-height: 34px;
+    font-weight: bold;
+}
+.text-XL {
+    font-size: 44px;
+    font-weight: bold;
+    letter-spacing: -2px;
+    line-height: 48px;
+    text-shadow: 0 0 6px black;
+}
+.text-XXL {
+    font-size: 56px;
+    font-weight: normal;
+    letter-spacing: -4px;
+    line-height: 56px;
+    text-shadow: 0 0 8px black;
+}
+
+.text-primary {
+    color: #428bca;
+    text-decoration: none;
+}
+.text-success {
+    color: #5cb85c;
+    text-decoration: none;
+}
+.text-info {
+    color: #5bc0de;
+    text-decoration: none;
+}
+.text-warning {
+    color: #f0ad4e;
+    text-decoration: none;
+}
+.text-danger {
+    color: #d9534f;
+    text-decoration: none;
 }
