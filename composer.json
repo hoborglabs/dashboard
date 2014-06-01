@@ -9,6 +9,7 @@
             "homepage": "http://wojtek.oledzki.info"
         }
     ],
+    "bin": ["bin/dashboard.php"],
     "require": {
         "php": ">=5.3.0",
         "symfony/http-foundation": "2.2.0"
