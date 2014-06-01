@@ -1,12 +1,52 @@
 /** Buttons */
 
+@btn-font-weight: 400;
+@btn-default-color: #000;
+@btn-primary-color: #FFF;
+@btn-danger-color: #FFF;
+
+
 .btn {
 	display: inline-block;
 	padding: 1px 6px;
 	-webkit-border-radius: 3px;
 	   -moz-border-radius: 3px;
 	        border-radius: 3px;
-	cursor: pointer;
+	margin-bottom: 0; // For input.btn
+	font-weight: @btn-font-weight;
+	text-align: center;
+	vertical-align: middle;
+	background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+	border: 1px solid transparent;
+	white-space: nowrap;
+
+	a& {
+		cursor: pointer;
+	}
+
+	&:active,
+	&.active {
+		outline: 0;
+		background-image: none;
+		//.box-shadow(inset 0 3px 5px rgba(0,0,0,.125));
+	}
+
+	a&:hover,
+	a&:focus {
+		color: @btn-default-color;
+		text-decoration: none;
+		background-color: darken(#FFF, 10%);
+		    border-color: darken(#fff, 12%);
+	}
+
+	&.disabled,
+	&[disabled],
+	fieldset[disabled] & {
+		cursor: not-allowed;
+		pointer-events: none; // Future-proof disabling of clicks
+		//.opacity(.65);
+		//.box-shadow(none);
+	}
 }
 
 .btn--lrg {
@@ -21,21 +61,64 @@
 /** due to `.widget .a` selector overiding text color */
 .widget {
 
+	.btn--default {
+		.button-variant(#000, #FFF, darken(#FFF, 20%))
+	}
 	.btn--primary {
-		background-color: #428bca;
-		color: black;
+		.button-variant(@btn-primary-color, @clr-primary, darken(@clr-success, 20%))
 	}
 	.btn--success {
-		background-color: #5cb85c;
-		color: black;
+		.button-variant(#FFF, @clr-success, darken(@clr-success, 20%))
 	}
 	.btn--info {
-		background-color: #5bc0de;
+		.button-variant(@btn-danger-color, @clr-info, darken(@clr-info, 20%))
 	}
 	.btn--warning {
-		background-color: #f0ad4e;
+		.button-variant(@btn-danger-color, @clr-warning, darken(@clr-warning, 20%))
+
 	}
 	.btn--danger {
-		background-color: #d9534f;
+		.button-variant(@btn-danger-color, @clr-danger, darken(@clr-danger, 20%))
 	}
+}
+
+.button-variant(@color; @background; @border) {
+  color: @color;
+  background-color: @background;
+  border-color: @border;
+
+  a&:hover,
+  a&:focus,
+  &:active,
+  &.active {
+    color: @color;
+    background-color: darken(@background, 10%);
+        border-color: darken(@border, 12%);
+  }
+
+  &:active,
+  &.active {
+    background-image: none;
+  }
+
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      background-color: @background;
+          border-color: @border;
+    }
+  }
+}
+
+// Button sizes
+.button-size(@padding-vertical; @padding-horizontal; @font-size; @line-height; @border-radius) {
+  padding: @padding-vertical @padding-horizontal;
+  font-size: @font-size;
+  line-height: @line-height;
+  border-radius: @border-radius;
 }

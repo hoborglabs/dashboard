@@ -8,6 +8,13 @@
 @background: #1C1C1C;
 @gutter: 10px;
 
+// Colours
+@clr-success: #5cb85c;
+@clr-primary: #428bca;
+@clr-info: #5bc0de;
+@clr-warning: #f0ad4e;
+@clr-danger: #d9534f;
+
 body, div {
 	padding: 0;
 	margin: 0;
@@ -23,8 +30,40 @@ img {
 	max-width: 100%;
 }
 
+// Transitions
+
+.transition(@transition) {
+  -webkit-transition: @transition;
+       -o-transition: @transition;
+          transition: @transition;
+}
+.transition-property(@transition-property) {
+  -webkit-transition-property: @transition-property;
+          transition-property: @transition-property;
+}
+.transition-delay(@transition-delay) {
+  -webkit-transition-delay: @transition-delay;
+          transition-delay: @transition-delay;
+}
+.transition-duration(@transition-duration) {
+  -webkit-transition-duration: @transition-duration;
+          transition-duration: @transition-duration;
+}
+.transition-timing-function(@timing-function) {
+  -webkit-transition-timing-function: @timing-function;
+          transition-timing-function: @timing-function;
+}
+.transition-transform(@transition) {
+  -webkit-transition: -webkit-transform @transition;
+     -moz-transition: -moz-transform @transition;
+       -o-transition: -o-transform @transition;
+          transition: transform @transition;
+}
+
+
 @import "grid.less";
 @import "chart.less";
 @import "widget.less";
 @import "button.less";
+@import "progress-bar.less";
 @import "hoborg-widget.less";
