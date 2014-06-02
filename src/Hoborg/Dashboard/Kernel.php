@@ -30,8 +30,7 @@ class Kernel {
 		}
 
 		$this->addExtensionPath($rootFolder);
-		$this->paths['templates'][] = $rootFolder . '/vendor/hoborglabs/dashboard/templates';
-		$this->paths['widgets'][] = "{$rootFolder}/vendor/hoborglabs/widgets";
+		$this->paths['templates'][] = __DIR__ . '../../../templates';
 	}
 
 	/**
