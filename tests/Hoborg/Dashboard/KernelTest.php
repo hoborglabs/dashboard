@@ -20,6 +20,17 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('prod', $kernel->getEnvironment());
 	}
 
+	public function testThrowConfigurationParseError() {
+		$kernel = $this->mockFactory->getKernelMock(array('getParam', 'handleError'));
+		$kernel->expects($this->once())
+				->method('handleError')
+				->with($this->stringContains('Parse error on line 2:'));
+
+		// prepare Kernel and try to get config from invalid json
+		$kernel->setParams(array('conf' => 'not-valid'));
+		$kernel->getConfig();
+	}
+
 	/**
 	 * @expectedException Hoborg\Dashboard\Exception
 	 * @expectedExceptionCode 500

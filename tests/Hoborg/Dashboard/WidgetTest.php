@@ -24,14 +24,14 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testSetData() {
 		$widget = $this->createWidget();
-		$widget->extend(array('name' => 'test'));
+		$widget->extendData(array('name' => 'test'));
 		$this->assertEquals(
 			json_decode($widget->getJson()),
 			json_decode('{"name": "test", "data": [], "template": ""}')
 		);
 
 		$widget = $this->createWidget(array('test' => 'this will be overriden'));
-		$widget->extend(array('name' => 'test', 'test' => 'value'));
+		$widget->extendData(array('name' => 'test', 'test' => 'value'));
 		$this->assertEquals(
 			json_decode($widget->getJson(), true),
 			array(
@@ -45,7 +45,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testDefaultValues() {
 		$widget = $this->createWidget();
-		$widget->extend(array());
+		$widget->extendData(array());
 		$this->assertEquals(
 			json_decode($widget->getJson(), true),
 			array(

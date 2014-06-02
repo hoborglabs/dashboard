@@ -4,10 +4,11 @@
 *.swp
 
 ##
-# Composer
+# Composer and other build artifacts
 /vendor
 /composer.lock
 /composer.phar
+/phpunit.phar
 
 ##
 # Configuration

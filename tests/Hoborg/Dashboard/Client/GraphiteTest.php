@@ -10,7 +10,8 @@ class GraphiteTest extends \PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		$this->fixture = $this->getMock('Hoborg\Dashboard\Client\Graphite',
-			array('getJsonData')
+			array('getJsonData'),
+			array('http://graphite.local')
 		);
 	}
 

@@ -1,6 +1,8 @@
 <?php
 namespace Hoborg\Dashboard;
 
+use Seld\JsonLint\JsonParser;
+
 class Kernel {
 
 	protected $environment = null;
@@ -116,9 +118,9 @@ class Kernel {
 	public function setParams(array $params) {
 		$params = $params + $this->defaultParams;
 
-// 		if (empty($params['conf'])) {
-// 			throw new Exception('Missing `conf` parameter', 500);
-// 		}
+		if (empty($params['conf'])) {
+			throw new Exception('Missing `conf` parameter', 500);
+		}
 
 		$this->params = $params;
 	}
@@ -188,23 +190,28 @@ class Kernel {
 
 		$configName = $this->params['conf'];
 		$configFile = $this->findFileOnPath($configName . '.js', $this->getConfigPath());
-
 		if (!is_file($configFile)) {
 			$configFile = $this->findFileOnPath($configName . '.json', $this->getConfigPath());
-			if (!is_file($configFile)) {
-				$error = "Configuration file `{$this->params['conf']}` not found.";
-				$code = '404';
-				$this->handleError($error, $code);
-			}
+		}
+		if (!is_file($configFile)) {
+			$error = "Configuration file `{$this->params['conf']}` not found.";
+			$code = '404';
+
+			return $this->handleError($error, $code);
 		}
 
 		// get configuration
-		$this->config = json_decode(file_get_contents($configFile), true);
+		$configJson = file_get_contents($configFile);
+		$this->config = json_decode($configJson, true);
 
 		if (empty($this->config)) {
-			$error = "You have an error in your configuration";
+			$parser = new JsonParser();
+			$jsonError = $parser->lint($configJson);
+
+			$error = "You have an error in your configuration. {$jsonError->getMessage()}";
 			$code = '500';
-			$this->handleError($error, $code);
+
+			return $this->handleError($error, $code);
 		}
 
 		return $this->config;
