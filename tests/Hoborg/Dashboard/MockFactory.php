@@ -38,4 +38,15 @@ class MockFactory {
 
 		return $mock;
 	}
+
+	public function getGraphiteClientMock($methods = null) {
+		if (null === $methods) {
+			$methods = array();
+		}
+		$mock = $this->testCase->getMock('\Hoborg\\Dashboard\\Client\\Graphite',
+				$methods, array('http://graphite-mock.local')
+		);
+
+		return $mock;
+	}
 }

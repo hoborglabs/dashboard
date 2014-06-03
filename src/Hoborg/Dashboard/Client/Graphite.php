@@ -105,7 +105,7 @@ class Graphite {
 
 	public function getData($target, array $functions, array $options) {
 		$parts = array(
-			'target' => $this->applyFunctionstoTarget($target, $functions),
+			'target' => $this->applyFunctionsToTarget($target, $functions),
 		) + $options;
 
 
@@ -117,7 +117,7 @@ class Graphite {
 		return $this->getJsonData($url);
 	}
 
-	protected function applyFunctionstoTarget($target, array $functions) {
+	protected function applyFunctionsToTarget($target, array $functions) {
 		$origTarget = $target;
 
 		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'dashed', 'derivative');
