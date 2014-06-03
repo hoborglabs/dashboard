@@ -8,7 +8,7 @@ class Github {
 	protected $githubOption = array();
 
 	public function __construct($baseUrl, Http $caller = null) {
-		if (null == $caller) {
+		if (null === $caller) {
 			$caller = new Http();
 		}
 		$this->caller = $caller;
