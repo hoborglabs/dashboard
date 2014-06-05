@@ -1,4 +1,4 @@
-<project name="Hoborg Commons" default="help" basedir=".">
+<project name="HoborgLabs Dashboard" default="help" basedir=".">
 
 	<!-- optional environmental settings/overrides -->
 	<property file="build.properties" />
@@ -6,536 +6,114 @@
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
-	<property name="dir.build" value="${dir.base}/build" />
-	<property name="dir.build.dist" value="${dir.build}/dist" />
-	<property name="dir.build.phar" value="${dir.build}/phar" />
+	<property name="dir.vendor" value="${dir.base}/vendor" />
 	<property name="dir.logs" value="${dir.base}/logs" />
 	<property name="dir.src" value="${dir.base}/src" />
 
 	<!-- Commands defaults -->
-	<property name="cmd.phpunit" value="phpunit" />
-	<property name="cmd.phpmd" value="phpmd" />
-	<property name="cmd.phpcpd" value="phpcpd" />
-	<property name="cmd.phpcs" value="phpcs" />
-	<property name="cmd.pdepend" value="pdepend" />
-	<property name="cmd.phar" value="phar" />
-	<property name="cmd.composer" value="${dir.base}/composer.phar" />
-	<property name="cmd.uglifyjs" value="uglifyjs" />
+	<property name="cmd.php" value="php" />
 	<property name="cmd.node" value="node" />
 	<property name="cmd.npm" value="npm" />
+	<property name="cmd.composer" value="${dir.base}/composer.phar" />
 
-	<!-- some default build settings -->
-	<property name="build.local_build" value="true" />
-
-	<!-- Deploy configs -->
-	<property name="dir.deploy.local" value="false" />
-
+	<available file="${cmd.php}" filepath="${env.PATH}" property="php.present" />
 	<available file="${dir.base}/composer.phar" property="composer.present" />
-	<available file="${cmd.recess}" filepath="${env.PATH}:${dir.base}" property="recess.present" />
-	<available file="${cmd.npm}" filepath="${env.PATH}" property="npm.present" />
 	<available file="${cmd.node}" filepath="${env.PATH}" property="node.present" />
+	<available file="${cmd.npm}" filepath="${env.PATH}" property="npm.present" />
 
 	<!--
 	Main targets:
-		* validate
+		* validate (validate.dev)
 		* test
-		* build
-		* code-analysis
 		* clean
 		* help
 	-->
 
 	<target name="validate"
 		description="Validates project."
-		depends="prepare, -install-composer"
 	>
+		<fail unless="php.present" message="`php` not found! Please install - http://php.org/"/>
+
+		<antcall target="validate.dependencies" />
+	</target>
+
+	<target name="validate.dev"
+		description="Validates project for development."
+	>
+		<fail unless="php.present" message="`php` not found! Please install - http://php.org/"/>
 		<fail unless="node.present" message="`node` not found! Please install - http://nodejs.org/"/>
 		<fail unless="npm.present" message="`npm` not found!?"/>
 
-		<!-- get dependencies -->
-		<exec executable="php" failonerror="true">
-			<arg line="${cmd.composer}" />
-			<arg line="update" />
-			<arg line="--no-dev" />
-			<arg line="--no-interaction" />
-		</exec>
-
-		<!-- Copy dashboard required projects -->
-		<copy todir="${dir.build}/vendor/">
-			<fileset dir="${dir.base}/vendor/">
-				<include name="symfony/config/**" />
-				<include name="symfony/console/**" />
-				<include name="symfony/process/**" />
-				<include name="symfony/yaml/**" />
-
-				<include name="composer/**" />
-				<include name="autoload.php" />
-			</fileset>
-		</copy>
+		<!-- Install `require-dev` dependencies -->
+		<antcall target="validate.dev.dependencies" />
 	</target>
 
 	<target name="test"
 		description="Run project tests"
-		depends="prepare"
 	>
 		<antcall target="phpunit" />
 	</target>
 
-	<!--
-	build process:
-	* clean
-	* prepare
-	  o -prepare.folders
-	  * prepare.code (copy or git co)
-	  * build.code
-	  * build.js
-	  * build.css
-	    * build
-	-->
-	<target name="build"
-		depends="prepare"
-		description="Builds dashboard package."
+	<target name="clean"
+		description="Clean up workspace"
 	>
-		<parallel failonany="true" >
-			<antcall target="build.css.compress" />
-			<antcall target="build.js" />
-			<!-- old style jquery code -->
-			<antcall target="build.js.jquery" />
-		</parallel>
-	</target>
-
-	<!--
-		Release
-		o  package
-			one tgz package with vendor folder containinig both dashboard and widgets
-			projects together with autoloader. Dashbaord project contains `bin/install`
-			script for finilizing installation process.
-		o	phar
-			Single phar file. Just inlude it in you php.
-
-		Release is made using composer and 'dev-master' version.
-	-->
-	<target name="release"
-		depends="clean"
-	>
-		<!-- If not set already, assume master branch for both -->
-		<property name="release.dashboard.version" value="master" />
-		<property name="release.widget.version" value="master" />
-
-		<!--
-			copy src to hoborglabs/dashbaord and git clone widgets project
-		-->
-		<!-- vendors.tgz
-			prepare hoborglabs/dashboard and hoborglabs/widgets folders.
-		-->
-		<copy file="${dir.base}/build.composer.json" tofile="${dir.build}/composer.json" />
-		<exec executable="php" failonerror="true" dir="${dir.build}">
-			<arg line="${cmd.composer}" />
-			<arg line="instal" />
-			<arg line="--no-dev" />
-			<arg line="--no-interaction" />
-		</exec>
-		<delete>
-			<fileset dir="${dir.build}/vendor">
-				<include name="hoborglabs/*/.git"/>
-			</fileset>
-		</delete>
-
-		<!-- Copy generated assets -->
-		<copy todir="${dir.build}/vendor/hoborglabs/dashboard">
-			<fileset dir="${dir.build.dist}">
-				<include name="src/**" />
-				<include name="bin/**" />
-				<include name="styles/**" />
-				<include name="scripts/**" />
-			</fileset>
-		</copy>
-
-		<tar destfile="${dir.build}/dashboard.tgz"
-			basedir="${dir.build}/"
-			includes="vendor/"
-			compression="gzip"
-			longfile="gnu"
-		/>
-	</target>
-
-	<target name="code-analysis"
-		description="Run static code analysis tools"
-		depends="prepare, phpmd, phpcpd, phpdepend"
-	/>
-
-	<target name="prepare"
-		description="Prepare folder structure"
-		depends="-prepare.folders"
-	>
-		<echo file="${dir.build}/phpmini.sh"><![CDATA[
-php -w $1 > $1.mini && mv $1.mini $1]]></echo>
-
-		<antcall target="prepare.code" />
-	</target>
-
-	<target name="prepare.code"
-		description="Prepares code in build folder (git clone or local copy)."
-	>
-		<antcall>
-			<target name="-prepare.code.local" />
-			<target name="-prepare.code.git" />
-		</antcall>
-	</target>
-
-	<!-- Copy dashbaord and widfgets projects from local folders -->
-	<target name="-prepare.code.local" if="${build.local_build}">
-		<!-- Copy dashboard -->
-		<copy todir="${dir.build}/vendor/hoborglabs/dashboard">
-			<fileset dir="${dir.base}">
-				<include name="src/**" />
-				<include name="bin/**" />
-				<include name="scritps/**" />
-				<include name="styles/**" />
-				<include name="templates/**" />
-			</fileset>
-		</copy>
-
-		<!-- Copy dashboard required projects -->
-		<copy todir="${dir.build}/vendor/">
-			<fileset dir="${dir.base}/vendor/">
-				<include name="symfony/config/**" />
-				<include name="symfony/console/**" />
-				<include name="symfony/process/**" />
-				<include name="symfony/yaml/**" />
-
-				<include name="composer/**" />
-				<include name="autoload.php" />
-			</fileset>
-		</copy>
-
-		<!-- Copy widgets -->
-		<copy todir="${dir.build}/vendor/hoborglabs/widgets">
-			<fileset dir="${build.widgets_dir}">
-				<include name="src/**" />
-				<include name="hoborg/**" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="-prepare.code.git" unless="${build.local_build}">
-	</target>
-
-	<!--
-	CSS targets
-	 - build.css.compress
-	 - build.css.compile (todo)
-	 - build.css.gfx
-	 - build.css.watch
-	-->
-
-	<!-- Compressed, production ready CSS -->
-	<target name="build.css.compress"
-		description="Builds CSS file(s) and copy assets."
-		depends="-install-recess"
-	>
-		<property name="cmd.recess" value="recess" />
-
-		<echo level="info">Building ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
-		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
-		<exec executable="${cmd.recess}" output="${dir.build.dist}/htdocs/static/styles/hoborglabs/css/dashboard.min.css">
-			<arg line="--compress" />
-			<arg line="${dir.base}/styles/less/dashboard.less" />
-		</exec>
-	</target>
-
-	<target name="build.css.compile"
-		depends="build.css.gfx, -install-recess"
-		description="Builds CSS file(s) and copy assets."
-	>
-		<property name="cmd.recess" value="recess" />
-		<echo level="info">COmpiling ${dir.build.dist}/static/styles/hoborglabs/css/main.css</echo>
-		<mkdir dir="${dir.build.dist}/htdocs/static/styles/hoborglabs/css" />
-		<exec executable="${cmd.recess}" output="${dir.build.dist}/static/styles/hoborglabs/css/dashboard.min.css">
-			<arg line="--compile" />
-			<arg line="${dir.base}/styles/less/dashboard.less" />
-		</exec>
-	</target>
-
-	<target name="build.css.gfx"
-		description="Copy css assets to build folder"
-	>
-		<echo level="info">Copying CSS images assets to build folder.</echo>
-		<mkdir dir="${dir.build}/static/styles/gfx/" />
-		<copy todir="${dir.build}/static/styles/gfx/">
-			<fileset dir="${dir.base}/styles/less">
-				<include name="**.png" />
-				<include name="**.gif" />
-			</fileset>
-		</copy>
-
-		<echo>Building ${dir.base}/htdocs/dashboard.css</echo>
-		<concat destfile="${dir.base}/htdocs/dashboard.css">
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="bootstrap.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="dashboard.css"
-			/>
-			<fileset dir="${dir.base}/htdocs/style/"
-				includes="chart.css"
-			/>
-		</concat>
-	</target>
-
-	<target name="build.css.watch"
-		description="Prints command to run for watching CSS changes."
-	>
-		<echo>To watch CSS run the following command</echo>
-		<echo>${cmd.recess} ${dir.base}/styles/less/dashboard.less:${dir.deploy.local}/htdocs/static/styles/css/dashboard.css --watch ${dir.base}/styles/less/</echo>
-	</target>
-
-	<target name="build.js">
-		<!-- AMD require.js style -->
-		<echo>Building ${dir.build.dist}/htdocs/static/scripts/hoborglabs/dashboard.js</echo>
-		<mkdir dir="${dir.build.dist}/htdocs/static/scripts/hoborglabs"/>
-		<exec executable="${cmd.node}">
-			<arg line="scripts/r.js" />
-			<arg line="-o" />
-			<arg line="${dir.base}/scripts/dashboard.build.js" />
-		</exec>
-	</target>
-	<target name="build.js.jquery">
-		<echo>Building jquery addons ${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js</echo>
-		<mkdir dir="${dir.build.dist}/htdocs/static/scripts/hoborglabs"/>
-		<concat append="true" destfile="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js">
-			<fileset dir="${dir.base}/htdocs/js/">
-				<include name="jquery/jquery.js"/>
-				<include name="jquery/jquery.masonry.js"/>
-			</fileset>
-		</concat>
-		<exec executable="${cmd.uglifyjs}" output="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js">
-			<arg line="${dir.build.dist}/htdocs/static/scripts/hoborglabs/jquery-addons.js" />
-		</exec>
-	</target>
-
-	<target name="prepare.js">
-		<delete file="${dir.base}/htdocs/dashboard.js" />
-		<copy todir="${dir.base}/htdocs">
-			<fileset dir="${dir.base}">
-				<include name="templates/**/*.js" />
-				<include name="widgets/**/*.js" />
-			</fileset>
-		</copy>
-
-		<echo>Building ${dir.base}/htdocs/dashboard.js</echo>
-		<copy file="${dir.base}/htdocs/js/jquery/jquery.js"
-			tofile="${dir.base}/htdocs/dashboard.js"
-		/>
-		<concat destfile="${dir.base}/htdocs/dashboard.js"
-			append="yes"
-		>
-			<fileset dir="${dir.base}/htdocs/js/">
-				<include name="jquery/*.js"/>
-				<include name="hoborg/*.js"/>
-				<exclude name="jquery/jquery.js" />
-			</fileset>
-		</concat>
-
-	</target>
-
-	<target name="prepare-code-phar"
-		depends="prepare"
-		description="Prepare Web phar files"
-	>
-		<echo file="${dir.build}/phar-stub">&lt;?php
-Phar::mapPhar('dashboard.phar');
-include 'phar://dashboard.phar/autoload.php';
-__HALT_COMPILER();</echo>
-
-		<echo message="Copy source files to build folder `${dir.build}/phar`." />
-		<delete>
-			<fileset dir="${dir.build}/phar" includes="**"/>
-		</delete>
-		<copy todir="${dir.build}/phar">
-			<fileset dir="${dir.base}">
-				<include name="autoload.php" />
-				<include name="conf/demo.js" />
-				<include name="src/**" />
-				<include name="templates/*" />
-				<include name="widgets/**" />
-				<include name="data/hoborg/*" />
-			</fileset>
-		</copy>
-
-		<antcall target="minify-phar-files" />
-	</target>
-
-	<target name="build-phar"
-		depends="prepare"
-		description="Build PHAR dashboard file."
-	>
-		<echo file="${dir.build}/phar-stub">&lt;?php
-define('PHAR_ROOT', __DIR__);
-Phar::mapPhar('dashboard.phar');
-require 'phar://dashboard.phar/autoloader-phar.php';
-
-__HALT_COMPILER();</echo>
-
-		<echo message="Copy source files to build folder `${dir.build}/phar`." />
-		<delete>
-			<fileset dir="${dir.build}/phar" includes="**"/>
-		</delete>
-		<copy todir="${dir.build}/phar">
-			<fileset dir="${dir.build}/dist">
-				<include name="autoloader-phar.php" />
-				<include name="src/**" />
-				<include name="templates/**" />
-				<include name="widgets/**" />
-			</fileset>
-		</copy>
-
-		<echo message="Minifying php files." />
-		<apply executable="bash" dir="${dir.build}" dest="${dir.build}/phar" force="true">
-			<fileset dir="${dir.build}/phar">
-				<include name="autoloader-phar.php" />
-				<include name="**/*.php" />
-			</fileset>
-			<arg value="phpmini.sh" />
-			<srcfile />
-			<mapper type="glob" from="*.php" to="*.php" />
-		</apply>
-
-		<echo message="Building PHAR file." />
-		<exec executable="${cmd.phar}" dir="${dir.build}">
-			<arg value="pack" />
-			<arg line="-f ${dir.build}/dashboard.phar" />
-			<arg line="-a dashboard.phar" />
-			<arg line="-c 0" />
-			<arg line="-s ${dir.build}/phar-stub" />
-			<arg value="${dir.build}/phar" />
-		</exec>
-	</target>
-
-	<target name="build.assets" depends="prepare">
-		<exec executable="java" dir="${dir.base}">
-			<arg line="-jar ${dir.base}/bin/yuicompressor-2.4.7.jar" />
-			<arg line="--type js" />
-			<arg line="-o ${dir.build}/scripts.js" />
-			<arg line="${dir.base}/htdocs/js/jquery/*" />
-			<!--
-			<fileset dir="${dir.base}/htdocs/js/">
-				<patternset>
-					<include name="jquery/*.js"/>
-					<include name="hoborg/*.js"/>
-				</patternset>
-			</fileset>
-			 -->
-		</exec>
-	</target>
-
-	<target name="deploy" if="deploy.do_deploy">
-
-		<scp todir="${deploy.user}@${deploy.host}:${deploy.target}"
-			keyfile="${deploy.keyfile}"
-		>
-			<fileset dir="${dir.build}">
-				<include name="dashboard-vendors.tgz" />
-				<include name="dashboard-assets.tgz" />
-			</fileset>
-		</scp>
-	</target>
-
-	<target name="deploy.local"
-		depends="prepare, build.css.compress, build.js"
-		if="dir.deploy.local"
-	>
-		<copy todir="${dir.deploy.local}">
-			<fileset dir="${dir.build}/dist">
-				<include name="**" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="phpunit" description="Runs PHPUnit tests.">
-		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="true">
-			<arg line="-c phpunit.xml" />
-			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
-		</exec>
-	</target>
-
-	<target name="phpunit-phar" depends="build-phar"
-		description="Runs PHPUnits tests for dashboard.phar">
-		<exec dir="${dir.base}" executable="${cmd.phpunit}" failonerror="false">
-			<arg line="-c phpunit.phar.xml" />
-			<arg line="--log-junit ${dir.logs}/phpunit/phpunit-phar.xml" />
-		</exec>
-	</target>
-
-	<target name="phpmd" description="PHP Mess Detector">
-		<exec dir="${dir.base}" executable="${cmd.phpmd}" failonerror="false">
-			<arg line="${dir.src}/Hoborg" />
-			<arg line="xml" />
-			<arg line="codesize,unusedcode,naming" />
-			<arg line="--reportfile ${dir.logs}/phpmd/phpmd.xml" />
-		</exec>
-	</target>
-
-	<target name="phpcpd" description="PHP Copy &amp; Paste sniffer">
-		<exec dir="${dir.base}" executable="${cmd.phpcpd}" failonerror="false">
-			<arg line="--log-pmd ${dir.logs}/phpcpd/phpcpd.xml" />
-			<arg value="${dir.src}/Hoborg" />
-		</exec>
-	</target>
-
-	<target name="phpcs" description="PHP Code Sniffer">
-		<exec dir="${dir.base}" executable="${cmd.phpcs}" failonerror="false">
-			<arg value="--standard=${dir.base}/misc/code_sniffer/Hoborg/" />
-			<arg value="--report=checkstyle" />
-			<arg value="--report-file=${dir.logs}/phpcs/sniffs.xml" />
-			<arg value="-p" />
-			<arg value="${dir.src}/Hoborg" />
-		</exec>
-	</target>
-
-	<target name="phpdepend">
-		<exec dir="${dir.base}" executable="${cmd.pdepend}" failonerror="false">
-			<arg line="--jdepend-chart=${dir.logs}/phpdepend/jdepend.svg" />
-			<arg line="--jdepend-xml=${dir.logs}/phpdepend/jdepend.xml" />
-			<arg line="--overview-pyramid=${dir.logs}/phpdepend/pyramid.svg" />
-			<arg line="${dir.src}/Hoborg" />
-		</exec>
-	</target>
-
-	<!-- Clean up -->
-	<target name="clean" description="Clean up workspace">
-		<delete dir="${dir.build}" />
 		<delete dir="${dir.logs}" />
-		<delete dir="${dir.base}/htdocs/widgets" />
-		<delete dir="${dir.base}/htdocs/templates" />
-		<delete>
-			<fileset dir="${dir.base}/htdocs/">
-				<include name="**/*.min.js" />
-				<include name="**/*.min.css" />
-				<include name="dashboard*.js" />
-				<include name="dashboard*.css" />
-			</fileset>
-		</delete>
 	</target>
 
-	<!-- Help Message -->
-	<target name="help" description="Prints this help">
+	<target name="help"
+		description="Prints this help"
+	>
 		<exec executable="ant">
 			<arg value="-p" />
 		</exec>
 	</target>
 
-	<target name="-prepare.folders" description="Prepare folder structure">
-		<mkdir dir="${dir.build}" />
-		<mkdir dir="${dir.build.phar}" />
-		<mkdir dir="${dir.build.dist}" />
 
-		<mkdir dir="${dir.logs}" />
-		<mkdir dir="${dir.logs}/phpmd" />
-		<mkdir dir="${dir.logs}/phpcs" />
-		<mkdir dir="${dir.logs}/phpcpd" />
-		<mkdir dir="${dir.logs}/phpdepend" />
+
+
+	<!--
+	Project Validation
+	-->
+	<target name="validate.dependencies"
+		description="Installs or updates project dependencies."
+		depends="-install-composer"
+	>
+		<echo level="info">Composer update (--no-dev)</echo>
+		<exec executable="${cmd.php}" failonerror="true">
+			<arg line="${cmd.composer}" />
+			<arg line="update" />
+			<arg line="--no-dev" />
+			<arg line="--no-interaction" />
+		</exec>
+	</target>
+
+	<target name="validate.dev.dependencies"
+		description="Installs or updates project development dependencies."
+		depends="-install-composer"
+	>
+		<echo level="info">Composer update</echo>
+		<exec executable="${cmd.php}" failonerror="true">
+			<arg line="${cmd.composer}" />
+			<arg line="update" />
+			<arg line="--no-interaction" />
+		</exec>
+	</target>
+
+
+
+
+	<!--
+		Test and code analysis
+	-->
+	<target name="phpunit" description="Runs PHPUnit tests.">
 		<mkdir dir="${dir.logs}/phpunit" />
+
+		<exec dir="${dir.base}" executable="${dir.vendor}/bin/phpunit" failonerror="true">
+			<arg line="-c phpunit.xml" />
+			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
+			<arg line="--coverage-clover ${dir.logs}/phpunit/coverage.xml" />
+			<arg line="--testdox-text ${dir.logs}/phpunit/phpunit.txt" />
+		</exec>
 	</target>
 
 
@@ -549,13 +127,6 @@ __HALT_COMPILER();</echo>
 			<arg value="-c" />
 			<arg value="curl -s http://getcomposer.org/installer | php" />
 		</exec>
-	</target>
-	<target name="-install-recess" unless="recess.present">
-		<exec executable="npm">
-			<arg value="install" />
-			<arg value="recess" />
-		</exec>
-		<property name="cmd.recess" value="${dir.base}/node_modules/.bin/recess" />
 	</target>
 
 </project>
