@@ -125,7 +125,7 @@
 	<target name="-install-composer" unless="composer.present">
 		<exec dir="${dir.base}" executable="bash" failonerror="true">
 			<arg value="-c" />
-			<arg value="curl -s http://getcomposer.org/installer | php -- --disable-tls" />
+			<arg value="curl -sSk https://getcomposer.org/installer | php -- --disable-tls" />
 		</exec>
 	</target>
 
