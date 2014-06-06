@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./tests/bootstrap.php" 
-	strict="true"
+<phpunit bootstrap="./tests/bootstrap.php"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	beStrictAboutOutputDuringTests="true"
 	colors="true"
 	backupGlobals="false"
 	backupStaticAttributes="false"
@@ -9,7 +10,7 @@
 	convertWarningsToExceptions="true"
 	processIsolation="false"
 	stopOnFailure="false"
-	syntaxCheck="false"
+	syntaxCheck="true"
 >
 	<testsuites>
 		<testsuite name="Hoborg_Dashboard">
@@ -20,5 +21,12 @@
 			<directory>./tests/Hoborg/DashboardCache</directory>
 		</testsuite>
 	</testsuites>
+
+	<!-- code coverage filters -->
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">./src/Hoborg/Dashboard</directory>
+		</whitelist>
+	</filter>
 
 </phpunit>

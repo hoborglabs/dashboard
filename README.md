@@ -1,5 +1,8 @@
 # Simple Dashboard - what is it?
 
+Develop [![Build Status](http://ci01.hoborglabs.com/jenkins/buildStatus/icon?job=Hoborg-Dashboard-develop)](http://ci01.hoborglabs.com/jenkins/view/Hoborg%20Labs/job/Hoborg-Dashboard-develop/)  
+Master [![Build Status](http://ci01.hoborglabs.com/jenkins/buildStatus/icon?job=Hoborg-Dashboard)](http://ci01.hoborglabs.com/jenkins/view/Hoborg%20Labs/job/Hoborg-Dashboard/)
+
 It is really simple dashboard which allows you to display widgets from
 your local server and from external endpoints - it's all based on JSON.
 
@@ -19,6 +22,18 @@ Right now we have widgets for:
 Visit http://dashboard.hoborglabs.com/ for more details.
 
 For more technical info visit: http://dashboard.hoborglabs.com/doc
+
+
+
+## For Developers
+
+You need ant if like me you are a bit lazy. Then all you need is
+`ant validate.dev test` to get all dev dependencies and run unit tests.
+
+Use vagrant box!
+vagrant script will ask you for a shared folder location. I will
+contain dashboard project
+
 
 
 
@@ -61,14 +76,14 @@ Cold data - archived
 
 ## History
 
-Simple Dashboard was started to bring into live a crazy vision of 
-*Phobjects*. Idea born on a PHPNW 2011 conference - or to be more 
+Simple Dashboard was started to bring into live a crazy vision of
+*Phobjects*. Idea born on a PHPNW 2011 conference - or to be more
 precise, on Saturday night, after few pints of free beer.
 
 
 - - -
 
-* A *Phobject* is a native PHP array with ... lambda functions - how 
+* A *Phobject* is a native PHP array with ... lambda functions - how
   crazy is that :) ?
 * If you are using our HoborgLabs Dashboard - let me know on wojtek at
   hoborglabs.com
