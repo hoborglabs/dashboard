@@ -2,6 +2,6 @@
     baseUrl: "./",
     name: "almond",
     include: ["dashboard"],
-    out: "../build/dist/htdocs/static/scripts/hoborglabs/dashboard.js",
+    out: "../dist/public/static/scripts/hoborglabs/dashboard.js",
     preserveLicenseComments: false,
 })

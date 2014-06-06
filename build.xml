@@ -6,20 +6,25 @@
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
+	<property name="dir.src" value="${dir.base}/src" />
+	<property name="dir.dist" value="${dir.base}/dist" />
 	<property name="dir.vendor" value="${dir.base}/vendor" />
 	<property name="dir.logs" value="${dir.base}/logs" />
-	<property name="dir.src" value="${dir.base}/src" />
+
 
 	<!-- Commands defaults -->
 	<property name="cmd.php" value="php" />
 	<property name="cmd.node" value="node" />
 	<property name="cmd.npm" value="npm" />
 	<property name="cmd.composer" value="${dir.base}/composer.phar" />
+	<property name="cmd.recess" value="${dir.base}/node_modules/recess/bin/recess" />
 
 	<available file="${cmd.php}" filepath="${env.PATH}" property="php.present" />
-	<available file="${dir.base}/composer.phar" property="composer.present" />
 	<available file="${cmd.node}" filepath="${env.PATH}" property="node.present" />
 	<available file="${cmd.npm}" filepath="${env.PATH}" property="npm.present" />
+
+	<available file="${cmd.composer}" property="composer.present" />
+	<available file="${cmd.recess}" property="recess.present" />
 
 	<!--
 	Main targets:
@@ -34,7 +39,9 @@
 	>
 		<fail unless="php.present" message="`php` not found! Please install - http://php.org/"/>
 
-		<antcall target="validate.dependencies" />
+		<antcall>
+			<target name="validate.dependencies" />
+		</antcall>
 	</target>
 
 	<target name="validate.dev"
@@ -44,8 +51,21 @@
 		<fail unless="node.present" message="`node` not found! Please install - http://nodejs.org/"/>
 		<fail unless="npm.present" message="`npm` not found!?"/>
 
-		<!-- Install `require-dev` dependencies -->
-		<antcall target="validate.dev.dependencies" />
+		<antcall>
+			<target name="validate.dev.dependencies" />
+		</antcall>
+	</target>
+
+	<target name="build"
+		description="Builds project"
+	>
+		<antcall>
+			<target name="clean" />
+			<target name="validate.dev" />
+			<target name="test" />
+			<target name="build.css" />
+			<target name="build.js" />
+		</antcall>
 	</target>
 
 	<target name="test"
@@ -58,6 +78,7 @@
 		description="Clean up workspace"
 	>
 		<delete dir="${dir.logs}" />
+		<delete dir="${dir.dist}" />
 	</target>
 
 	<target name="help"
@@ -96,6 +117,39 @@
 			<arg line="${cmd.composer}" />
 			<arg line="update" />
 			<arg line="--no-interaction" />
+		</exec>
+	</target>
+
+
+
+
+	<!--
+		Buid
+	-->
+	<target name="build.js">
+		<echo>Building ${dir.build.dist}/htdocs/static/scripts/hoborglabs/dashboard.js</echo>
+		<mkdir dir="${dir.dist}/public/static/scripts/hoborglabs"/>
+		<exec executable="${cmd.node}">
+			<arg line="scripts/r.js" />
+			<arg line="-o" />
+			<arg line="${dir.base}/scripts/dashboard.build.js" />
+		</exec>
+	</target>
+
+	<target name="build.css">
+		<property name="cmd.recess" value="recess" />
+		<mkdir dir="${dir.dist}/public/static/styles/hoborglabs/css" />
+
+		<echo level="info">Building ${dir.dist}/public/static/styles/hoborglabs/css/dashboard.min.css</echo>
+		<exec executable="${cmd.recess}" output="${dir.dist}/public/static/styles/hoborglabs/css/dashboard.min.css">
+			<arg line="--compress" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec>
+
+		<echo level="info">Building ${dir.dist}/public/static/styles/hoborglabs/css/dashboard.css</echo>
+		<exec executable="${cmd.recess}" output="${dir.dist}/public/static/styles/hoborglabs/css/dashboard.css">
+			<arg line="--compile" />
+			<arg line="${dir.base}/styles/less/dashboard.less" />
 		</exec>
 	</target>
 
