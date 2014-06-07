@@ -136,7 +136,10 @@
 		</exec>
 	</target>
 
-	<target name="build.css">
+	<target name="build.css"
+		depends="compiles and minifies CSS"
+		depends="-install-recess"
+	>
 		<property name="cmd.recess" value="recess" />
 		<mkdir dir="${dir.dist}/public/static/styles/hoborglabs/css" />
 
@@ -181,6 +184,13 @@
 			<arg value="-c" />
 			<arg value="curl -sSk https://getcomposer.org/installer | php -- --disable-tls" />
 		</exec>
+	</target>
+	<target name="-install-recess" unless="recess.present">
+		<exec executable="npm">
+			<arg value="install" />
+			<arg value="recess" />
+		</exec>
+		<property name="cmd.recess" value="${dir.base}/node_modules/.bin/recess" />
 	</target>
 
 </project>
