@@ -137,7 +137,7 @@
 	</target>
 
 	<target name="build.css"
-		depends="compiles and minifies CSS"
+		description="compiles and minifies CSS"
 		depends="-install-recess"
 	>
 		<property name="cmd.recess" value="recess" />
