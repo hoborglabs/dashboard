@@ -1,14 +1,12 @@
+##
+# IDEs, editors
 .buildpath
 .project
 .settings/
 *.swp
 
-##
-# Composer and other build artifacts
-/vendor
-/composer.lock
-/composer.phar
-/phpunit.phar
+
+
 
 ##
 # Configuration
@@ -20,20 +18,17 @@
 !/conf/*.dist.php
 *.properties
 
-##
-# Build assets
-#
-/node_modules
-/build
-/htdocs/templates
-/htdocs/widgets
-/htdocs/dashboard.css
-/htdocs/dashboard.js
-/composer.*
-!/composer.json
+
+
 
 ##
-# Logs and data
+# node, composer and other build assets/artifacts
 #
+/node_modules
+/htdocs/templates
+/composer.*
+!/composer.json
+/vendor
+/phpunit.phar
 /logs
-/data
+/RELEASE*
