@@ -82,6 +82,10 @@ class Target {
 		return array('min' => $min, 'max' => $max, 'avg' => array_sum($avg) / count($avg));
 	}
 
+	public function img() {
+		return $this->graphite->getGraphLink($this->target, $this->functions, $this->options);
+	}
+
 	protected function getData() {
 		return $this->graphite->getData(
 			$this->target,

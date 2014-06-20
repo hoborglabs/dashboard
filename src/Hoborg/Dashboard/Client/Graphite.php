@@ -103,26 +103,29 @@ class Graphite {
 		return $data;
 	}
 
-	public function getData($target, array $functions, array $options) {
+	public function getGraphLink($target, array $functions, array $options) {
 		$parts = array(
 			'target' => $this->applyFunctionsToTarget($target, $functions),
 		) + $options;
 
-
 		array_walk($parts, function(&$val, $key) {
 			$val = "{$key}=" . urlencode($val);
 		});
-		$url = $this->graphiteUrl . "/render?" . implode('&', $parts);
+		return $this->graphiteUrl . "/render?" . implode('&', $parts);
+	}
 
+	public function getData($target, array $functions, array $options) {
+		$url = $this->getGraphLink($target, $functions, $options);
 		return $this->getJsonData($url);
 	}
 
-	protected function applyFunctionsToTarget($target, array $functions) {
+	public function applyFunctionsToTarget($target, array $functions) {
 		$origTarget = $target;
 
-		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'dashed', 'derivative');
-		$singleStringParamFunctions = array();
-		$singleNumberParamFunctions = array();
+		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'dashed', 'derivative', 'stacked',
+				'keepLastValue');
+		$singleStringParamFunctions = array('color', 'alias');
+		$singleNumberParamFunctions = array('transformNull');
 
 		foreach ($functions as $function => $param) {
 			if (in_array($function, $noParamFunctions)) {

@@ -2,11 +2,10 @@
 
 	<!-- optional environmental settings/overrides -->
 	<property file="build.properties" />
-	<property environment="env"/>
+	<property environment="env" />
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
-	<property name="dir.src" value="${dir.base}/src" />
 	<property name="dir.dist" value="${dir.base}/dist" />
 	<property name="dir.vendor" value="${dir.base}/vendor" />
 	<property name="dir.logs" value="${dir.base}/logs" />
@@ -16,6 +15,7 @@
 	<property name="cmd.php" value="php" />
 	<property name="cmd.node" value="node" />
 	<property name="cmd.npm" value="npm" />
+	<property name="cmd.git" value="git" />
 	<property name="cmd.composer" value="${dir.base}/composer.phar" />
 	<property name="cmd.recess" value="${dir.base}/node_modules/recess/bin/recess" />
 
@@ -26,14 +26,17 @@
 	<available file="${cmd.composer}" property="composer.present" />
 	<available file="${cmd.recess}" property="recess.present" />
 
+
+
+
 	<!--
-	Main targets:
+		Main targets
 		* validate (validate.dev)
 		* test
+		* build
 		* clean
 		* help
 	-->
-
 	<target name="validate"
 		description="Validates project."
 	>
@@ -57,7 +60,7 @@
 	</target>
 
 	<target name="build"
-		description="Builds project"
+		description="Builds project."
 	>
 		<antcall>
 			<target name="clean" />
@@ -68,8 +71,35 @@
 		</antcall>
 	</target>
 
+	<target name="release"
+		description="Release new version."
+		depends="build"
+	>
+		<!--
+			This Target requires external scripts. Please do not run it from dev environment
+		-->
+		<fail unless="dir.ci-scripts"
+			message="Property `dir.ci-scripts` not set. Please set it before running this target" />
+
+		<exec executable="${dir.ci-scripts}/git/add-and-commit" failonerror="true">
+			<arg line="-d './dist'" />
+			<arg line="-m 'CI automated bugfix release'" />
+		</exec>
+
+		<exec executable="${cmd.php}" dir="${dir.base}" failonerror="true" outputproperty="version">
+			<arg line="-r" />
+			<arg value="echo array_shift(file('${dir.base}/VERSION'));" />
+		</exec>
+
+		<exec executable="${dir.ci-scripts}/git/tag-next-version" failonerror="true">
+			<arg line="-v ${version}" />
+			<arg line="-c 'CHANGELOG'" />
+			<arg line="-p" />
+		</exec>
+	</target>
+
 	<target name="test"
-		description="Run project tests"
+		description="Run project tests."
 	>
 		<antcall target="phpunit" />
 	</target>
@@ -93,7 +123,7 @@
 
 
 	<!--
-	Project Validation
+		Project Validation
 	-->
 	<target name="validate.dependencies"
 		description="Installs or updates project dependencies."
@@ -124,9 +154,11 @@
 
 
 	<!--
-		Buid
+		Buid steps
 	-->
-	<target name="build.js">
+	<target name="build.js"
+		description="Compiles and minifies JS"
+	>
 		<echo>Building ${dir.build.dist}/htdocs/static/scripts/hoborglabs/dashboard.js</echo>
 		<mkdir dir="${dir.dist}/public/static/scripts/hoborglabs"/>
 		<exec executable="${cmd.node}">
@@ -134,10 +166,18 @@
 			<arg line="-o" />
 			<arg line="${dir.base}/scripts/dashboard.build.js" />
 		</exec>
+
+		<exec executable="${cmd.node}">
+			<arg line="scripts/r.js" />
+			<arg line="-o" />
+			<arg line="${dir.base}/scripts/dashboard.build.js" />
+			<arg line="optimize=none" />
+			<arg line="out=${dir.dist}/public/static/scripts/hoborglabs/dashboard.unminified.js" />
+		</exec>
 	</target>
 
 	<target name="build.css"
-		description="compiles and minifies CSS"
+		description="Compiles and minifies CSS"
 		depends="-install-recess"
 	>
 		<property name="cmd.recess" value="recess" />
