@@ -2,15 +2,17 @@
 <phpunit bootstrap="./tests/bootstrap.php"
 	beStrictAboutTestsThatDoNotTestAnything="true"
 	beStrictAboutOutputDuringTests="true"
-	colors="true"
 	backupGlobals="false"
 	backupStaticAttributes="false"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	processIsolation="false"
-	stopOnFailure="true"
+	stopOnFailure="false"
 	syntaxCheck="true"
+	colors="false"
+	printerClass="PHPUnit_Util_TestDox_ResultPrinter_Text"
+	verbose="false"
 >
 	<testsuites>
 		<testsuite name="Hoborg_Dashboard">

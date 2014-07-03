@@ -65,7 +65,7 @@
 		<antcall>
 			<target name="clean" />
 			<target name="validate.dev" />
-			<target name="test" />
+			<target name="test.ci" />
 			<target name="build.css" />
 			<target name="build.js" />
 		</antcall>
@@ -82,7 +82,7 @@
 			message="Property `dir.ci-scripts` not set. Please set it before running this target" />
 
 		<!-- default branch. Overwrite in build.properties -->
-		<property name="release.branch" location="master" />
+		<property name="release.branch" value="master" />
 
 		<exec executable="${dir.ci-scripts}/git/add-and-commit" failonerror="true">
 			<arg line="-b '${release.branch}'" />
@@ -108,6 +108,14 @@
 	>
 		<antcall target="phpunit" />
 	</target>
+
+	<target name="test.ci"
+		description="Run project tests on CI server."
+	>
+		<property name="phpunit.configuration" value="phpunit.ci.xml" />
+		<antcall target="test" />
+	</target>
+
 
 	<target name="clean"
 		description="Clean up workspace"
@@ -210,8 +218,10 @@
 	<target name="phpunit" description="Runs PHPUnit tests.">
 		<mkdir dir="${dir.logs}/phpunit" />
 
+		<property name="phpunit.configuration" value="phpunit.xml" />
+
 		<exec dir="${dir.base}" executable="${dir.vendor}/bin/phpunit" failonerror="true">
-			<arg line="-c phpunit.xml" />
+			<arg line="-c ${phpunit.configuration}" />
 			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
 			<arg line="--coverage-clover ${dir.logs}/phpunit/coverage.xml" />
 			<arg line="--testdox-text ${dir.logs}/phpunit/phpunit.txt" />
