@@ -145,7 +145,7 @@
 
 	<target name="validate.dev.dependencies"
 		description="Installs or updates project development dependencies."
-		depends="-install-composer -install-recess"
+		depends="-install-composer, -install-recess"
 	>
 		<echo level="info">Composer update</echo>
 		<exec executable="${cmd.php}" failonerror="true">
