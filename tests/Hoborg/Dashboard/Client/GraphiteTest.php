@@ -15,10 +15,51 @@ class GraphiteTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	/** @test
+	 * @dataProvider applySingleNumericParamFunctionsData
+	 */
+	public function shoudApplySingleParamsFunctionsToTatget($target, $functions, $expected) {
+		$actual = $this->fixture->applyFunctionsToTarget($target, $functions);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function applySingleNumericParamFunctionsData() {
+		return $this->functionsData('singleNumericParams');
+	}
+
+	/** @test
+	* @dataProvider applySingleStringParamFunctionsData
+	*/
+	public function shoudApplySingleStringParamsFunctionsToTatget($target, $functions, $expected) {
+		$actual = $this->fixture->applyFunctionsToTarget($target, $functions);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function applySingleStringParamFunctionsData() {
+		return $this->functionsData('singleStringParams');
+	}
+
+	/** @test
+	* @dataProvider applyNoParamFunctionsData
+	*/
+	public function shoudApplyNoParamsFunctionsToTatget($target, $functions, $expected) {
+		$actual = $this->fixture->applyFunctionsToTarget($target, $functions);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function applyNoParamFunctionsData() {
+		return $this->functionsData('noParams');
+	}
+
+
 	/**
+	 * @test
 	 * @dataProvider getTargetsDataProvider
 	 */
-	public function testGetTargetsData($expectedUrl, $targets, $from, $to) {
+	public function shouldBuildDataUrlForTarget($expectedUrl, $targets, $from, $to) {
 		$graphiteUrl = 'http://graphite.local';
 		$expectedUrl = $graphiteUrl . $expectedUrl;
 		$this->fixture->expects($this->once())
@@ -63,12 +104,12 @@ class GraphiteTest extends \PHPUnit_Framework_TestCase {
 	public function getAvgTargetValueUrlProvider() {
 		return array(
 			array(
-				'/render?target=a.b.c&from=-10min&to=now',
+				'/render?target=a.b.c&from=-10min&to=now&nullAsZero=0',
 				'a.b.c',
 				array('from' => '-10min', 'to' => 'now'),
 			),
 			array(
-				'/render?target=a.b.c',
+				'/render?target=a.b.c&nullAsZero=0',
 				'a.b.c',
 				array(),
 			),
@@ -222,5 +263,99 @@ class GraphiteTest extends \PHPUnit_Framework_TestCase {
 				10, true
 			),
 		);
+	}
+
+	protected function functionsData($functionsType) {
+		$getStringArgs = function($functionName) {
+			return array(
+				'test.target',
+				array($functionName => "{$functionName}-test-value"),
+				"{$functionName}(test.target,'{$functionName}-test-value')"
+			);
+		};
+		$getNumericArgs = function($functionName) {
+			$randomValue = hexdec(substr(md5($functionName), 0, 6))/100;
+			return array(
+				'test.target',
+				array($functionName => $randomValue),
+				"{$functionName}(test.target,{$randomValue})"
+			);
+		};
+		$getNoParamsArgs = function($functionName) {
+			return array(
+				'test.target',
+				array($functionName => 1),
+				"{$functionName}(test.target)"
+			);
+		};
+
+		$functions = array(
+			'noParams' => array(
+				'averageSeries',
+				'cactiStyle',
+				'cumulative',
+				'derivative',
+				'drawAsInfinite',
+				'integral',
+				'keepLastValue',
+				'maxSeries',
+				'minSeries',
+				'secondYAxis',
+				'sortByMaxima',
+				'sortByMinima',
+				'sortByName',
+				'sortByTotal',
+				'stacked',
+				'sumSeries'
+			),
+			'singleStringParams' => array(
+				'alias',
+				'cactiStyle',
+				'color',
+				'legendValue'
+			),
+			'singleNumericParams' => array(
+				'aliasByNode',
+				'alpha',
+				'averageAbove',
+				'averageBelow',
+				'currentAbove',
+				'currentBelow',
+				'dashed',
+				'diffSeries',
+				'highestAverage',
+				'highestCurrent',
+				'highestMax',
+				'limit',
+				'lineWidth',
+				'logarithm',
+				'lowestAverage',
+				'lowestCurrent',
+				'maximumAbove',
+				'maximumBelow',
+				'minimumAbove',
+				'movingAverage',
+				'movingMedian',
+				'nPercentile',
+				'offset',
+				'removeAbovePercentile',
+				'removeAboveValue',
+				'removeBelowPercentile',
+				'removeBelowValue',
+				'scale'
+			),
+		);
+
+		if ('singleNumericParams' == $functionsType) {
+			return array_map($getNumericArgs, $functions[$functionsType]);
+		}
+		if ('singleStringParams' == $functionsType) {
+			return array_map($getStringArgs, $functions[$functionsType]);
+		}
+		if ('noParams' == $functionsType) {
+			return array_map($getNoParamsArgs, $functions[$functionsType]);
+		}
+
+		throw new \Exception("Unknown type (${functionsType})");
 	}
 }

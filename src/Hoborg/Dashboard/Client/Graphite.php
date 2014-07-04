@@ -19,32 +19,13 @@ class Graphite {
 		return $target;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getAvgTargetValue($target, $graphiteUrl, array $options, $nullAsZero = false) {
-		$url = $graphiteUrl . "/render?target={$target}";
-		foreach ($options as $optName => $value) {
-			$url .= "&{$optName}={$value}";
-		}
-		$data = $this->getJsonData($url);
-
-		if (empty($data)) {
-			return null;
-		}
-
-		$avg = array();
-
-		foreach ($data[0]['datapoints'] as $p) {
-			$s = $p[0];
-			if (null === $s) {
-				if ($nullAsZero) {
-					$s = 0;
-				} else {
-					continue;
-				}
-			}
-			$avg[] = $s;
-		}
-
-		return array_sum($avg) / count($avg);
+		$options['nullAsZero'] = (int) $nullAsZero;
+		$target = new Target($this, $target, array(), $options);
+		return $target->avg();
 	}
 
 	public function getTargetsData($graphiteUrl, array $targets, $from = '-5min', $to = 'now') {
@@ -122,22 +103,29 @@ class Graphite {
 	public function applyFunctionsToTarget($target, array $functions) {
 		$origTarget = $target;
 
-		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'dashed', 'derivative', 'stacked',
-				'keepLastValue');
-		$singleStringParamFunctions = array('color', 'alias');
-		$singleNumberParamFunctions = array('transformNull');
+		$noParamFunctions = array('absolute', 'aliasByMetric', 'averageSeries', 'cactiStyle', 'cumulative', 'dashed',
+				'derivative', 'drawAsInfinite', 'stacked', 'integral', 'keepLastValue', 'maxSeries', 'minSeries',
+				'secondYAxis', 'sortByMaxima', 'sortByMinima', 'sortByName', 'sortByTotal', 'sumSeries');
+		$singleStringParamFunctions = array('color', 'alias', 'cactiStyle', 'legendValue');
+		$singleNumberParamFunctions = array('aliasByNode', 'alpha', 'averageAbove', 'averageBelow', 'currentAbove',
+				'currentBelow', 'dashed', 'diffSeries', 'highestAverage', 'highestCurrent', 'highestMax', 'limit',
+				'lineWidth', 'logarithm', 'lowestAverage', 'lowestCurrent', 'maximumAbove', 'maximumBelow',
+				'minimumAbove', 'movingAverage', 'movingMedian', 'nPercentile', 'offset', 'removeAbovePercentile',
+				'removeAboveValue', 'removeBelowPercentile', 'removeBelowValue', 'scale', 'transformNull');
 
 		foreach ($functions as $function => $param) {
-			if (in_array($function, $noParamFunctions)) {
-				$target = "{$function}({$target})";
-			}
-
-			if (in_array($function, $singleStringParamFunctions)) {
+			if (in_array($function, $singleStringParamFunctions) && is_string($param)) {
 				$target = "{$function}({$target},'{$param}')";
+				continue;
 			}
 
 			if (in_array($function, $singleNumberParamFunctions)) {
 				$target = "{$function}({$target},{$param})";
+				continue;
+			}
+
+			if (in_array($function, $noParamFunctions)) {
+				$target = "{$function}({$target})";
 			}
 		}
 

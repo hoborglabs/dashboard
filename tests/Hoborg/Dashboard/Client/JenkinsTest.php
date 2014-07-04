@@ -14,7 +14,39 @@ class JenkinsTest extends \PHPUnit_Framework_TestCase {
 		$this->fixture = new \Hoborg\Dashboard\Client\Jenkins('http://jenkins.local', array(), $this->httpMock);
 	}
 
-	public function testTreeQuery() {
+	/** @test
+	 * @dataProvider treeQueryData
+	 */
+	public function shouldReturnValidTreeQuery($treeArray, $expected) {
+		$actual = $this->fixture->getTreeValue($treeArray);
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function treeQueryData() {
+		return array(
+			array(
+				array(),
+				''
+			),
+			array(
+				array('a' => array('a')),
+				'a[a]'
+			),
+			array(
+				array(
+					'a',
+					'b' => array('a', 'b'),
+					'c' => array('a', 'b' => array('c', 'd')),
+				),
+				'a,b[a,b],c[a,b[c,d]]'
+			),
+		);
+	}
+
+
+	/** @test */
+	public function shouldUrlEscapeTreeParam() {
 		$treeArray = array('a', 'b' => array('aa'), 'c');
 		$treeString = 'a,b[aa],c';
 		$apiResponse = json_encode(array(

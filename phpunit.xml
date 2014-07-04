@@ -9,7 +9,7 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	processIsolation="false"
-	stopOnFailure="true"
+	stopOnFailure="false"
 	syntaxCheck="true"
 >
 	<testsuites>
@@ -24,9 +24,13 @@
 
 	<!-- code coverage filters -->
 	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
+		<whitelist>
 			<directory suffix=".php">./src/Hoborg/Dashboard</directory>
 		</whitelist>
 	</filter>
+
+	<logging>
+		<log type="coverage-text" target="php://stdout" showOnlySummary="true" showUncoveredFiles="true" />
+	</logging>
 
 </phpunit>

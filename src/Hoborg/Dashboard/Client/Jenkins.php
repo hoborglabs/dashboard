@@ -18,12 +18,10 @@ class Jenkins {
 	}
 
 	public function get(array $tree, $path = '') {
-
-		$url = $this->jenkinsUrl . $path . '/api/json?tree=';
-		$url .= urlencode($this->getTreeValue($tree));
-
-		// get data from url
+		$url = $this->jenkinsUrl . $path . '/api/json?tree='
+				. urlencode($this->getTreeValue($tree));
 		$data = $this->caller->get($url);
+
 		if (empty($data)) {
 			error_log(__METHOD__ . ' No JSON data returned from: ' . $url);
 			return array();

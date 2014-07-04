@@ -14,7 +14,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase {
 		$this->fixture = new \Hoborg\Dashboard\Client\Github('http://api.github.test', $this->httpMock);
 	}
 
-	public function testPassValueFromFakeResponse() {
+	/** @test */
+	public function shouldPassValueFromFakeResponse() {
 		$this->httpMock->expects($this->once())
 			->method('get')
 			->with('http://api.github.test/test')
