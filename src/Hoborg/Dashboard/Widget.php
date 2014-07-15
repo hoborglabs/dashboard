@@ -5,7 +5,7 @@ class Widget {
 
 	protected $kernel = null;
 
-	private $defaults = array(
+	protected $defaults = array(
 		'template' => '',
 		'data' => array(),
 	);
@@ -93,7 +93,8 @@ class Widget {
 	 * @return Hoborg\Dashboard\Widget
 	 */
 	protected function init(array $widgetConfig) {
-		$this->data = $widgetConfig + $this->defaults;
+		$this->data = $widgetConfig;
+		$this->applyDefaults();
 
 		return $this;
 	}
@@ -156,10 +157,6 @@ class Widget {
 		}
 
 		return $css;
-	}
-
-	public function hasHead() {
-		return !empty($this->data['head']);
 	}
 
 	private function arrayMergeRecursive($arrayA, $arrayB) {
