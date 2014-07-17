@@ -8,9 +8,19 @@ body.dashboard,
 	color: #585858;
 }
 
-/**
- * overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
- * http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+/** Widget
+
+	overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
+	http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+
+	<div class="widget">
+		<div class="widget__header">
+			My widget
+		</div>
+		<div class="widget__body">
+			<!-- widget body -->
+		</div>
+	</div>
  */
 .widget {
 	overflow: hidden;
@@ -37,7 +47,7 @@ a {
 	text-decoration: none;
 }
 
-	.widget-header {
+	.widget-header, .widget__header {
 		font-size: 14px;
 		background-color: #373737;
 		padding: 10px;
@@ -84,30 +94,42 @@ a {
 	background-image: none;
 }
 
+/** Matix
+
+	<ul class="matrix three-col">
+		<li>one</li>
+		<li>two</li>
+		<li>three</li>
+		<li>four</li>
+		<li>five</li>
+		<li>six</li>
+	</ul>
+*/
 .matrix {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
-.matrix>li {
-	float: left;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-.one-col>li {
+	.matrix > li {
+		float: left;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+.one-col > li {
 	width: 100%;
 }
-.two-col>li {
+.two-col > li {
 	width: 50%;
 }
-.three-col>li {
+.three-col > li {
 	width: 33.333%;
 }
-.four-col>li {
+.four-col > li {
 	width: 25%;
 }
-.five-col>li {
+.five-col > li {
 	width: 20%;
 }
 .matrix .full {
@@ -163,8 +185,13 @@ a {
     background: url(/?static=/templates/hoborg/gfx/icons/down_l.png) no-repeat -7px -12px transparent;
 }
 
-/**
- * TEXT sizes and colours
+/** TEXT sizes and colours
+
+	<p class="text-S">Lorem ispum dolor sit ament</p>
+	<p class="text-M">Lorem ispum dolor sit ament</p>
+	<p class="text-L">Lorem ispum dolor sit ament</p>
+	<p class="text-XL">Lorem ispum dolor sit ament</p>
+	<p class="text-XXL">Lorem ispum dolor sit ament</p>
  */
 .text-S {
     font-size: 12px;
@@ -196,23 +223,31 @@ a {
     text-shadow: 0 0 8px black;
 }
 
+/** Text Colors
+
+	<p class="texta-primary">(texta-primary) Lorem ipsum dolor sit ament</p>
+	<p class="texta-success">(texta-success) Lorem ipsum dolor sit ament</p>
+	<p class="texta-info">(texta-info)Lorem ipsum dolor sit ament</p>
+	<p class="texta-warning">(texta-warning) Lorem ipsum dolor sit ament</p>
+	<p class="texta-danger">(texta-danger) Lorem ipsum dolor sit ament</p>
+*/
 .text-primary {
-    color: @clr-primary;
-    text-decoration: none;
+	color: @clr-primary;
+	text-decoration: none;
 }
 .text-success {
-    color: @clr-success;
-    text-decoration: none;
+	color: @clr-success;
+	text-decoration: none;
 }
 .text-info {
-    color: @clr-info;
-    text-decoration: none;
+	color: @clr-info;
+	text-decoration: none;
 }
 .text-warning {
-    color: @clr-warning;
-    text-decoration: none;
+	color: @clr-warning;
+	text-decoration: none;
 }
 .text-danger {
-    color: @clr-danger;
-    text-decoration: none;
+	color: @clr-danger;
+	text-decoration: none;
 }
