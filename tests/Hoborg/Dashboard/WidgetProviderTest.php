@@ -65,11 +65,11 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	* @test
-	*/
-	public function shouldCreateWidfetFromStaticFileAndPhp() {
+	 * @test
+	 */
+	public function shouldCreateWidgetFromStaticFileAndPhp() {
 		$kernel = $this->mockFactory->getKernelMock(array('a'));
-		$widgetProviderTestCase = new WidgetProviderTestCase($kernel);
+		$widgetProviderTestCase = new WidgetProvider($kernel);
 
 		$widget = $widgetProviderTestCase->createWidget(array(
 			'php' => 'empty.php',
@@ -78,5 +78,23 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals('empty.php', $widget->get('php'));
 		$this->assertEquals('key', $widget->get('simple'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function shouldMergeDataAndDefaultsFromStaticFileAndPhp() {
+		$kernel = $this->mockFactory->getKernelMock(array('a'));
+		$widgetProviderTestCase = new WidgetProvider($kernel);
+
+		$widget = $widgetProviderTestCase->createWidget(array(
+			'php' => 'simple.php',
+			'static' => array( 'simple-data-a.json', 'simple-data-b.json' )
+		));
+		$wData = $widget->get('data');
+
+		$this->assertEquals('This is A', $wData['a']);
+		$this->assertEquals('This is B', $wData['b']);
+		$this->assertEquals('This is C', $wData['c']);
 	}
 }

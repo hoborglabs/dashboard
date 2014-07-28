@@ -1,7 +1,6 @@
 <?php
+use Hoborg\Dashboard\Widget;
 
-use Hoborg\Dashboard\Widget
-
-class Empty extends Widget {
+class EmptyWidget extends Widget {
 
 }

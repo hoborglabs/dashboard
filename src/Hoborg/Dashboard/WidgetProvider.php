@@ -23,9 +23,6 @@ class WidgetProvider implements IWidgetProvider {
 
 				case 'php':
 					$tmp = $this->loadWidget($widget, $source['type'], $source['sources']);
-					if (!empty($tmp)) {
-						$wData = array_merge($wData, $tmp);
-					}
 					break;
 
 				case 'static':
