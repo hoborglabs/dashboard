@@ -231,6 +231,10 @@ class Kernel {
 		return false;
 	}
 
+	public function log($msg) {
+		echo $msg;
+	}
+
 	public function shutDown($exitCode = 0) {
 		exit($exitCode);
 	}

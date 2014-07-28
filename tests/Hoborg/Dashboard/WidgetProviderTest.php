@@ -25,18 +25,20 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
 	 * Simple test to make sure that one can access data from created widget.
 	 */
-	public function testCreateRowWidget() {
+	public function shouldCreateRowWidget() {
 		$actualWidget = $this->widgetProviderTestCase->createRowWidget(array('testKey' => 'test value'));
 
 		$this->assertEquals('test value', $actualWidget->get('testKey'));
 	}
 
 	/**
+	 * @test
 	 * @dataProvider widgetSourcesProvider
 	 */
-	public function testgetWidgetSources($widgetData, $expectedSources) {
+	public function shouldGetWidgetSources($widgetData, $expectedSources) {
 		$widget = $this->mockFactory->getWidgetMock($this->kernel);
 		$widget->expects($this->once())
 				->method('get')
@@ -51,4 +53,30 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 		return $this->spec->widgetSources();
 	}
 
+	/**
+	 * @test
+	 */
+	public function shouldCreateWidget() {
+		$widget = $this->widgetProviderTestCase->createWidget(array(
+			'php' => 'empty.php'
+		));
+
+		$this->assertEquals('empty.php', $widget->get('php'));
+	}
+
+	/**
+	* @test
+	*/
+	public function shouldCreateWidfetFromStaticFileAndPhp() {
+		$kernel = $this->mockFactory->getKernelMock(array('a'));
+		$widgetProviderTestCase = new WidgetProviderTestCase($kernel);
+
+		$widget = $widgetProviderTestCase->createWidget(array(
+			'php' => 'empty.php',
+			'static' => 'simple-key.json',
+		));
+
+		$this->assertEquals('empty.php', $widget->get('php'));
+		$this->assertEquals('key', $widget->get('simple'));
+	}
 }

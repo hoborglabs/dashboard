@@ -13,7 +13,7 @@ class Cli {
 	}
 
 	public function handle($params) {
-		echo "\nDashboard CLI by Wojtek Oledzki\n";
+		$this->kernel->log("\nDashboard CLI by Wojtek Oledzki\n");
 		$commands = $this->buildCommands();
 		$params = $this->parseParams($params);
 
@@ -21,19 +21,25 @@ class Cli {
 			exit($this->printHelp($commands));
 		}
 
+		if (empty($commands[$params['c']])) {
+			$this->kernel->log("Unknown command {$params['c']}");
+			return;
+		}
+
 		$commandName = $params['c'];
+		$command = $commands[$commandName];
 		unset($params['c']);
 
-		echo "\nRunning {$commandName} ...\n";
+		$this->kernel->log("\nRunning {$commandName} ...\n");
 
-		include $commands[$commandName]['path'];
-		if (empty($commands[$commandName]['class'])) {
+		include $command['path'];
+		if (empty($command['class'])) {
 			echo "Running in deprecated mode. Please encapsulate your CLI in execute class.\n";
 		}
-		$cmd = new $commands[$commandName]['class'];
+		$cmd = new $command['class'];
 		$cmd->execute($params);
 
-		echo "Done\n";
+		$this->kernel->log("Done\n");
 	}
 
 	protected function parseParams(array $params) {
