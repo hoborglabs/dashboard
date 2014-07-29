@@ -24,8 +24,11 @@
 
 	<!-- code coverage filters -->
 	<filter>
-		<whitelist>
+		<whitelist processUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">./src/Hoborg/Dashboard</directory>
+			<exclude>
+				<file>./src/Hoborg/Dashboard/Exception.php</file>
+			</exclude>
 		</whitelist>
 	</filter>
 

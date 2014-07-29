@@ -97,4 +97,20 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals('This is B', $wData['b']);
 		$this->assertEquals('This is C', $wData['c']);
 	}
+
+	/**
+	* @test
+	*/
+	public function shouldMergeDataFromMultiplePhpFiles() {
+		$kernel = $this->mockFactory->getKernelMock(array('a'));
+		$widgetProviderTestCase = new WidgetProvider($kernel);
+
+		$widget = $widgetProviderTestCase->createWidget(array(
+			'php' => array( 'simple-data-a.php', 'simple-data-b.php' )
+		));
+		$wData = $widget->get('data');
+
+		$this->assertEquals('This is A', $wData['a']);
+		$this->assertEquals('This is B', $wData['b']);
+	}
 }
