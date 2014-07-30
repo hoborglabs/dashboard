@@ -53,12 +53,11 @@ class Kernel {
 
 			if ($this->hasWidgetParam()) {
 				// return selected widget in JSONP format
-				$widget = null;
 				if (null == $widgetProvider) {
 					$widgetProvider = new WidgetProvider($this);
 				}
+
 				$widget = $widgetProvider->createWidget(json_decode($this->getParam('widget'), true));
-				$widget->get();
 				$this->send($widget->getJson());
 			} else if ($this->hasWidgetDataParam()) {
 				// return selected widget data in JSONP format

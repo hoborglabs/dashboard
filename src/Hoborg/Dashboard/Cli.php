@@ -81,6 +81,9 @@ class Cli {
 	}
 
 	private function getCmdFromDir($dir, $prefix = '') {
+		if (!is_dir($dir)) {
+			return array();
+		}
 		$c = scandir($dir);
 		$phpFiles = array();
 

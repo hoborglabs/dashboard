@@ -43,8 +43,7 @@ class Dashboard {
 				continue;
 			}
 
-			$w = $this->widgetProvider->createWidget($widget)
-					->bootstrap();
+			$w = $this->widgetProvider->createRowWidget($widget);
 			$this->widgets[$index] = $w;
 		}
 
