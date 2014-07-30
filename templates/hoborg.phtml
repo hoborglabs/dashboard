@@ -1,56 +1,53 @@
 <!DOCTYPE html>
 <html class="dashboard">
 	<head>
-		<link href="<?php echo $HD_PUBLIC; ?>/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/dashboard.min.js"></script>
-
-		<link href="<?php echo $HD_PUBLIC; ?>/templates/hoborg/css/global.css" media="all" rel="stylesheet" type="text/css" />
-		<?php foreach($this->widgets as $widget) : ?>
-			<?php if ($widget->hasJS()) : ?>
-				<?php foreach ($widget->getJS() as $js) : ?>
-					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/widgets/<?php echo $js; ?>"></script>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			<?php if ($widget->hasCSS()) : ?>
-				<?php foreach ($widget->getCSS() as $css) : ?>
-					<link href="static/widgets/<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
-				<?php endforeach; ?>
-			<?php endif; ?>
+		<link href="<?php echo $HD_PUBLIC; ?>/static/styles/hoborglabs/css/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
+		<?php foreach($this->assets['css'] as $cssFile) : ?>
+			<link href="/proxy.php?file=<?php echo $cssFile; ?>" media="all" rel="stylesheet" type="text/css" />
 		<?php endforeach; ?>
 
+		<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0">
+
 		<script type="text/javascript">
-		$(document).ready(function() {
-			// distribute widgets on the screen.
-			$('.dashboard .container').masonry({
-				itemSelector: '.widget',
-				columnWidth: 10,
-				isFitWidth: true,
-				isAnimated: true
-			});
-			$('.dashboard .container').widgetManager({
-				callback: function(widget) { $('.dashboard .container').masonry('reload'); },
-			});
+		// setup configuration for dashboard
+		var widgets = [];
+		var widgetOptions = {
+			url: '',
+			conf: 'demo',
+			defaults: {
+				template: <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg.jhtml')); ?>
+			}
+		};
 
-			var widgets = [];
-			var widgetOptions = {
-				url: '',
-				conf: 'demo',
-				defaults: {
-					template: <?php echo json_encode(file_get_contents(__DIR__ . '/hoborg-widget.jhtml')); ?>
-				}
-			};
-			<?php foreach ($this->widgets as $index => & $widget) : ?>
-				widgets.push(new <?php echo $widget->getJsClassName(); ?>(<?php echo $widget->getJson(); ?>,
-						widgetOptions));
-			<?php endforeach; unset($widget); ?>
+		// prepare all widget - push configs
+		<?php foreach ($this->widgets as $index => & $widget) : ?>
+		widgets.push(['<?php echo $widget->getJsClassName(); ?>', <?php echo $widget->getJson(); ?>]);
+		<?php endforeach; unset($widget); ?>
 
-			$('.dashboard .container').widgetManager('addWidgets', widgets);
-			$('.dashboard .container').widgetManager('start');
-		});
+		window.Hoborglabs = { Dashboard: {
+			widgets: widgets,
+			widgetClasses: {},
+			widgetOptions: widgetOptions,
+			selector: '#dashboard'
+		}};
 		</script>
 	</head>
 	<body class="dashboard">
-		<h1 style="text-align: center">Hoborg Labs Dashboard</h1>
-		<div class="container"></div>
+		<div id="dashboard" class="container" style="padding-top: 10px; margin-right: 10px"></div>
+
+		<!-- JAVASCRIPTS
+		include individual widgets JS and main dashboard js.
+		-->
+		<script async="async" defer="defer" src="http://d3js.org/d3.v3.min.js"></script>
+		<script type="text/javascript">
+		var require = {
+			'baseUrl': '/static/scripts/hoborglabs-dev'
+		};
+		</script>
+		<?php foreach($this->assets['js'] as $jsFile) : ?>
+			<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/proxy.php?file=<?php echo $jsFile; ?>"></script>
+		<?php endforeach; ?>
+
+		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/static/scripts/hoborglabs/dashboard.js"></script>
 	</body>
 </html>
