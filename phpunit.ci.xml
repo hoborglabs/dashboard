@@ -32,7 +32,10 @@
 				<file>./src/Hoborg/Dashboard/Exception.php</file>
 			</exclude>
 		</whitelist>
-
 	</filter>
+
+	<logging>
+		<log type="coverage-html" target="./logs/phpunit/coverage-html/" />
+	</logging>
 
 </phpunit>
