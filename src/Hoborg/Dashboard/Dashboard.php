@@ -43,12 +43,12 @@ class Dashboard {
 				continue;
 			}
 
-			$w = $this->widgetProvider->createWidget($widget)
-					->bootstrap();
+			$w = $this->widgetProvider->createRowWidget($widget);
 			$this->widgets[$index] = $w;
 		}
 
 		$tpl = $config['template'] . '.phtml';
+		$this->collectAssets($this->widgets);
 		return $this->renderTemplate($tpl);
 	}
 
@@ -72,8 +72,8 @@ class Dashboard {
 	protected function collectAssets(array $widgets) {
 
 		foreach ($widgets as $widget) {
-			$this->assets['css'] += $widget->getAssetFiles('css');
-			$this->assets['js'] += $widget->getAssetFiles('js');
+			$this->assets['css'] += $widget->getCSS();
+			$this->assets['js'] += $widget->getJS();
 		}
 	}
 }

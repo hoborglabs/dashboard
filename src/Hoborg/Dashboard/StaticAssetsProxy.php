@@ -44,24 +44,24 @@ class StaticAssetsProxy {
 				break;
 
 			default:
-				echo "Unknown asset type '{$type}'";
+				//$this->kernel->log("Unknown asset type '{$type}'");
 		}
 
 		if ($filename) {
-			$this->proxy($filename);
+			return $this->proxy($filename);
 		}
+
+		$this->kernel->log("404");
 	}
 
 	public function proxy($filename) {
-
 		$ext = substr(strrchr($filename,'.'),1);
 		header('Content-Type: ' . $this->getContentType($ext));
 		readfile($filename);
-		exit(0);
+		$this->kernel->shutDown(0);
 	}
 
 	protected function getContentType($extension) {
-
 		if (empty($this->headers[$extension])) {
 			'text/text';
 		}

@@ -2,12 +2,8 @@
 <html class="dashboard">
 	<head>
 		<link href="<?php echo $HD_PUBLIC; ?>/static/styles/hoborglabs/css/dashboard.min.css" media="all" rel="stylesheet" type="text/css" />
-		<?php foreach($this->widgets as $widget) : ?>
-			<?php if ($widget->hasCSS()) : ?>
-				<?php foreach ($widget->getCSS() as $css) : ?>
-					<link href="/proxy.php?file=<?php echo $css; ?>" media="all" rel="stylesheet" type="text/css" />
-				<?php endforeach; ?>
-			<?php endif; ?>
+		<?php foreach($this->assets['css'] as $cssFile) : ?>
+			<link href="/proxy.php?file=<?php echo $cssFile; ?>" media="all" rel="stylesheet" type="text/css" />
 		<?php endforeach; ?>
 
 		<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0">
@@ -46,19 +42,15 @@
 		<!-- JAVASCRIPTS
 		include individual widgets JS and main dashboard js.
 		-->
-		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script async="async" defer="defer" src="http://d3js.org/d3.v3.min.js"></script>
 		<script type="text/javascript">
 		var require = {
 			'baseUrl': '/static/scripts/hoborglabs-dev'
 		};
 		</script>
 		<script src="/static/scripts/hoborglabs-dev/require.js" type="text/javascript"></script>
-		<?php foreach($this->widgets as $widget) : ?>
-			<?php if ($widget->hasJS()) : ?>
-				<?php foreach ($widget->getJS() as $js) : ?>
-					<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/proxy.php?file=<?php echo $js; ?>"></script>
-				<?php endforeach; ?>
-			<?php endif; ?>
+		<?php foreach($this->assets['js'] as $jsFile) : ?>
+			<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/proxy.php?file=<?php echo $jsFile; ?>"></script>
 		<?php endforeach; ?>
 
 		<script type="text/javascript" src="<?php echo $HD_PUBLIC; ?>/static/scripts/hoborglabs-dev/dashboard.js"></script>

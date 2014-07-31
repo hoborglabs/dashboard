@@ -31,7 +31,7 @@ class Target {
 	}
 
 	public function avg() {
-		$nullAsZero = false;
+		$nullAsZero = isset($this->options['nullAsZero']) ? $this->options['nullAsZero'] : false;
 		$data = $this->getData();
 		if (empty($data) || empty($data[0]['datapoints'])) {
 			return null;

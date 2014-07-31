@@ -16,6 +16,7 @@ class Opsview {
 	public function __construct($opsviewUrl, array $config) {
 		$this->opsviewUrl = $opsviewUrl;
 		$this->config = $config;
+		$this->http = new Http();
 	}
 
 	protected function getData($endpoint, array $params = array(), $method = 'GET', $type = 'json') {
@@ -30,22 +31,11 @@ class Opsview {
 			return null;
 		}
 
-		$getQuery = array();
-		foreach ($params as $k => $v) {
-			if (is_array($v)) {
-				foreach ($v as $val) {
-					$getQuery[] = urlencode($k) . '=' . urlencode($val);
-				}
-			} else {
-				$getQuery[] = urlencode($k) . '=' . urlencode($v);
-			}
-		}
-
-		// set content type
 		$contentType = 'application/json';
+		$query = $this->http->getQueryString($params);
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->opsviewUrl . $endpoint . '?' . implode('&', $getQuery));
+		curl_setopt($ch, CURLOPT_URL, $this->opsviewUrl . $endpoint . '?' . $query);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			"Content-type: {$contentType}",
 			"X-Opsview-Username: {$access['username']}",

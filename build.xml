@@ -65,7 +65,7 @@
 		<antcall>
 			<target name="clean" />
 			<target name="validate.dev" />
-			<target name="test.ci" />
+			<target name="test" />
 			<target name="build.css" />
 			<target name="build.js" />
 		</antcall>
@@ -104,18 +104,18 @@
 	</target>
 
 	<target name="test"
-		description="Run project tests."
-	>
-		<antcall target="phpunit" />
-	</target>
-
-	<target name="test.ci"
 		description="Run project tests on CI server."
 	>
 		<property name="phpunit.configuration" value="phpunit.ci.xml" />
-		<antcall target="test" />
+		<antcall target="phpunit" />
 	</target>
 
+	<target name="test.dev"
+		description="Run project tests."
+	>
+		<property name="phpunit.configuration" value="phpunit.xml" />
+		<antcall target="phpunit" />
+	</target>
 
 	<target name="clean"
 		description="Clean up workspace"
@@ -217,6 +217,7 @@
 	-->
 	<target name="phpunit" description="Runs PHPUnit tests.">
 		<mkdir dir="${dir.logs}/phpunit" />
+		<mkdir dir="${dir.logs}/phpunit/coverage-html" />
 
 		<property name="phpunit.configuration" value="phpunit.xml" />
 
@@ -224,7 +225,7 @@
 			<arg line="-c ${phpunit.configuration}" />
 			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
 			<arg line="--coverage-clover ${dir.logs}/phpunit/coverage.xml" />
-			<arg line="--testdox-text ${dir.logs}/phpunit/phpunit.txt" />
+			<arg line="--testdox-text ${dir.lqogs}/phpunit/phpunit.txt" />
 		</exec>
 	</target>
 
