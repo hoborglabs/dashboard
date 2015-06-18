@@ -11,7 +11,7 @@ have to expose http interface which accepts GET or POST request and
 returns JSON widget object.
 
 Right now we have widgets for:
-* Jenkins jobs statuses
+* Jenkins/Hudson jobs statuses
 * Graphite graphs
 * Git/Github top N commiters
 * XenServer VM statuses
@@ -40,9 +40,9 @@ contain dashboard project
 ## Dashboard Cache
 
 Dashboard Cache is a small storage application that allows you to store
-your widget data. It's particuraly useful when your want to store data
-from remote servers. You can for instance run a simple cron jab to send
-10min average cpu/disk usage.
+your widget data. It's particularly useful when your want to store data
+from remote servers. You can, for instance, run a simple cron jab to
+send 10min average cpu/disk usage.
 
 Project itself is small enough to be a part of Dashbaord project, there
 is however separate Kernel class for handling DashboardCache requests.
@@ -83,7 +83,4 @@ precise, on Saturday night, after few pints of free beer.
 
 - - -
 
-* A *Phobject* is a native PHP array with ... lambda functions - how
-  crazy is that :) ?
-* If you are using our HoborgLabs Dashboard - let me know on wojtek at
-  hoborglabs.com
+If you are using HoborgLabs Dashboard - let me know on wojtek at hoborglabs.com
