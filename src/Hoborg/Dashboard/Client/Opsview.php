@@ -13,13 +13,17 @@ class Opsview {
 	 */
 	protected $accessData = array();
 
-	public function __construct($opsviewUrl, array $config) {
+	public function __construct($opsviewUrl, array $config, Http $caller = null) {
+		if (null === $caller) {
+			$caller = new Http();
+		}
+
 		$this->opsviewUrl = $opsviewUrl;
 		$this->config = $config;
-		$this->http = new Http();
+		$this->http = $caller;
 	}
 
-	protected function getData($endpoint, array $params = array(), $method = 'GET', $type = 'json') {
+	public function getData($endpoint, array $params = array(), $method = 'GET', $type = 'json') {
 
 		if (empty($this->opsviewUrl)) {
 			// throw error

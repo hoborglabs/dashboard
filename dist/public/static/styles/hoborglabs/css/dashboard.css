@@ -942,9 +942,19 @@ body.dashboard,
   background-color: #1c1c1c;
 }
 
-/**
- * overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
- * http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+/** Widget
+
+	overflow: hidden - Thanks Csswizadry! If you want to know more check these links:
+	http://www.stubbornella.org/content/2009/07/23/overflow-a-secret-benefit/
+
+	<div class="widget">
+		<div class="widget__header">
+			My widget
+		</div>
+		<div class="widget__body">
+			<!-- widget body -->
+		</div>
+	</div>
  */
 
 .widget {
@@ -966,7 +976,8 @@ a {
   text-decoration: none;
 }
 
-.widget-header {
+.widget-header,
+.widget__header {
   padding: 10px;
   margin: 0;
   font-size: 14px;
@@ -1013,6 +1024,18 @@ a {
   background-image: none;
   opacity: 0.5;
 }
+
+/** Matix
+
+	<ul class="matrix three-col">
+		<li>one</li>
+		<li>two</li>
+		<li>three</li>
+		<li>four</li>
+		<li>five</li>
+		<li>six</li>
+	</ul>
+*/
 
 .matrix {
   padding: 0;
@@ -1105,8 +1128,13 @@ a {
   background: url(/?static=/templates/hoborg/gfx/icons/down_l.png) no-repeat -7px -12px transparent;
 }
 
-/**
- * TEXT sizes and colours
+/** TEXT sizes and colours
+
+	<p class="text-S">Lorem ispum dolor sit ament</p>
+	<p class="text-M">Lorem ispum dolor sit ament</p>
+	<p class="text-L">Lorem ispum dolor sit ament</p>
+	<p class="text-XL">Lorem ispum dolor sit ament</p>
+	<p class="text-XXL">Lorem ispum dolor sit ament</p>
  */
 
 .text-S {
@@ -1142,6 +1170,15 @@ a {
   letter-spacing: -4px;
   text-shadow: 0 0 8px black;
 }
+
+/** Text Colors
+
+	<p class="texta-primary">(texta-primary) Lorem ipsum dolor sit ament</p>
+	<p class="texta-success">(texta-success) Lorem ipsum dolor sit ament</p>
+	<p class="texta-info">(texta-info)Lorem ipsum dolor sit ament</p>
+	<p class="texta-warning">(texta-warning) Lorem ipsum dolor sit ament</p>
+	<p class="texta-danger">(texta-danger) Lorem ipsum dolor sit ament</p>
+*/
 
 .text-primary {
   color: #428bca;
@@ -1457,6 +1494,13 @@ fieldset[disabled] .widget .btn--danger.active {
   background-color: #d9534f;
   border-color: #a02622;
 }
+
+/** Progress bar
+
+	<div class="progress">
+		<div class="progress-bar progress-bar-success"></div>
+	</div>
+*/
 
 .progress {
   height: 20px;
