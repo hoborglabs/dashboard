@@ -1,19 +1,17 @@
 # Simple Dashboard - what is it?
 
-Develop [![Build Status](http://ci01.hoborglabs.com/jenkins/buildStatus/icon?job=Hoborg-Dashboard-develop)](http://ci01.hoborglabs.com/jenkins/view/Hoborg%20Labs/job/Hoborg-Dashboard-develop/)  
-Master [![Build Status](http://ci01.hoborglabs.com/jenkins/buildStatus/icon?job=Hoborg-Dashboard)](http://ci01.hoborglabs.com/jenkins/view/Hoborg%20Labs/job/Hoborg-Dashboard/)
+![Status](https://api.travis-ci.org/hoborglabs/dashboard.svg)
 
-It is really simple dashboard which allows you to display widgets from
-your local server and from external endpoints - it's all based on JSON.
+It is really simple dashboard which allows you to display widgets from your local server and from external endpoints -
+it's all based on JSON.
 
-You can write your widgets in PHP, or in any other language. You just
-have to expose http interface which accepts GET or POST request and
-returns JSON widget object.
+You can write your widgets in PHP, or in any other language. You just have to expose http interface which accepts GET or
+POST request and returns JSON widget object.
 
 Right now we have widgets for:
 * Jenkins/Hudson jobs statuses
 * Graphite graphs
-* Git/Github top N commiters
+* Git/Github top N committers
 * XenServer VM statuses
 
 
@@ -22,7 +20,6 @@ Right now we have widgets for:
 Visit http://dashboard.hoborglabs.com/ for more details.
 
 For more technical info visit: http://dashboard.hoborglabs.com/doc
-
 
 
 ## For Developers
