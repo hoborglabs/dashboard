@@ -1,9 +1,15 @@
+---
 
 language: php
 php:
   - 5.4
   - 5.5
   - 5.6
+
+branches:
+  only:
+    - develop
+    - master
 
 install: ant validate.dev
 script: ant test
