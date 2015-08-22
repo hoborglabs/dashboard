@@ -1,6 +1,8 @@
 # Simple Dashboard - what is it?
 
-![Status](https://api.travis-ci.org/hoborglabs/dashboard.svg)
+[Develop ![Develop Status](https://api.travis-ci.org/hoborglabs/dashboard.svg?branch=develop)](https://travis-ci.org/hoborglabs/dashboard)
+
+[Master ![Master Status](https://api.travis-ci.org/hoborglabs/dashboard.svg?branch=master)](https://travis-ci.org/hoborglabs/dashboard)
 
 It is really simple dashboard which allows you to display widgets from your local server and from external endpoints -
 it's all based on JSON.
