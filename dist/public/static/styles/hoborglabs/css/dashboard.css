@@ -772,6 +772,17 @@ h6 {
   width: 100%;
 }
 
+/**
+<dl class="chart">
+    <dd class="bar" style="height:50%; width: 30%; left: 2.5%">50%</dd>
+    <dt class="label" style="height:50%; width: 30%; left: 2.5%">Lorem Ipsum</dd>
+    <dd class="bar" style="height:30%; width: 30%; left: 35%">30%</dd>
+    <dt class="label" style="height:50%; width: 30%; left: 35%">Dolor Sit</dd>
+    <dd class="bar" style="height:70%; width: 30%; left: 67.5%">70%</dd>
+    <dt class="label" style="height:50%; width: 30%; left: 67.5%">Amet</dd>
+</dl>
+ */
+
 .chart,
 .legend {
   margin-bottom: 2em;
@@ -798,6 +809,7 @@ h6 {
 
 .bar {
   bottom: 0;
+  margin-left: 0;
   font-weight: bold;
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.25);
@@ -929,6 +941,22 @@ h6 {
   background-image: -linear-gradient(top, #474747 0%, #474747 10%, transparent 10%, transparent 20%, #474747 20%, #474747 30%, transparent 30%, transparent 40%, #474747 40%, #474747 50%, transparent 50%, transparent 60%, #474747 60%, #474747 70%, transparent 70%, transparent 80%, #474747 80%, #474747 90%, transparent 90%, transparent 100%);
   /* W3C */
 
+}
+
+.bar--success {
+  background-color: #5cb85c;
+}
+
+.bar--info {
+  background-color: #5bc0de;
+}
+
+.bar--warning {
+  background-color: #f0ad4e;
+}
+
+.bar--danger {
+  background-color: #d9534f;
 }
 
 /**

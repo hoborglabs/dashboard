@@ -11,10 +11,13 @@ You can write your widgets in PHP, or in any other language. You just have to ex
 POST request and returns JSON widget object.
 
 Right now we have widgets for:
+
 * Jenkins/Hudson jobs statuses
 * Graphite graphs
 * Git/Github top N committers
 * XenServer VM statuses
+
+
 
 
 ## More on Dashboard Home Page
@@ -24,14 +27,21 @@ Visit http://dashboard.hoborglabs.com/ for more details.
 For more technical info visit: http://dashboard.hoborglabs.com/doc
 
 
+
+
 ## For Developers
 
-You need ant if like me you are a bit lazy. Then all you need is
-`ant validate.dev test` to get all dev dependencies and run unit tests.
+You need `ant` if, like me, you are a bit lazy. Then all you need is `ant validate.dev test` to get all dev
+dependencies and run unit tests.
 
-Use vagrant box!
-vagrant script will ask you for a shared folder location. I will
-contain dashboard project
+To run dashboard locally for development purposes, simply do
+
+```BASH
+cd example/htdocs
+DASHBOARD_ROOT=`pwd`/.. php -S localhost:8081
+```
+
+To run tests, simply run `ant test`
 
 
 
@@ -72,12 +82,6 @@ Warm data - normal storage
 Cold data - archived
 
 
-
-## History
-
-Simple Dashboard was started to bring into live a crazy vision of
-*Phobjects*. Idea born on a PHPNW 2011 conference - or to be more
-precise, on Saturday night, after few pints of free beer.
 
 
 - - -
