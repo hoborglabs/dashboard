@@ -1,0 +1,20 @@
+<div class="widget__header">
+    {{ name }}
+</div>
+<div class="">
+    {{ #data.services }}
+    <h4>{{ name }}</h4>
+    <div class="panel">
+        <div class="media">
+            <h4 class="media-img" style="width: 60%">Errors</h4>
+            <span class="media-body text-L text-danger">{{ errors }}</span>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="media">
+            <h4 class="media-img" style="width: 60%">Warnings</h4>
+            <span class="media-body text-L text-warning">{{ warnings }}</span>
+        </div>
+    </div>
+    {{ /data.services }}
+</div>

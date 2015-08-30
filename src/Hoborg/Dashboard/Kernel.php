@@ -5,8 +5,6 @@ use Seld\JsonLint\JsonParser;
 
 class Kernel {
 
-	protected $environment = null;
-
 	protected $config = null;
 
 	protected $properties = array();
@@ -22,15 +20,13 @@ class Kernel {
 		'config' => array(),
 	);
 
-	public function __construct($rootFolder, $env = 'prod') {
-		$this->environment = $env;
-
+	public function __construct($rootFolder) {
 		if (is_readable($rootFolder . '/dashboard.properties')) {
 			$this->properties = parse_ini_file($rootFolder . '/dashboard.properties');
 		}
 
 		$this->addExtensionPath($rootFolder);
-		$this->paths['templates'][] = __DIR__ . '../../../templates';
+		$this->paths['templates'][] = __DIR__ . '/Resources/templates';
 	}
 
 	/**
@@ -48,6 +44,7 @@ class Kernel {
 			if ($this->hasStaticParam()) {
 				$proxy = new StaticAssetsProxy($this);
 				$proxy->output($this->getParam('static', ''));
+
 				return;
 			}
 
@@ -95,10 +92,6 @@ class Kernel {
 		return array_key_exists('static', $this->params);
 	}
 
-	public function getEnvironment() {
-		return $this->environment;
-	}
-
 	public function setDefaultParam($key, $value) {
 		$this->defaultParams[$key] = $value;
 
@@ -129,6 +122,7 @@ class Kernel {
 
 	public function setPath($key, array $paths) {
 		$this->paths[$key] = $paths;
+
 		return $this;
 	}
 
@@ -136,6 +130,7 @@ class Kernel {
 		if (is_array($this->paths[$key])) {
 			$this->paths[$key] = array_merge($this->paths[$key], $paths);
 		}
+
 		return $this;
 	}
 
@@ -157,6 +152,7 @@ class Kernel {
 
 	public function setTemplatesPath(array $paths) {
 		$this->paths['templates'] = $paths;
+
 		return $this;
 	}
 
@@ -170,6 +166,7 @@ class Kernel {
 
 	public function setWidgetsPath(array $paths) {
 		$this->paths['widgets'] = $paths;
+
 		return $this;
 	}
 
@@ -251,5 +248,4 @@ class Kernel {
 		include $errorTpl;
 		$this->shutDown(1);
 	}
-
 }

@@ -140,6 +140,15 @@ class WidgetProvider implements IWidgetProvider {
 	}
 
 	protected function loadWidgetFromPhp(Widget $widget, $src) {
+		$widgetData = $widget->get();
+
+		if (class_exists($src)) {
+			$extWidget = new $src($this->kernel, $widgetData);
+			$extWidget->bootstrap();
+
+			return $extWidget->get();
+		}
+
 		$path = $this->kernel->findFileOnPath(
 			$src,
 			$this->kernel->getWidgetsPath()

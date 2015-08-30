@@ -225,7 +225,7 @@
 			<arg line="-c ${phpunit.configuration}" />
 			<arg line="--log-junit ${dir.logs}/phpunit/phpunit.xml" />
 			<arg line="--coverage-clover ${dir.logs}/phpunit/coverage.xml" />
-			<arg line="--testdox-text ${dir.lqogs}/phpunit/phpunit.txt" />
+			<arg line="--testdox-text ${dir.logs}/phpunit/phpunit.txt" />
 		</exec>
 	</target>
 

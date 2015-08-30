@@ -1,0 +1,1 @@
+../../src/Hoborg/Dashboard/Resources/htdocs/index.php

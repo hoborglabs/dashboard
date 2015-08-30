@@ -30,6 +30,7 @@
 			<directory suffix=".php">./src/Hoborg/Dashboard</directory>
 			<exclude>
 				<file>./src/Hoborg/Dashboard/Exception.php</file>
+				<directory>./src/Hoborg/Dashboard/Resources</directory>
 			</exclude>
 		</whitelist>
 	</filter>

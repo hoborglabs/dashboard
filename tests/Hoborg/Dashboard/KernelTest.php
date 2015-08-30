@@ -15,11 +15,6 @@ class KernelTest extends \PHPUnit_Framework_TestCase {
 		$this->mockFactory = new MockFactory($this);
 	}
 
-	public function testDefaultEnv() {
-		$kernel = new Kernel(TST_ROORT);
-		$this->assertEquals('prod', $kernel->getEnvironment());
-	}
-
 	public function testThrowConfigurationParseError() {
 		$kernel = $this->mockFactory->getKernelMock(array('getParam', 'handleError'));
 		$kernel->expects($this->once())
