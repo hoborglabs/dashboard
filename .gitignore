@@ -31,3 +31,5 @@
 /phpunit.phar
 /logs
 /RELEASE*
+/phar
+/dashboard.phar
