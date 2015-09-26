@@ -16,7 +16,7 @@ function main(array $args = array()) {
 function createFolders($rootFolder) {
 	out("Creating folder structure in `{$rootFolder}`");
 
-	foreach (array('config', 'data', 'widgets', 'templates', 'htdocs', 'vendors') as $folder) {
+	foreach (array('config', 'data', 'widgets', 'templates', 'htdocs', 'tmp') as $folder) {
 		if (!is_dir("{$rootFolder}/{$folder}")) {
 			mkdir("{$rootFolder}/{$folder}");
 		}
@@ -26,23 +26,24 @@ function createFolders($rootFolder) {
 }
 
 function download($rootFolder) {
-	out("Downloading vendors into `{$rootFolder}/vendors`");
-	chdir("{$rootFolder}/vendors");
-
-	getFile("{$rootFolder}/vendors/dashboard.phar", "http://get.hoborglabs.com/dashboard/dashboard.phar");
-	getFile("{$rootFolder}/vendors/dashboard-assets.tgz", "http://get.hoborglabs.com/dashboard/dashboard-assets.tgz");
-
-	out("unpacking dashboard-assets.tgz to `{$rootFolder}/htdocs`");
-	system("tar -xzf {$rootFolder}/vendors/dashboard-assets.tgz -C {$rootFolder}/htdocs/");
+	out("Downloading dashboard.phar `{$rootFolder}/`");
+	getFile("{$rootFolder}/dashboard.phar", "http://get.hoborglabs.com/dashboard/dashboard.phar");
 
 	return true;
 }
 
 function install($rootFolder) {
 	out('Installing');
-	chdir("{$rootFolder}/htdocs");
+	chdir("{$rootFolder}/");
 
-	getFile("{$rootFolder}/htdocs/dashboard.php", "https://raw.github.com/gist/1512137/dashboard.php");
+	$phar = new Phar("{$rootFolder}/dashboard.phar");
+	$phar->extractTo("{$rootFolder}/tmp/", null, true);
+
+	system("mv {$rootFolder}/tmp/src/Hoborg/Dashboard/Resources/htdocs/index-phar.php {$rootFolder}/htdocs/index.php");
+	system("mv {$rootFolder}/tmp/src/Hoborg/Dashboard/Resources/htdocs/static {$rootFolder}/htdocs/static");
+	system("mv {$rootFolder}/tmp/src/Hoborg/Dashboard/Resources/htdocs/images {$rootFolder}/htdocs/images");
+
+	system("rm -rf {$rootFolder}/tmp");
 
 	return true;
 }
@@ -51,6 +52,7 @@ function getFile($localPath, $remotePath) {
 	if (is_readable($localPath)) {
 		unlink($localPath);
 	}
+
 	return file_put_contents($localPath, file_get_contents($remotePath));
 }
 

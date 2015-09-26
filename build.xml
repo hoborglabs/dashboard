@@ -6,9 +6,11 @@
 
 	<!-- set default values if not already set in build.properties -->
 	<property name="dir.base" location="." />
-	<property name="dir.dist" value="${dir.base}/dist" />
+	<property name="dir.dist" value="${dir.base}/src/Hoborg/Dashboard/Resources/htdocs/static" />
 	<property name="dir.vendor" value="${dir.base}/vendor" />
 	<property name="dir.logs" value="${dir.base}/logs" />
+	<property name="dir.phar" value="${dir.base}/phar" />
+
 
 
 	<!-- Commands defaults -->
@@ -68,6 +70,7 @@
 			<target name="test" />
 			<target name="build.css" />
 			<target name="build.js" />
+			<target name="build.phar" />
 		</antcall>
 	</target>
 
@@ -139,23 +142,23 @@
 		Project Validation
 	-->
 	<target name="validate.dependencies"
-		description="Installs or updates project dependencies."
+		description="Installs project's dependencies."
 		depends="-install-composer"
 	>
-		<echo level="info">Composer update (--no-dev)</echo>
+		<echo level="info">Composer install (--no-dev)</echo>
 		<exec executable="${cmd.php}" failonerror="true">
 			<arg line="${cmd.composer}" />
-			<arg line="update" />
+			<arg line="install" />
 			<arg line="--no-dev" />
 			<arg line="--no-interaction" />
 		</exec>
 	</target>
 
 	<target name="validate.dev.dependencies"
-		description="Installs or updates project development dependencies."
+		description="Installs project's development dependencies."
 		depends="-install-composer, -install-recess"
 	>
-		<echo level="info">Composer update</echo>
+		<echo level="info">Composer install</echo>
 		<exec executable="${cmd.php}" failonerror="true">
 			<arg line="${cmd.composer}" />
 			<arg line="update" />
@@ -172,21 +175,23 @@
 	<target name="build.js"
 		description="Compiles and minifies JS"
 	>
-		<echo>Building ${dir.build.dist}/htdocs/static/scripts/hoborglabs/dashboard.js</echo>
-		<mkdir dir="${dir.dist}/public/static/scripts/hoborglabs"/>
-		<exec executable="${cmd.node}">
-			<arg line="scripts/r.js" />
-			<arg line="-o" />
-			<arg line="${dir.base}/scripts/dashboard.build.js" />
-		</exec>
+		<echo>Building ${dir.dist}/scripts/hoborglabs</echo>
+		<mkdir dir="${dir.dist}/scripts/hoborglabs"/>
 
 		<exec executable="${cmd.node}">
 			<arg line="scripts/r.js" />
 			<arg line="-o" />
 			<arg line="${dir.base}/scripts/dashboard.build.js" />
-			<arg line="optimize=none" />
-			<arg line="out=${dir.dist}/public/static/scripts/hoborglabs/dashboard.unminified.js" />
+			<arg line="out=${dir.dist}/scripts/hoborglabs/dashboard.js" />
 		</exec>
+
+		<!-- <exec executable="${cmd.node}">
+			<arg line="scripts/r.js" />
+			<arg line="-o" />
+			<arg line="${dir.base}/scripts/dashboard.build.js" />
+			<arg line="optimize=none" />
+			<arg line="out=${dir.dist}/scripts/hoborglabs/dashboard.unminified.js" />
+		</exec> -->
 	</target>
 
 	<target name="build.css"
@@ -194,18 +199,44 @@
 		depends="-install-recess"
 	>
 		<property name="cmd.recess" value="recess" />
-		<mkdir dir="${dir.dist}/public/static/styles/hoborglabs/css" />
+		<mkdir dir="${dir.dist}/styles/hoborglabs/css" />
 
-		<echo level="info">Building ${dir.dist}/public/static/styles/hoborglabs/css/dashboard.min.css</echo>
-		<exec executable="${cmd.recess}" output="${dir.dist}/public/static/styles/hoborglabs/css/dashboard.min.css">
+		<echo level="info">Building ${dir.dist}/styles/hoborglabs/css/dashboard.min.css</echo>
+		<exec executable="${cmd.recess}" output="${dir.dist}/styles/hoborglabs/css/dashboard.min.css">
 			<arg line="--compress" />
 			<arg line="${dir.base}/styles/less/dashboard.less" />
 		</exec>
 
-		<echo level="info">Building ${dir.dist}/public/static/styles/hoborglabs/css/dashboard.css</echo>
-		<exec executable="${cmd.recess}" output="${dir.dist}/public/static/styles/hoborglabs/css/dashboard.css">
-			<arg line="--compile" />
+		<!-- <echo level="info">Building ${dir.dist}/styles/hoborglabs/css/dashboard.css</echo>
+		<exec executable="${cmd.recess}" output="${dir.dist}/styles/hoborglabs/css/dashboard.css">
+			<arg line="- -compile" />
 			<arg line="${dir.base}/styles/less/dashboard.less" />
+		</exec> -->
+	</target>
+
+	<target name="build.phar"
+		depends="validate.dependencies"
+		description="Builds phar file"
+	>
+		<property name="version" value="development" />
+		<echo level="info">Building sg.phar ${version}</echo>
+
+		<delete dir="${dir.phar}" includeemptydirs="true">
+			<include name="**/*" />
+		</delete>
+		<delete file="${dir.base}/dashboard.phar" />
+		<copy todir="${dir.phar}">
+			<fileset dir="${dir.base}">
+				<include name="dist/**/*" />
+				<include name="src/**/*" />
+				<include name="vendor/**/*" />
+			</fileset>
+		</copy>
+
+		<exec executable="${cmd.php}">
+			<arg line="-d phar.readonly=false" />
+			<arg line="${dir.base}/bin/build-phar.php" />
+			<arg line="-v ${version}" />
 		</exec>
 	</target>
 
