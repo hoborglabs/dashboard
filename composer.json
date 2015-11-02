@@ -16,6 +16,7 @@
         "seld/jsonlint": "1.1.2"
     },
     "require-dev": {
+        "hoborglabs/widgets": "*@stable",
         "phpunit/phpunit": "3.*@stable",
         "behat/behat": "*@stable",
         "behat/mink-extension": "*@stable",

@@ -30,7 +30,7 @@
 		},
 		{
 			"name": "www.my-second-website.com",
-			"php": "hoborg/info/widget.php",
+			"php": "hoborg/info/rate.php",
 			"size": "grid-1-4",
 			"data": {
 				"conf": {
@@ -40,7 +40,7 @@
 		},
 		{
 			"name": "api.my-website.com/1",
-			"php": "hoborg/info/widget.php",
+			"php": "hoborg/info/rate.php",
 			"size": "grid-1-4",
 			"data": {
 				"conf": {
@@ -50,7 +50,7 @@
 		},
 		{
 			"name": "api.my-website.com/1",
-			"php": "hoborg/info/widget.php",
+			"php": "hoborg/info/rate.php",
 			"size": "grid-1-4",
 			"data": {
 				"conf": {

@@ -185,13 +185,13 @@
 			<arg line="out=${dir.dist}/scripts/hoborglabs/dashboard.js" />
 		</exec>
 
-		<!-- <exec executable="${cmd.node}">
+		<exec executable="${cmd.node}">
 			<arg line="scripts/r.js" />
 			<arg line="-o" />
 			<arg line="${dir.base}/scripts/dashboard.build.js" />
 			<arg line="optimize=none" />
 			<arg line="out=${dir.dist}/scripts/hoborglabs/dashboard.unminified.js" />
-		</exec> -->
+		</exec>
 	</target>
 
 	<target name="build.css"
@@ -207,11 +207,11 @@
 			<arg line="${dir.base}/styles/less/dashboard.less" />
 		</exec>
 
-		<!-- <echo level="info">Building ${dir.dist}/styles/hoborglabs/css/dashboard.css</echo>
+		<echo level="info">Building ${dir.dist}/styles/hoborglabs/css/dashboard.css</echo>
 		<exec executable="${cmd.recess}" output="${dir.dist}/styles/hoborglabs/css/dashboard.css">
-			<arg line="- -compile" />
+			<arg line="--compile" />
 			<arg line="${dir.base}/styles/less/dashboard.less" />
-		</exec> -->
+		</exec>
 	</target>
 
 	<target name="build.phar"
