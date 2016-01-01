@@ -16,10 +16,10 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 
 	public function testConstructor() {
 		$widget = $this->createWidget();
-		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":""}'));
+		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":"","cacheable_for":0}'));
 
 		$widget = $this->createWidget(array('test' => 'field'));
-		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":"","test":"field"}'));
+		$this->assertEquals(json_decode($widget->getJson()), json_decode('{"data":[],"template":"","cacheable_for":0,"test":"field"}'));
 	}
 
 	/** @test */
@@ -47,7 +47,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 		$widget->extendData(array('name' => 'test'));
 		$this->assertEquals(
 			json_decode($widget->getJson()),
-			json_decode('{"name": "test", "data": [], "template": ""}')
+			json_decode('{"name": "test", "data": [], "template": "","cacheable_for":0}')
 		);
 
 		$widget = $this->createWidget(array('test' => 'this will be overriden'));
@@ -57,6 +57,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 			array(
 				'template' => '',
 				'data' => array (),
+				'cacheable_for' => 0,
 				'name' => 'test',
 				'test' => 'value',
 			)
@@ -71,6 +72,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase {
 			array(
 				'template' => '',
 				'data' => array (),
+				'cacheable_for' => 0,
 			)
 		);
 	}

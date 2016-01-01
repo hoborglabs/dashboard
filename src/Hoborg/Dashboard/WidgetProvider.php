@@ -9,11 +9,15 @@ class WidgetProvider implements IWidgetProvider {
 		$this->kernel = $kernel;
 	}
 
-	public function createWidget(array $widgetJson) {
-		$widgetJson['data'] = array();
-		$widget = new Widget($this->kernel, $widgetJson);
+	public function createWidget(array $widgetData) {
+		$widgetData['data'] = array();
+		$widget = new Widget($this->kernel, $widgetData);
 		$sources = $this->getWidgetSources($widget);
 		$wData = $widget->get();
+
+		if ($this->fetchWidget($widget)) {
+			return $widget;
+		}
 
 		foreach ($sources as $source) {
 			switch ($source['type']) {
@@ -22,7 +26,7 @@ class WidgetProvider implements IWidgetProvider {
 					break;
 
 				case 'php':
-					$tmp = $this->loadWidget($widget, $source['type'], $source['sources']);
+					$this->loadWidget($widget, $source['type'], $source['sources']);
 					break;
 
 				case 'static':
@@ -31,9 +35,9 @@ class WidgetProvider implements IWidgetProvider {
 								$src, $this->kernel->getDataPath());
 
 						if (!empty($path)) {
-							$widgetJson = json_decode(file_get_contents($path), true);
-							if (!empty($widgetJson)) {
-								$widget->extendData($widgetJson);
+							$widgetTmp = json_decode(file_get_contents($path), true);
+							if (!empty($widgetTmp)) {
+								$widget->extendData($widgetTmp);
 							}
 						}
 					}
@@ -47,8 +51,37 @@ class WidgetProvider implements IWidgetProvider {
 			}
 		}
 
-		//$widget->extendData($wData);
+		$this->storeWidget($widget);
+
 		return $widget;
+	}
+
+	protected function storeWidget(Widget $widget) {
+		$widgetData = $widget->get();
+
+		if ($widgetData['cacheable_for']) {
+			if (extension_loaded('apc')) {
+				$key = md5(serialize($widgetData));
+				\apc_store($widgetData, $widgetData['cacheable_for']);
+			}
+		}
+	}
+
+	protected function fetchWidget(Widget $widget) {
+		$widgetData = $widget->get();
+
+		if ($widgetData['cacheable_for']) {
+			if (extension_loaded('apc')) {
+				$key = md5(serialize($widgetData));
+				$data = \apc_fetch($key);
+				if ($data) {
+					$widget->extendData($data);
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public function createRowWidget(array $widgetJson) {
@@ -141,31 +174,32 @@ class WidgetProvider implements IWidgetProvider {
 
 	protected function loadWidgetFromPhp(Widget $widget, $src) {
 		$widgetData = $widget->get();
-
-		if (class_exists($src)) {
-			$extWidget = new $src($this->kernel, $widgetData);
-			$extWidget->bootstrap();
-
-			return $extWidget->get();
-		}
-
 		$path = $this->kernel->findFileOnPath(
 			$src,
 			$this->kernel->getWidgetsPath()
 		);
+		$widgetClass;
+		$phpWidget;
 
-		if ($path) {
+		if (class_exists($src)) {
+			$widgetClass = $src;
+		} else if ($path) {
 			$meta = $this->getFileMeta($path);
-			$widgetData = $widget->get();
-
+			$widgetClass = $meta['class'];
 			include_once $path;
-			$extWidget = new $meta['class']($this->kernel, $widgetData);
-			$extWidget->bootstrap();
-
-			return $extWidget->get();
+		} else {
+			return [];
 		}
 
-		return array();
+		$phpWidget = $this->bootstrapWidget($widgetClass, $widgetData);
+		return $phpWidget->get();
+	}
+
+	protected function bootstrapWidget($widgetClass, $widgetData) {
+		$widget = new $widgetClass($this->kernel, $widgetData);
+		$widget->bootstrap();
+
+		return $widget;
 	}
 
 	protected function loadWidgetFromCgi($widget, $src) {

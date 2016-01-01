@@ -6,8 +6,9 @@ class Widget {
 	protected $kernel = null;
 
 	protected $defaults = array(
+		'cacheable_for' => 0,
+		'data' => [],
 		'template' => '',
-		'data' => array(),
 	);
 
 	protected $data = array();
