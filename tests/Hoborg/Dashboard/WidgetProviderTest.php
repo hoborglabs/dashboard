@@ -67,6 +67,29 @@ class WidgetProviderTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
+	public function shouldCreateWidgetFromCache() {
+		if (!extension_loaded('apc')) {
+			$this->markTestSkipped('No APC extension loaded');
+		}
+
+		$widgetData = array(
+			'cacheable_for' => 1,
+			'data' => [],
+			'template' => '',
+			'php' => 'empty.php',
+		);
+		$widgetCachedData = $widgetData + [ 'from_cache' => 'test' ];
+		$key = md5(serialize($widgetData));
+		\apc_store($key, $widgetCachedData, 1);
+		$widget = $this->widgetProviderTestCase->createWidget($widgetData);
+
+		$this->assertEquals('test', $widget->get('from_cache'));
+	}
+
+
+	/**
+	 * @test
+	 */
 	public function shouldCreateWidgetFromStaticFileAndPhp() {
 		$kernel = $this->mockFactory->getKernelMock(array('a'));
 		$widgetProviderTestCase = new WidgetProvider($kernel);

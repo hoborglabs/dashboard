@@ -1,10 +1,18 @@
 
 _STATIC=src/Hoborg/Dashboard/Resources/htdocs/static
 
+all: deps test js css
+
 server:
 	ant build
 	cd example/htdocs && \
 	DASHBOARD_ROOT=`pwd`/.. php -S localhost:4080
+
+test: deps
+	./vendor/bin/phpunit -c phpunit.xml
+
+test_ci: deps
+	./vendor/bin/phpunit -c phpunit.ci.xml
 
 ##
 # Builds JS
