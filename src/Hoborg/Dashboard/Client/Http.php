@@ -4,7 +4,14 @@ namespace Hoborg\Dashboard\Client;
 class Http {
 
 	public function get($url, array $headers = array()) {
-		return file_get_contents($url);
+		$curl = curl_init($url);
+
+		$headers = array("User-Agent: hoborglabs/dashboard");
+
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+		return curl_exec($curl);
 	}
 
 	public function getQueryString(array $params) {
