@@ -6,7 +6,7 @@ all: deps test js css
 server:
 	ant build
 	cd example/htdocs && \
-	DASHBOARD_ROOT=`pwd`/.. php -S localhost:4080
+	DASHBOARD_ROOT=`pwd`/.. php -S localhost:4080 2>&1
 
 test: deps
 	./vendor/bin/phpunit -c phpunit.xml

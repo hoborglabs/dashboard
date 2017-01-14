@@ -45,4 +45,35 @@ class HttpTest extends \PHPUnit_Framework_TestCase {
 			),
 		);
 	}
+
+	/** @test
+	 */
+	public function shouldUseEtagCache() {
+		$mock = $this->getMockBuilder('\Hoborg\Dashboard\Client\Http')
+			->setConstructorArgs([ [ 'etag' => true ] ])
+			->setMethods([ 'getResponseCode', 'httpCall' ])
+			->getMock();
+
+		$url = 'http://test.http/request.html';
+		$body = 'this is test body';
+		$etag = 'fake-etag';
+		$etagKey = md5('http-etag' . $url);
+		$etagBodyKey = md5('http-etag-body' . $url);
+
+		if (!extension_loaded('apc')) {
+			$this->markTestIncomplete(
+				'APC extension not loaded, skipping APC Etag test'
+			);
+		}
+
+		apc_store($etagKey, $etag);
+		apc_store($etagBodyKey, $body);
+		$mock->method('getResponseCode')
+			->willReturn(304);
+		$mock->method('httpCall')
+			->willReturn('');
+
+		$t = $mock->get('http://test.http/request.html');
+		$this->assertEquals($body, $t);
+	}
 }
