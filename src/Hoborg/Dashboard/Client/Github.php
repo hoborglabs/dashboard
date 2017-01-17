@@ -9,7 +9,7 @@ class Github {
 
 	public function __construct($baseUrl, Http $caller = null) {
 		if (null === $caller) {
-			$caller = new Http();
+			$caller = new Http([ 'etag' => true ]);
 		}
 		$this->caller = $caller;
 		$this->baseUrl = $baseUrl;
